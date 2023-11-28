@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvQuickSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dashboard"
+        android:textSize="27sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.lzyzsd.circleprogress.ArcProgress
+        android:id="@+id/arcBatteryPercentage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="40dp"
+        app:arc_suffix_text_size="15sp"
+        app:arc_suffix_text_padding="15dp"
+        app:arc_text_color="?attr/colorPrimary"
+        app:arc_text_size="55sp"
+        app:arc_stroke_width="7dp"
+        app:arc_finished_color="?attr/colorPrimary"
+        app:arc_progress="55"
+        app:arc_unfinished_color="?attr/colorSurfaceContainerHigh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuickSetting" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arcBatteryPercentage">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvBatteryStatus"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="-35dp"
+                    android:rotation="-90"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:scaleType="center"
+                    android:src="@drawable/battery_profile"
+                    android:background="@drawable/image"
+                    android:backgroundTint="#70F90D1B"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/status" />
+
+                <TextView
+                    android:id="@+id/tvBatteryStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center_vertical"
+                    android:hint="@string/status"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvChargingType"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="-35dp"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:scaleType="center"
+                    android:src="@drawable/charging_type"
+                    android:background="@drawable/image"
+                    android:backgroundTint="#7000CF35"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/type" />
+
+                <TextView
+                    android:id="@+id/tvChargingType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center_vertical"
+                    android:hint="@string/type"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvBatteryVoltage"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="-35dp"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:scaleType="center"
+                    android:src="@drawable/bolt"
+                    android:background="@drawable/image"
+                    android:backgroundTint="#70EC00FC"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/voltage" />
+
+                <TextView
+                    android:id="@+id/tvBatteryVoltage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toEndOf="@+id/tvBatteryVoltage"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="2dp"
+                    android:text="@string/volt_unit"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvBatteryCurrent"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="-35dp"
+                    android:scaleType="center"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:src="@drawable/charging_current"
+                    android:background="@drawable/image"
+                    android:backgroundTint="#700003ff"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/current" />
+
+                <TextView
+                    android:id="@+id/tvBatteryCurrent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toEndOf="@+id/tvBatteryCurrent"
+                    android:gravity="center_vertical"
+                    android:text="@string/ma"
+                    android:layout_marginStart="2dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvBatteryPower"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="-35dp"
+                    android:scaleType="center"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:src="@drawable/power"
+                    android:background="@drawable/image"
+                    android:backgroundTint="#70d9df00"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/power" />
+
+                <TextView
+                    android:id="@+id/tvBatteryPower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toEndOf="@+id/tvBatteryPower"
+                    android:gravity="center_vertical"
+                    android:text="@string/wattage"
+                    android:layout_marginStart="2dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
