@@ -1,5 +1,7 @@
 package com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard
 
+import android.content.Context
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

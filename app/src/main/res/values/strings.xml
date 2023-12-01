@@ -32,4 +32,6 @@
     <string name="target_current_error_message">Failed to set target current, try again!</string>
     <string name="charging_limiter_error_message">Failed to toggle charging limiter, try again!</string>
     <string name="maximum_capacity_error_message">Failed to set limit maximum capacity, try again!</string>
+    <string name="degree_symbol">°C</string>
+    <string name="temperature">Temperature</string>
 </resources>

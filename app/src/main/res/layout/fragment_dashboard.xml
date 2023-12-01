@@ -31,6 +31,7 @@
         app:arc_finished_color="?attr/colorPrimary"
         app:arc_progress="55"
         app:arc_unfinished_color="?attr/colorSurfaceContainerHigh"
+        app:arc_bottom_text_size="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvQuickSetting" />
@@ -236,14 +237,14 @@
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:weightSum="3"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:gravity="center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvBatteryCurrent"
+            android:id="@+id/cvBatteryTemperature"
             android:layout_width="0dp"
             android:layout_height="75dp"
             android:layout_marginEnd="5dp"
@@ -273,7 +274,7 @@
                     android:scaleType="center"
                     android:scaleX="0.8"
                     android:scaleY="0.8"
-                    android:src="@drawable/charging_current"
+                    android:src="@drawable/temperature"
                     android:background="@drawable/image"
                     android:backgroundTint="#700003ff"/>
 
@@ -281,10 +282,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:text="@string/current" />
+                    android:text="@string/temperature" />
 
                 <TextView
-                    android:id="@+id/tvBatteryCurrent"
+                    android:id="@+id/tvBatteryTemperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -297,9 +298,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_toEndOf="@+id/tvBatteryCurrent"
+                    android:layout_toEndOf="@+id/tvBatteryTemperature"
                     android:gravity="center_vertical"
-                    android:text="@string/ma"
+                    android:text="@string/degree_symbol"
                     android:layout_marginStart="2dp"
                     android:textSize="16sp"
                     android:textStyle="bold" />

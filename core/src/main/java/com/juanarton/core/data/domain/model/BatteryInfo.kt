@@ -12,4 +12,5 @@ data class BatteryInfo (
     val voltage: Float,
     val currentNow: Int,
     val power: Float,
+    val temperature: Int,
 ): Parcelable

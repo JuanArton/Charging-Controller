@@ -1,17 +1,18 @@
 package com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentDashboardBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
@@ -30,12 +31,34 @@ class DashboardFragment : Fragment() {
         return binding?.root
     }
 
+    @SuppressLint("PrivateApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var batteryCapacity = 0.0
+        val powerProfileClass = "com.android.internal.os.PowerProfile"
+
+        try {
+            val powerProfile = Class.forName(powerProfileClass)
+                .getConstructor(Context::class.java)
+                .newInstance(requireContext())
+            batteryCapacity = Class
+                .forName(powerProfileClass)
+                .getMethod("getBatteryCapacity")
+                .invoke(powerProfile) as Double
+        } catch (e: Exception) {
+            Log.d("Get Battery Capacity", e.toString())
+        }
+
+        Log.d("test", batteryCapacity.toString())
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
             binding?.apply {
                 arcBatteryPercentage.progress = it.level
+                arcBatteryPercentage.bottomText = buildString {
+                    append((batteryCapacity * it.level/100).toInt())
+                    append(" ")
+                    append(getString(R.string.mah))
+                }
 
                 tvBatteryStatus.text = when (it.status){
                     1 -> getString(R.string.unknown)
@@ -53,7 +76,7 @@ class DashboardFragment : Fragment() {
                     else -> getString(R.string.battery)
                 }
 
-                tvBatteryCurrent.text = it.currentNow.toString()
+                tvBatteryTemperature.text = it.temperature.toInt().toString()
 
                 tvBatteryPower.text = String.format("%.2f", it.power)
             }

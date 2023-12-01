@@ -108,6 +108,8 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
 
         val status = batteryStatus?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
 
+        val temperature = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) ?: -1
+
         val chargingStatus = if (Build.VERSION.SDK_INT < 26) {
             val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
             if (isCharging) 2 else 3
@@ -124,7 +126,6 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
             val scale = it.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
             (level.toFloat() / scale.toFloat() * 100).toInt()
         }
-
         val voltage = (batteryStatus?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1) ?: -1).toFloat() / 1000
 
         val currentNow = (batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)).toFloat() / 1000
@@ -139,7 +140,8 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
                 level!!,
                 voltage,
                 -currentNow.toInt(),
-                abs(power)
+                abs(power),
+                temperature/10
             )
         )
     }.flowOn(Dispatchers.IO)
