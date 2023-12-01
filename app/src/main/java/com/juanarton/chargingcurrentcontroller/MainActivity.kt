@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val root = findViewById<ConstraintLayout>(R.id.root)
+            window.setDecorFitsSystemWindows(false)
 
             ViewCompat.setOnApplyWindowInsetsListener(root) { view, windowInsets ->
 
@@ -58,13 +59,15 @@ class MainActivity : AppCompatActivity() {
                     leftMargin = insets.left
                     bottomMargin = insets.bottom
                     rightMargin = insets.right
+                    topMargin = insets.top
                 }
                 WindowInsetsCompat.CONSUMED
             }
-        } else
+        } else {
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             window.statusBarColor = android.graphics.Color.TRANSPARENT
+        }
 
         Shell.getShell { shell ->
             if (shell.status == 1) {

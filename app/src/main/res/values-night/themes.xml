@@ -5,7 +5,21 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primaryVariant</item>
         <item name="android:textColor">@color/darkThemeText</item>
+        <item name="android:windowBackground">@color/darkSurface</item>
+        <item name="cardBackgroundColor">@color/darkCardBackground</item>
 
         <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background, animated icon, and animation
+        duration. -->
+        <item name="windowSplashScreenBackground">@color/white</item>
+
+        <item name="windowSplashScreenAnimationDuration">200</item>
+
+        <!-- Set the theme of the Activity that directly follows your splash
+        screen. This is required. -->
+        <item name="postSplashScreenTheme">@style/Theme.ChargingCurrentController</item>
     </style>
 </resources>
