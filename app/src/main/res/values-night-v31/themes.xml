@@ -1,8 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.ChargingCurrentController" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/main_500</item>
+        <item name="colorPrimary">@color/main_600</item>
         <item name="colorPrimaryVariant">@color/main_dark_800</item>
         <item name="android:windowBackground">@color/accent2_900</item>
         <item name="cardBackgroundColor">@color/neutral1_50</item>

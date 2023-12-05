@@ -1,13 +1,11 @@
 <resources>
     <string name="app_name">Charging Current Controller</string>
     <string name="checking_root_access">Checking Root Access</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dashboard">Dashboard</string>
     <string name="quick_setting">Quick Setting</string>
     <string name="charging_current">Charging Current</string>
     <string name="current_value">5000</string>
     <string name="mah">mAh</string>
-    <string name="enable_charging">Enable Charging</string>
     <string name="idle_mode">Idle Mode</string>
     <string name="ma">mA</string>
     <string name="trigerred_by_charging_limit">Trigerred by charging limit</string>
@@ -24,14 +22,14 @@
     <string name="ac">AC</string>
     <string name="usb">USB</string>
     <string name="volt_unit">V</string>
-    <string name="current">Current</string>
     <string name="wattage">W</string>
     <string name="power">Power</string>
     <string name="battery">Battery</string>
-    <string name="charging_switch_error_message">Failed to toggle charging, try again!</string>
-    <string name="target_current_error_message">Failed to set target current, try again!</string>
-    <string name="charging_limiter_error_message">Failed to toggle charging limiter, try again!</string>
-    <string name="maximum_capacity_error_message">Failed to set limit maximum capacity, try again!</string>
     <string name="degree_symbol">°C</string>
     <string name="temperature">Temperature</string>
+    <string name="charging_status_icon">Charging status icon</string>
+    <string name="charging_voltage_icon">Charging voltage icon</string>
+    <string name="charging_type_icon">Charging type icon</string>
+    <string name="charging_temperature_icon">Charging temperature icon</string>
+    <string name="battery_power_icon">Battery power icon</string>
 </resources>

@@ -1,15 +1,15 @@
 package com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard
 
-import android.content.Context
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.juanarton.core.data.domain.model.BatteryInfo
 import com.juanarton.core.data.domain.usecase.DataRepositoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -23,8 +23,12 @@ class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: 
     val batteryInfo = _batteryInfo
 
     private var scheduledExecutorService: ScheduledExecutorService? = null
-
     private var isMonitoring = false
+
+    private val chargingCurrent = mutableListOf<Entry>()
+    val lineDataSet = LineDataSet(chargingCurrent, "charging current")
+    private val iLineDataSet = mutableListOf<ILineDataSet>(lineDataSet)
+    val lineData = LineData(iLineDataSet)
 
     fun startBatteryMonitoring() {
         if (!isMonitoring) {
@@ -41,6 +45,18 @@ class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: 
             )
             isMonitoring = true
         }
+    }
+
+    fun addDataAndReduceX(entry: Entry) {
+        chargingCurrent.forEachIndexed { index, existingEntry ->
+            existingEntry.x = existingEntry.x - 1
+        }
+
+        while (chargingCurrent.size >= 61) {
+            chargingCurrent.removeAt(0)
+        }
+
+        chargingCurrent.add(entry)
     }
 
     fun stopBatteryMonitoring() {

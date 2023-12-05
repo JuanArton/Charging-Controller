@@ -1,11 +1,8 @@
 package com.juanarton.chargingcurrentcontroller
 
-import android.animation.Animator
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.juanarton.chargingcurrentcontroller.databinding.ActivityRootCheckBinding
-import com.topjohnwu.superuser.Shell
 
 
 class RootCheckActivity : AppCompatActivity() {

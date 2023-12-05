@@ -58,4 +58,6 @@ dependencies {
     implementation("nl.joery.animatedbottombar:library:1.1.0")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

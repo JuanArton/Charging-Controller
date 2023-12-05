@@ -16,11 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import javax.inject.Inject
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 
 class DataRepository @Inject constructor(private val context: Context): DataRepositoryInterface {

@@ -2,7 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primaryText">#212121</color>
     <color name="primary">#00DDB3</color>
     <color name="primaryVariant">#009b8c</color>
     <color name="primaryTransparent">#7000DDB3</color>
@@ -11,4 +10,5 @@
     <color name="brightSurface">#fbf9f6</color>
     <color name="darkSurface">#131212</color>
     <color name="darkThemeText">#cdcccc</color>
+    <color name="accent" >#0044dd</color>
 </resources>
