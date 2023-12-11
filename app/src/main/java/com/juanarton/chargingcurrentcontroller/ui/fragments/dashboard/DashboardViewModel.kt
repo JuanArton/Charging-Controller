@@ -26,9 +26,16 @@ class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: 
     private var isMonitoring = false
 
     private val chargingCurrent = mutableListOf<Entry>()
+    
     val lineDataSet = LineDataSet(chargingCurrent, "charging current")
     private val iLineDataSet = mutableListOf<ILineDataSet>(lineDataSet)
     val lineData = LineData(iLineDataSet)
+    var currentMin = 0
+    var currentMax = 0
+    var tempMin = 0
+    var tempMax = 0
+    var powerMin = 0
+    var powerMax = 0
 
     fun startBatteryMonitoring() {
         if (!isMonitoring) {

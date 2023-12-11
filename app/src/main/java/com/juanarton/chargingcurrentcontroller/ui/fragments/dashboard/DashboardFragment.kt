@@ -28,6 +28,8 @@ class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding
 
+    private var firstRun = true
+
     private val dashboardViewModel: DashboardViewModel by viewModels()
 
     override fun onCreateView(
@@ -60,7 +62,16 @@ class DashboardFragment : Fragment() {
 
         setUpLineChart()
 
+        binding?.cgGraphSelector?.check(R.id.chipChargingCurrent)
+
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
+
+            if (firstRun) {
+                dashboardViewModel.currentMin = abs(it.currentNow)
+                dashboardViewModel.tempMin = abs(it.temperature)
+                dashboardViewModel.powerMin = abs(it.power.toInt())
+                firstRun = false
+            }
 
             binding?.apply {
                 arcBatteryPercentage.progress = it.level
@@ -97,6 +108,23 @@ class DashboardFragment : Fragment() {
 
                 tvChargingCurrent.text = buildString {
                     append(it.currentNow)
+                    append(getString(R.string.ma))
+                }
+
+                dashboardViewModel.currentMin = minChecker(dashboardViewModel.currentMin, abs(it.currentNow))
+                dashboardViewModel.tempMin = minChecker(dashboardViewModel.tempMin, abs(it.temperature))
+                dashboardViewModel.powerMin = minChecker(dashboardViewModel.powerMin, abs(it.power.toInt()))
+
+                dashboardViewModel.currentMax = maxChecker(dashboardViewModel.currentMax, abs(it.currentNow))
+                dashboardViewModel.tempMax = maxChecker(dashboardViewModel.tempMax, abs(it.temperature))
+                dashboardViewModel.powerMax = maxChecker(dashboardViewModel.powerMax, abs(it.power.toInt()))
+
+                tvChargingCurrentMin.text = buildString {
+                    append(dashboardViewModel.currentMin.toString())
+                    append(getString(R.string.ma))
+                }
+                tvChargingCurrentMax.text = buildString {
+                    append(dashboardViewModel.currentMax.toString())
                     append(getString(R.string.ma))
                 }
             }
@@ -169,6 +197,14 @@ class DashboardFragment : Fragment() {
 
             chargingCurrentChart.data = dashboardViewModel.lineData
         }
+    }
+
+    private fun minChecker(oldValue: Int, newValue: Int): Int {
+        return if (newValue < oldValue ) newValue else oldValue
+    }
+
+    private fun maxChecker(oldValue: Int, newValue: Int): Int {
+        return if (newValue > oldValue ) newValue else oldValue
     }
 
     override fun onPause() {
