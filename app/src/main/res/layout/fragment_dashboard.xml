@@ -269,6 +269,7 @@
                     android:clipToPadding="false">
 
                     <ImageView
+                        android:id="@+id/ivChartInfo1"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_alignParentStart="true"
@@ -280,33 +281,23 @@
                         android:scaleY="0.8"
                         android:src="@drawable/temperature"
                         android:background="@drawable/image"
-                        android:backgroundTint="#700003ff"
+                        android:backgroundTint="@color/temperatureBackground"
                         android:contentDescription="@string/charging_temperature_icon" />
 
                     <TextView
+                        android:id="@+id/tvChartInfoTitle1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:text="@string/temperature" />
 
                     <TextView
-                        android:id="@+id/tvBatteryTemperature"
+                        android:id="@+id/tvChartInfoValue1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentBottom="true"
                         android:gravity="center_vertical"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_toEndOf="@+id/tvBatteryTemperature"
-                        android:gravity="center_vertical"
-                        android:text="@string/degree_symbol"
-                        android:layout_marginStart="2dp"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -334,6 +325,7 @@
                     android:clipToPadding="false">
 
                     <ImageView
+                        android:id="@+id/ivChartInfo2"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_alignParentStart="true"
@@ -345,33 +337,23 @@
                         android:scaleY="0.8"
                         android:src="@drawable/power"
                         android:background="@drawable/image"
-                        android:backgroundTint="#70d9df00"
+                        android:backgroundTint="@color/powerBackground"
                         android:contentDescription="@string/battery_power_icon" />
 
                     <TextView
+                        android:id="@+id/tvChartInfoTitle2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:text="@string/power" />
 
                     <TextView
-                        android:id="@+id/tvBatteryPower"
+                        android:id="@+id/tvChartInfoValue2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentBottom="true"
                         android:gravity="center_vertical"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_toEndOf="@+id/tvBatteryPower"
-                        android:gravity="center_vertical"
-                        android:text="@string/wattage"
-                        android:layout_marginStart="2dp"
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
@@ -390,7 +372,7 @@
             app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
 
         <TextView
-            android:id="@+id/tvChargingCurrent"
+            android:id="@+id/tv_chart_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -410,11 +392,11 @@
             android:hint="@string/current"
             android:text="@string/min"
             android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@+id/tvChargingCurrentMin"
+            app:layout_constraintBottom_toTopOf="@+id/tv_chart_min"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/tvChargingCurrentMin"
+            android:id="@+id/tv_chart_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -433,11 +415,11 @@
             android:hint="@string/current"
             android:text="@string/max"
             android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@+id/tvChargingCurrentMax"
-            app:layout_constraintEnd_toEndOf="@+id/tvChargingCurrent"/>
+            app:layout_constraintBottom_toTopOf="@+id/tv_chart_max"
+            app:layout_constraintEnd_toEndOf="@+id/tv_chart_value"/>
 
         <TextView
-            android:id="@+id/tvChargingCurrentMax"
+            android:id="@+id/tv_chart_max"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -454,7 +436,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/tvChargingCurrent"/>
+            app:layout_constraintTop_toBottomOf="@id/tv_chart_value"/>
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/cgGraphSelector"

@@ -25,11 +25,21 @@ class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: 
     private var scheduledExecutorService: ScheduledExecutorService? = null
     private var isMonitoring = false
 
-    private val chargingCurrent = mutableListOf<Entry>()
-    
-    val lineDataSet = LineDataSet(chargingCurrent, "charging current")
-    private val iLineDataSet = mutableListOf<ILineDataSet>(lineDataSet)
-    val lineData = LineData(iLineDataSet)
+    private val batteryCurrent = mutableListOf<Entry>()
+    val currentLineDataSet = LineDataSet(batteryCurrent, "battery current")
+    private val currentILineDataSet = mutableListOf<ILineDataSet>(currentLineDataSet)
+    val currentData = LineData(currentILineDataSet)
+
+    private val batteryTemperature = mutableListOf<Entry>()
+    val temperatureLineDataSet = LineDataSet(batteryTemperature, "battery temperature")
+    private val temperatureILineDataSet = mutableListOf<ILineDataSet>(temperatureLineDataSet)
+    val temperatureData = LineData(temperatureILineDataSet)
+
+    private val batteryPower = mutableListOf<Entry>()
+    val powerLineDataSet = LineDataSet(batteryPower, "battery power")
+    private val powerILineDataSet = mutableListOf<ILineDataSet>(powerLineDataSet)
+    val powerData = LineData(powerILineDataSet)
+
     var currentMin = 0
     var currentMax = 0
     var tempMin = 0
@@ -54,16 +64,28 @@ class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: 
         }
     }
 
-    fun addDataAndReduceX(entry: Entry) {
-        chargingCurrent.forEachIndexed { index, existingEntry ->
-            existingEntry.x = existingEntry.x - 1
+    fun addData(current: Entry, temperature: Entry, power: Entry) {
+        batteryCurrent.forEachIndexed { _, it ->
+            it.x = it.x - 1
         }
 
-        while (chargingCurrent.size >= 61) {
-            chargingCurrent.removeAt(0)
+        batteryTemperature.forEachIndexed { _, it ->
+            it.x = it.x - 1
         }
 
-        chargingCurrent.add(entry)
+        batteryPower.forEachIndexed { _, it ->
+            it.x = it.x - 1
+        }
+
+        when {
+            batteryCurrent.size >= 61 -> batteryCurrent.removeAt(0)
+            batteryTemperature.size >= 61 -> batteryTemperature.removeAt(0)
+            batteryPower.size >= 61 -> batteryPower.removeAt(0)
+        }
+
+        batteryCurrent.add(current)
+        batteryTemperature.add(temperature)
+        batteryPower.add(power)
     }
 
     fun stopBatteryMonitoring() {
