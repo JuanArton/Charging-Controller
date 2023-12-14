@@ -287,7 +287,7 @@ class DashboardFragment : Fragment() {
         val typedValue = TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
         val mainColor = if (colorId == 0) typedValue.data else ContextCompat.getColor(requireContext(), colorId)
-        val accentColor = ContextCompat.getColor(requireContext(), R.color.main2_600)
+        val accentColor = ContextCompat.getColor(requireContext(), R.color.accent)
 
         setUpLineChart(lineDataSet, lineData, mainColor, accentColor, ContextCompat.getDrawable(requireContext(), gradientDrawable))
     }

@@ -34,7 +34,6 @@
     <string name="battery_power_icon">Battery power icon</string>
     <string name="temp">Temp</string>
     <string name="current">Current</string>
-    <string name="hint">Hint</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
     <string name="text">Text</string>
