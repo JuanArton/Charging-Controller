@@ -37,4 +37,7 @@
     <string name="min">Min</string>
     <string name="max">Max</string>
     <string name="text">Text</string>
+    <string name="battery_alarm">Battery Alarm</string>
+    <string name="battery_level_alarm">Battery Level Alarm</string>
+    <string name="setBatteryThresholdError">Failed to set threshold alarm, please try again!</string>
 </resources>

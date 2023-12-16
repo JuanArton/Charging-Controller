@@ -4,7 +4,6 @@
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/main_200</item>
         <item name="colorPrimaryVariant">@color/main_dark_800</item>
-        <item name="android:windowBackground">@color/accent3_1000</item>
         <item name="cardBackgroundColor">@color/neutral1_700</item>
 
         <item name="android:textColor">@color/darkThemeText</item>

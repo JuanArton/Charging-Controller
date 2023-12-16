@@ -8,5 +8,7 @@
         android:icon="@drawable/sharp_admin_panel_settings_24"
         android:title="@string/quick_setting"/>
 
-
+    <item
+        android:icon="@drawable/alarm_add"
+        android:title="@string/battery_alarm"/>
 </menu>

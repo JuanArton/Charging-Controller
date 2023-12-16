@@ -12,10 +12,13 @@ import com.juanarton.core.data.domain.model.Result
 import com.juanarton.core.data.domain.repository.DataRepositoryInterface
 import com.juanarton.core.utils.Utils
 import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -37,7 +40,7 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
             val enableLimitCharging =
                 Utils.getValue("enableLimitCharging").out[0] == "1"
 
-            val chargingLimitTriggred =
+            val chargingLimitTriggered =
                 Utils.getValue("chargingLimitTriggered").out[0] == "1"
 
             val maxCapacity = Utils.getValue("maxCapacity").out[0]
@@ -47,7 +50,7 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
                     targetCurrentCommand.toFloat(),
                     chargingSwitchCommand,
                     enableLimitCharging,
-                    chargingLimitTriggred,
+                    chargingLimitTriggered,
                     maxCapacity.toFloat()
                 )
             )
@@ -191,4 +194,26 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
                 emit(Result("Error: ${result.err}", false))
             }
         }.flowOn(Dispatchers.IO)
+
+    override fun setBatteryLevelTeshold(min: Int, max: Int, callback: (Boolean) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val sharedPreferences = context.getSharedPreferences("BatteryLevelThreshold", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putInt("min", min)
+                editor.putInt("max", max)
+                editor.apply()
+
+                withContext(Dispatchers.Main) {
+                    callback(true)
+                }
+            } catch (e: Exception) {
+                Log.d("error", e.toString())
+
+                withContext(Dispatchers.Main) {
+                    callback(false)
+                }
+            }
+        }
+    }
 }

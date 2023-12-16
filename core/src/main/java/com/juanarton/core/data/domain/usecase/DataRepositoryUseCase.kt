@@ -21,4 +21,6 @@ interface DataRepositoryUseCase {
     fun setMaximumCapacity(
         maxCapacity: String
     ): Flow<Result>
+
+    fun setBatteryLevelTeshold(min: Int, max: Int, callback: (Boolean) -> Unit)
 }

@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.juanarton.chargingcurrentcontroller.databinding.ActivityMainBinding
+import com.juanarton.chargingcurrentcontroller.ui.fragments.alarm.AlarmFragment
 import com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard.DashboardFragment
 import com.juanarton.chargingcurrentcontroller.ui.fragments.quicksetting.QuickSettingFragment
 import com.topjohnwu.superuser.Shell
@@ -95,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                     when(newIndex){
                         0 -> fragmentBuilder(DashboardFragment())
                         1 -> fragmentBuilder(QuickSettingFragment())
+                        3 -> fragmentBuilder(AlarmFragment())
                     }
                 }
 
