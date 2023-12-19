@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                     when(newIndex){
                         0 -> fragmentBuilder(DashboardFragment())
                         1 -> fragmentBuilder(QuickSettingFragment())
-                        3 -> fragmentBuilder(AlarmFragment())
+                        2 -> fragmentBuilder(AlarmFragment())
                     }
                 }
 

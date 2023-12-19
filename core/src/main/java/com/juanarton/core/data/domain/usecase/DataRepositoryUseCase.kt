@@ -22,5 +22,11 @@ interface DataRepositoryUseCase {
         maxCapacity: String
     ): Flow<Result>
 
-    fun setBatteryLevelTeshold(min: Int, max: Int, callback: (Boolean) -> Unit)
+    fun setBatteryLevelThreshold(min: Int, max: Int, callback: (Boolean) -> Unit)
+
+    fun getBatteryLevelThreshold(): Pair<Int, Int>
+
+    fun setAlarmStatus(key: String, value: Boolean, callback: (Boolean) -> Unit)
+
+    fun getAlarmStatus(key: String): Boolean
 }

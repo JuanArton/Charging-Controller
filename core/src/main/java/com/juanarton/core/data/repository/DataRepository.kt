@@ -12,13 +12,10 @@ import com.juanarton.core.data.domain.model.Result
 import com.juanarton.core.data.domain.repository.DataRepositoryInterface
 import com.juanarton.core.utils.Utils
 import com.topjohnwu.superuser.Shell
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -27,6 +24,9 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
 
     companion object {
         const val PATH = "/data/adb/modules/3C"
+        const val BATTERY_MIN_LEVEL = "min"
+        const val BATTERY_MAX_LEVEL = "max"
+        const val BATTERY_LEVEL_ALARM_KEY = "levelAlarm"
     }
 
     override fun getConfig(): Flow<Config> =
@@ -195,25 +195,45 @@ class DataRepository @Inject constructor(private val context: Context): DataRepo
             }
         }.flowOn(Dispatchers.IO)
 
-    override fun setBatteryLevelTeshold(min: Int, max: Int, callback: (Boolean) -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val sharedPreferences = context.getSharedPreferences("BatteryLevelThreshold", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                editor.putInt("min", min)
-                editor.putInt("max", max)
-                editor.apply()
+    override fun setBatteryLevelThreshold(min: Int, max: Int, callback: (Boolean) -> Unit) {
+        try {
+            val sharedPreferences = context.getSharedPreferences("BatteryLevelThreshold", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putInt("min", min)
+            editor.putInt("max", max)
+            editor.apply()
 
-                withContext(Dispatchers.Main) {
-                    callback(true)
-                }
-            } catch (e: Exception) {
-                Log.d("error", e.toString())
-
-                withContext(Dispatchers.Main) {
-                    callback(false)
-                }
-            }
+            callback(true)
+        } catch (e: Exception) {
+            callback(false)
         }
+    }
+
+    override fun getBatteryLevelThreshold(): Pair<Int, Int> {
+        val sharedPreferences = context.getSharedPreferences("BatteryLevelThreshold", Context.MODE_PRIVATE)
+
+        val min = sharedPreferences.getInt(BATTERY_MIN_LEVEL, 20)
+
+        val max = sharedPreferences.getInt(BATTERY_MAX_LEVEL, 80)
+
+        return Pair(min, max)
+    }
+
+    override fun setAlarmStatus(key: String, value: Boolean, callback: (Boolean) -> Unit) {
+        try {
+            val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(key, value).apply()
+
+            callback(true)
+        } catch (e: Exception) {
+            callback(false)
+        }
+    }
+
+    override fun getAlarmStatus(key: String): Boolean {
+        val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
+
+        return sharedPreferences.getBoolean(key, false)
     }
 }

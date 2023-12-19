@@ -28,6 +28,14 @@ class DataRepositoryInteractor @Inject constructor(
     override fun setMaximumCapacity(maxCapacity: String): Flow<Result> =
         dataRepository.setMaximumCapacity(maxCapacity)
 
-    override fun setBatteryLevelTeshold(min: Int, max: Int, callback: (Boolean) -> Unit) =
-        dataRepository.setBatteryLevelTeshold(min, max, callback)
+    override fun setBatteryLevelThreshold(min: Int, max: Int, callback: (Boolean) -> Unit) =
+        dataRepository.setBatteryLevelThreshold(min, max, callback)
+
+    override fun getBatteryLevelThreshold(): Pair<Int, Int> =
+        dataRepository.getBatteryLevelThreshold()
+    override fun setAlarmStatus(key: String, value: Boolean, callback: (Boolean) -> Unit) =
+        dataRepository.setAlarmStatus(key, value, callback)
+
+    override fun getAlarmStatus(key: String): Boolean =
+        dataRepository.getAlarmStatus(key)
 }

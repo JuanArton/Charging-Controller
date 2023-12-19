@@ -4,11 +4,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
+import android.util.Log
 
 class BatteryStateReceiver : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BATTERY_CHANGED) {
-            val current = intent.getIntExtra(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW.toString(), 0)
+            val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+            val batteryLevel = level / scale * 100
+
+            Log.d("test", batteryLevel.toString())
         }
     }
 
