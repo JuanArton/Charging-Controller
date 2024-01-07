@@ -1,8 +1,10 @@
 package com.juanarton.chargingcurrentcontroller
 
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.juanarton.chargingcurrentcontroller.batterymonitorservice.Action
+import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMonitorService
+import com.juanarton.chargingcurrentcontroller.batterymonitorservice.ServiceState
+import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceState
+import com.juanarton.chargingcurrentcontroller.broadcastreceiver.BootCompleteReceiver.Companion.isRegistered
+import com.juanarton.chargingcurrentcontroller.broadcastreceiver.ScreenStateReceiver
 import com.juanarton.chargingcurrentcontroller.databinding.ActivityMainBinding
 import com.juanarton.chargingcurrentcontroller.ui.fragments.alarm.AlarmFragment
 import com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard.DashboardFragment
@@ -75,6 +83,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        actionOnService(Action.START)
+
         Shell.getShell { shell ->
             if (shell.status == 1) {
                 splashScreen.setKeepOnScreenCondition { false }
@@ -84,6 +94,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         fragmentBuilder(DashboardFragment())
+
+        if(!isRegistered) {
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(Intent.ACTION_SCREEN_ON)
+            intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
+
+            registerReceiver(ScreenStateReceiver(), intentFilter)
+
+            isRegistered = true
+        }
 
         binding?.apply {
             bottomNavigationBar.setOnTabSelectListener(object: AnimatedBottomBar.OnTabSelectListener{
@@ -102,7 +122,6 @@ class MainActivity : AppCompatActivity() {
 
             })
         }
-
     }
 
     private fun fragmentBuilder(fragment: Fragment){
@@ -111,5 +130,19 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
+    }
+
+    private fun actionOnService(action: Action) {
+        if (getServiceState(this) == ServiceState.STOPPED && action == Action.STOP) return
+        Intent(this, BatteryMonitorService::class.java).also {
+            it.action = action.name
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Log.d("BatteryMonitorService", "Starting the service in >=26 Mode")
+                startForegroundService(it)
+                return
+            }
+            Log.d("BatteryMonitorService", "Starting the service in < 26 Mode")
+            startService(it)
+        }
     }
 }
