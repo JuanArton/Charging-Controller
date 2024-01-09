@@ -28,6 +28,7 @@ import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
 import nl.joery.animatedbottombar.AnimatedBottomBar
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 

@@ -14,10 +14,11 @@ class ScreenStateReceiver : BroadcastReceiver() {
         val action = when (intent?.action) {
             Intent.ACTION_SCREEN_ON -> Action.START
             Intent.ACTION_SCREEN_OFF -> Action.STOP
+            Intent.ACTION_USER_PRESENT -> Action.START
             else -> null
         }
 
-        action?.let {
+        /*action?.let {
             val serviceIntent = Intent(context, BatteryMonitorService::class.java).apply {
                 this.action = it.name
                 Log.d("test", it.name)
@@ -30,6 +31,6 @@ class ScreenStateReceiver : BroadcastReceiver() {
                 Log.d("ScreenStateReceiver", "Starting the service in < 26 Mode from a BroadcastReceiver")
                 context.startService(serviceIntent)
             }
-        }
+        }*/
     }
 }

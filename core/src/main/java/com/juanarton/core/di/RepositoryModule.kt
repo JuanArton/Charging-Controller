@@ -4,6 +4,7 @@ import com.juanarton.core.data.domain.repository.DataRepositoryInterface
 import com.juanarton.core.data.repository.DataRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
