@@ -13,22 +13,8 @@ import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceS
 
 class BootCompleteReceiver: BroadcastReceiver() {
 
-    companion object {
-        var isRegistered = false
-    }
-
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED && getServiceState(context) == ServiceState.STARTED) {
-            if (!isRegistered) {
-                val intentFilter = IntentFilter()
-                intentFilter.addAction(Intent.ACTION_SCREEN_ON)
-                intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
-
-                context.applicationContext.registerReceiver(ScreenStateReceiver(), intentFilter)
-
-                isRegistered = true
-            }
-
             Intent(context, BatteryMonitorService::class.java).also {
                 it.action = Action.START.name
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

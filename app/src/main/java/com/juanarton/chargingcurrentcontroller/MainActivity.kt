@@ -16,10 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.Action
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMonitorService
+import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMonitorService.Companion.isRegistered
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.ServiceState
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceState
-import com.juanarton.chargingcurrentcontroller.broadcastreceiver.BootCompleteReceiver.Companion.isRegistered
-import com.juanarton.chargingcurrentcontroller.broadcastreceiver.ScreenStateReceiver
 import com.juanarton.chargingcurrentcontroller.databinding.ActivityMainBinding
 import com.juanarton.chargingcurrentcontroller.ui.fragments.alarm.AlarmFragment
 import com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard.DashboardFragment
@@ -100,8 +99,6 @@ class MainActivity : AppCompatActivity() {
             val intentFilter = IntentFilter()
             intentFilter.addAction(Intent.ACTION_SCREEN_ON)
             intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
-
-            registerReceiver(ScreenStateReceiver(), intentFilter)
 
             isRegistered = true
         }
