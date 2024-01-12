@@ -7,8 +7,8 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.juanarton.core.data.domain.model.BatteryInfo
-import com.juanarton.core.data.domain.usecase.DataRepositoryUseCase
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryInfo.usecase.BatteryInfoRepositoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: DataRepositoryUseCase) : ViewModel() {
+class DashboardViewModel @Inject constructor(private val batteryInfoRepositoryUseCase: BatteryInfoRepositoryUseCase) : ViewModel() {
 
     private val _batteryInfo = MutableLiveData<BatteryInfo>()
     val batteryInfo = _batteryInfo
@@ -53,7 +53,7 @@ class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: 
             scheduledExecutorService?.scheduleAtFixedRate(
                 {
                     viewModelScope.launch {
-                        dataRepositoryUseCase.getBatteryInfo().collect {
+                        batteryInfoRepositoryUseCase.getBatteryInfo().collect {
                             _batteryInfo.value = it
                         }
                     }
@@ -66,15 +66,15 @@ class DashboardViewModel @Inject constructor(private val dataRepositoryUseCase: 
 
     fun addData(current: Entry, temperature: Entry, power: Entry) {
         batteryCurrent.forEachIndexed { _, it ->
-            it.x = it.x - 1
+            it.x -= 1
         }
 
         batteryTemperature.forEachIndexed { _, it ->
-            it.x = it.x - 1
+            it.x -= 1
         }
 
         batteryPower.forEachIndexed { _, it ->
-            it.x = it.x - 1
+            it.x -= 1
         }
 
         when {

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.slider.Slider
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentQuickSettingBinding
-import com.juanarton.core.data.domain.model.Result
+import com.juanarton.core.data.domain.batteryInfo.model.Result
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

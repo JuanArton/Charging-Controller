@@ -16,8 +16,13 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.juanarton.chargingcurrentcontroller.R
-import com.juanarton.core.data.domain.model.BatteryInfo
-import com.juanarton.core.data.domain.repository.DataRepositoryInterface
+import com.juanarton.chargingcurrentcontroller.broadcastreceiver.BatteryStateReceiver
+import com.juanarton.chargingcurrentcontroller.broadcastreceiver.PowerStateReceiver
+import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryInfo.repository.BatteryInfoRepositoryInterface
+import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
+import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,18 +30,23 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class BatteryMonitorService : Service() {
 
     private var isServiceStarted = false
-
     @Inject
-    lateinit var dataRepository: DataRepositoryInterface
+    lateinit var batteryInfoRepositoryInterface: BatteryInfoRepositoryInterface
+    @Inject
+    lateinit var batteryMonitoringRepoInterface: BatteryMonitoringRepoInterface
     private lateinit var notificationManager:NotificationManager
     private lateinit var builder: NotificationCompat.Builder
-    private lateinit var screenStateReceiver: BroadcastReceiver
+    private val screenStateReceiver = ScreenStateReceiver()
+    private val powerStateReceiver = PowerStateReceiver()
+    private val batteryStateReceiver = BatteryStateReceiver()
+    private var screenOn = true
 
     companion object {
         const val NOTIFICATION_ID = 1
@@ -44,6 +54,12 @@ class BatteryMonitorService : Service() {
         var isRegistered = false
         var delayDuration: Long = 5
         var serviceJob: Job? = null
+        var deepSleepInitialValue: Long = 0
+        var screenOnBuffer: Long = 0
+        var screenOffBuffer: Long = 0
+        var deepSleep: Long = 0
+        var deepSleepBuffer: Long = 0
+        var cpuAwake: Long = 0
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -51,7 +67,6 @@ class BatteryMonitorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         if (intent != null) {
             when (intent.action) {
                 Action.START.name -> startService()
@@ -61,44 +76,43 @@ class BatteryMonitorService : Service() {
         } else {
             Log.d("BatteryMonitorService", "Null intent")
         }
-
         return START_STICKY
     }
 
     override fun onTaskRemoved(rootIntent: Intent) {
-        applicationContext.unregisterReceiver(screenStateReceiver)
+        unregisterReceiver()
         val restartServiceIntent = Intent(applicationContext, BatteryMonitorService::class.java).also {
             it.setPackage(packageName)
         }
 
         val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE);
-        applicationContext.getSystemService(Context.ALARM_SERVICE);
-        val alarmService: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager;
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+        applicationContext.getSystemService(Context.ALARM_SERVICE)
+        val alarmService: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        applicationContext.unregisterReceiver(screenStateReceiver)
-    }
-
-    fun startMonitoring() {
-        serviceJob = monitorBattery()
-    }
-
-    fun stopMonitoring() {
-        serviceJob?.cancel()
+        unregisterReceiver()
     }
 
     private fun monitorBattery(): Job {
         return CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
-                launch(Dispatchers.IO) {
-                    dataRepository.getBatteryInfo().collect {
-                        updateNotification(it)
-                        Log.d("test", ((SystemClock.elapsedRealtime()-SystemClock.uptimeMillis())/1000).toString())
+                batteryInfoRepositoryInterface.getBatteryInfo().collect {
+                    updateNotification(
+                        it,
+                        batteryMonitoringRepoInterface.getScreenOnTime(),
+                        batteryMonitoringRepoInterface.getScreenOffTime()
+                    )
+                    when (screenOn) {
+                        true -> {
+                            insertScreenOnTime()
+                        }
+                        false -> {
+                            insertScreenOffTime()
+                        }
                     }
                 }
                 delay(delayDuration * 1000)
@@ -106,17 +120,25 @@ class BatteryMonitorService : Service() {
         }
     }
 
+    private fun startMonitoring() {
+        serviceJob = monitorBattery()
+    }
+
     private fun startService() {
         if (!isServiceStarted) {
             isServiceStarted = true
 
-            val intentFilter = IntentFilter()
-            intentFilter.addAction(Intent.ACTION_SCREEN_ON)
-            intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
-            screenStateReceiver = ScreenStateReceiver()
-            applicationContext.registerReceiver(screenStateReceiver, intentFilter)
-
+            registerReceiver()
             isRegistered = true
+
+            deepSleepInitialValue =
+                (SystemClock.elapsedRealtime() - SystemClock.uptimeMillis()) / 1000
+            deepSleep = batteryMonitoringRepoInterface.getDeepSleepInitialValue()
+            deepSleepBuffer = batteryMonitoringRepoInterface.getDeepSleepInitialValue()
+            screenOnBuffer = batteryMonitoringRepoInterface.getScreenOnTime()
+            screenOffBuffer = batteryMonitoringRepoInterface.getScreenOffTime()
+            cpuAwake = batteryMonitoringRepoInterface.getCpuAwake()
+            batteryMonitoringRepoInterface.insertStartTime(Date())
 
             setServiceState(this, ServiceState.STARTED)
             startForeground(NOTIFICATION_ID, createNotification())
@@ -143,57 +165,104 @@ class BatteryMonitorService : Service() {
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
             channel.description = description
-
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
             notificationManager.createNotificationChannel(channel)
         }
 
         builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .setSmallIcon(R.drawable.power)
             .setContentTitle(getString(R.string.serviceNotificationTitle))
-            .setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText("Test")
-            )
             .setShowWhen(false)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         return builder.build()
     }
 
-    private fun updateNotification(batteryInfo: BatteryInfo) {
-        val title = buildString {
-            append("${batteryInfo.level}%")
-            append("  ·  ")
-            append("${batteryInfo.temperature}${getString(R.string.degree_symbol)}")
-            append("  ·  ")
-            append("${batteryInfo.currentNow} ${getString(R.string.ma)}")
-        }
+    private fun updateNotification(
+        batteryInfo: BatteryInfo,
+        screenOnTime: Long,
+        screenOffTime: Long
+    ) {
+        val title = ServiceUtil.buildTitle(batteryInfo, applicationContext)
+        val content = ServiceUtil.buildContent(
+            batteryInfo,
+            deepSleep,
+            screenOnTime,
+            screenOffTime,
+            cpuAwake
+        )
 
         builder.setContentTitle(title)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(content)
+            )
         notificationManager.notify(NOTIFICATION_ID, builder.build())
+    }
+
+    private fun insertScreenOnTime() {
+        batteryMonitoringRepoInterface.insertScreenOnTime(
+            screenOnBuffer + ServiceUtil.calculateTimeInterval(
+                Date(), batteryMonitoringRepoInterface.getStartTime()
+            )
+        )
+    }
+
+    private fun insertScreenOffTime() {
+        batteryMonitoringRepoInterface.insertScreenOffTime(
+            screenOffBuffer + ServiceUtil.calculateTimeInterval(
+                Date(), batteryMonitoringRepoInterface.getStartTime()
+            )
+        )
+    }
+
+    private fun insertDeepSleepAndAwake() {
+        deepSleep =
+            deepSleepBuffer + BatteryUtils.calculateDeepSleep(deepSleepInitialValue)
+        batteryMonitoringRepoInterface.insertDeepSleepInitialValue(deepSleep)
+        cpuAwake =
+            batteryMonitoringRepoInterface.getScreenOffTime() - deepSleep
+        batteryMonitoringRepoInterface.insertCpuAwake(cpuAwake)
+    }
+
+    private fun registerReceiver() {
+        val screenStateIntentFilter = IntentFilter()
+        screenStateIntentFilter.addAction(Intent.ACTION_SCREEN_ON)
+        screenStateIntentFilter.addAction(Intent.ACTION_SCREEN_OFF)
+        registerReceiver(screenStateReceiver, screenStateIntentFilter)
+
+        val powerConnectedIntentFilter = IntentFilter()
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+        registerReceiver(powerStateReceiver, powerConnectedIntentFilter)
+
+        val batteryStatIntentFilter = IntentFilter()
+        batteryStatIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED)
+        registerReceiver(batteryStateReceiver, batteryStatIntentFilter)
+    }
+
+    private fun unregisterReceiver() {
+        unregisterReceiver(screenStateReceiver)
+        unregisterReceiver(powerStateReceiver)
+        unregisterReceiver(batteryStateReceiver)
     }
 
     inner class ScreenStateReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
-            Log.d("test", "work")
             when (intent?.action) {
                 Intent.ACTION_SCREEN_ON -> {
-                    stopMonitoring()
-                    delayDuration = 5
-                    startMonitoring()
-                }
-                Intent.ACTION_USER_PRESENT -> {
-                    stopMonitoring()
-                    delayDuration = 5
-                    startMonitoring()
+                    screenOn = true
+                    insertScreenOffTime()
+                    insertDeepSleepAndAwake()
+                    batteryMonitoringRepoInterface.insertStartTime(Date())
+                    screenOnBuffer = batteryMonitoringRepoInterface.getScreenOnTime()
                 }
                 Intent.ACTION_SCREEN_OFF -> {
-                    Log.d("test", "work")
-                    stopMonitoring()
-                    delayDuration = 30
-                    startMonitoring()
+                    screenOn = false
+                    insertScreenOnTime()
+                    batteryMonitoringRepoInterface.insertStartTime(Date())
+                    screenOffBuffer = batteryMonitoringRepoInterface.getScreenOffTime()
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.juanarton.core.data.domain.model
+package com.juanarton.core.data.domain.batteryInfo.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

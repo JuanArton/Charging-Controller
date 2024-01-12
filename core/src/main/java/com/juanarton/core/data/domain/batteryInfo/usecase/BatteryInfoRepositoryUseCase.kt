@@ -1,11 +1,11 @@
-package com.juanarton.core.data.domain.usecase
+package com.juanarton.core.data.domain.batteryInfo.usecase
 
-import com.juanarton.core.data.domain.model.BatteryInfo
-import com.juanarton.core.data.domain.model.Config
-import com.juanarton.core.data.domain.model.Result
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryInfo.model.Config
+import com.juanarton.core.data.domain.batteryInfo.model.Result
 import kotlinx.coroutines.flow.Flow
 
-interface DataRepositoryUseCase {
+interface BatteryInfoRepositoryUseCase {
     fun getConfig(): Flow<Config>
 
     fun setTargetCurrent(targetCurrent: String): Flow<Result>

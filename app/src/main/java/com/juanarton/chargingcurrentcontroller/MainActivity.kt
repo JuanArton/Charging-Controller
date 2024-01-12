@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -25,11 +26,17 @@ import com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard.DashboardF
 import com.juanarton.chargingcurrentcontroller.ui.fragments.quicksetting.QuickSettingFragment
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import nl.joery.animatedbottombar.AnimatedBottomBar
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     companion object {
         init {
@@ -40,6 +47,8 @@ class MainActivity : AppCompatActivity() {
                 .setTimeout(10)
             )
         }
+
+        const val PREFS_NAME = "FirstLaunchState"
     }
 
     private var _binding: ActivityMainBinding? = null
@@ -83,7 +92,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        actionOnService(Action.START)
+        val settings = getSharedPreferences(PREFS_NAME, 0)
+
+        lateinit var job: Job
+
+        if (settings.getBoolean("first_launch", true)) {
+            job = CoroutineScope(Dispatchers.IO).launch {
+                mainActivityViewModel.insertInitialValue()
+            }
+            settings.edit().putBoolean("first_launch", false).apply()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                while (!job.isCompleted) { }
+                actionOnService(Action.START)
+            } catch (e: Exception) {
+                actionOnService(Action.START)
+            }
+        }
+
 
         Shell.getShell { shell ->
             if (shell.status == 1) {

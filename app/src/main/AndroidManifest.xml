@@ -44,7 +44,7 @@
         </activity>
 
         <receiver
-            android:name=".broadcastreceiver.ScreenStateReceiver"
+            android:name=".batterymonitorservice.BatteryMonitorService$ScreenStateReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

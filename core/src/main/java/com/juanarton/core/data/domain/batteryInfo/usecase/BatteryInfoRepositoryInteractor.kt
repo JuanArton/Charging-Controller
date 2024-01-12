@@ -1,15 +1,15 @@
-package com.juanarton.core.data.domain.usecase
+package com.juanarton.core.data.domain.batteryInfo.usecase
 
-import com.juanarton.core.data.domain.model.BatteryInfo
-import com.juanarton.core.data.domain.model.Config
-import com.juanarton.core.data.domain.model.Result
-import com.juanarton.core.data.domain.repository.DataRepositoryInterface
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryInfo.model.Config
+import com.juanarton.core.data.domain.batteryInfo.model.Result
+import com.juanarton.core.data.domain.batteryInfo.repository.BatteryInfoRepositoryInterface
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class DataRepositoryInteractor @Inject constructor(
-    private val dataRepository: DataRepositoryInterface
-): DataRepositoryUseCase {
+class BatteryInfoRepositoryInteractor @Inject constructor(
+    private val dataRepository: BatteryInfoRepositoryInterface
+): BatteryInfoRepositoryUseCase {
     override fun getConfig(): Flow<Config> =
         dataRepository.getConfig()
 

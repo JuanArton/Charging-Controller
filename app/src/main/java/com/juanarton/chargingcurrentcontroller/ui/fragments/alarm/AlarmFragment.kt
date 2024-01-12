@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.slider.RangeSlider
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentAlarmBinding
-import com.juanarton.core.data.repository.DataRepository.Companion.BATTERY_LEVEL_ALARM_KEY
+import com.juanarton.core.data.repository.BatteryInfoRepository.Companion.BATTERY_LEVEL_ALARM_KEY
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

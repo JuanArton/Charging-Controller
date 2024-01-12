@@ -24,6 +24,7 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentDashboardBinding
+import com.juanarton.core.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -159,13 +160,7 @@ class DashboardFragment : Fragment() {
                     append(currentUnit)
                 }
 
-                tvBatteryStatus.text = when (it.status){
-                    1 -> getString(R.string.unknown)
-                    2 -> getString(R.string.charging)
-                    3 -> getString(R.string.discharging)
-                    4 -> getString(R.string.not_charging)
-                    else -> getString(R.string.full)
-                }
+                tvBatteryStatus.text = Utils.mapBatteryStatus(it.status, requireContext())
 
                 tvBatteryVoltage.text = it.voltage.toString()
 

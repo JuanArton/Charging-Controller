@@ -6,10 +6,10 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.util.Log
-import com.juanarton.core.data.domain.model.BatteryInfo
-import com.juanarton.core.data.domain.model.Config
-import com.juanarton.core.data.domain.model.Result
-import com.juanarton.core.data.domain.repository.DataRepositoryInterface
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryInfo.model.Config
+import com.juanarton.core.data.domain.batteryInfo.model.Result
+import com.juanarton.core.data.domain.batteryInfo.repository.BatteryInfoRepositoryInterface
 import com.juanarton.core.utils.Utils
 import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +20,8 @@ import javax.inject.Inject
 import kotlin.math.abs
 
 
-class DataRepository @Inject constructor(private val context: Context): DataRepositoryInterface {
+class BatteryInfoRepository @Inject constructor(private val context: Context):
+    BatteryInfoRepositoryInterface {
 
     companion object {
         const val PATH = "/data/adb/modules/3C"
