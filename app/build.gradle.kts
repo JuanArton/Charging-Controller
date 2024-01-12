@@ -61,4 +61,6 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    implementation("com.github.fondesa:kpermissions-coroutines:3.4.0")
 }

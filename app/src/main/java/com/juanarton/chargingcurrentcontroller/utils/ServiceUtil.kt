@@ -22,17 +22,24 @@ object ServiceUtil {
 
     fun buildContent(
         batteryInfo: BatteryInfo, deepSleep: Long, screenOnTime: Long, screenOffTime: Long,
-        cpuAwake: Long, screenOnDrainPerHr: Double, screenOffDrainPerHr: Double, screenOnDrain:Int, screenOffDrain: Int
+        cpuAwake: Long, screenOnDrainPerHr: Double, screenOffDrainPerHr: Double, screenOnDrain: Int, screenOffDrain: Int
     ): String {
-        val deepSleepPercentage = (deepSleep.toDouble()/screenOffTime.toDouble())*100
-        val cpuAwakePercentage = 100.0 - deepSleepPercentage
+        var deepSleepPercentage = (deepSleep.toDouble()/screenOffTime.toDouble())*100
+        deepSleepPercentage = if (deepSleepPercentage.isNaN()) 0.0 else deepSleepPercentage
+
+        var cpuAwakePercentage = 100.0 - deepSleepPercentage
+        cpuAwakePercentage = if (cpuAwakePercentage.isNaN()) 0.0 else cpuAwakePercentage
+
+        val screenOffDrainPerHrTmp = if (screenOffDrainPerHr.isNaN()) 0.0 else screenOffDrainPerHr
+        val screenOnDrainPerHrTmp = if (screenOnDrainPerHr.isNaN()) 0.0 else screenOnDrainPerHr
+
         return buildString {
             append("Power: ${String.format("%.2f", abs(batteryInfo.power))}W\n")
             append("Screen on: ${formatTime(screenOnTime)}  ·  $screenOnDrain%\n")
             append("Screen off: ${formatTime(screenOffTime)}  ·  $screenOffDrain%\n")
             append("Deep sleep: ${formatTime(deepSleep)}  ·  ${String.format("%.2f", deepSleepPercentage)}%\n")
             append("CPU awake: ${formatTime(cpuAwake)}  ·  ${String.format("%.2f", cpuAwakePercentage)}%\n")
-            append("Active drain: ${String.format("%.2f", screenOnDrainPerHr)}% /h · Idle drain: ${String.format("%.2f", screenOffDrainPerHr)}% /h")
+            append("Active drain: ${String.format("%.2f", screenOnDrainPerHrTmp)}% /h · Idle drain: ${String.format("%.2f", screenOffDrainPerHrTmp)}% /h")
         }
     }
 
