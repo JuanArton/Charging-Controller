@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
 
         if (settings.getBoolean("first_launch", true)) {
             job = CoroutineScope(Dispatchers.IO).launch {
-                mainActivityViewModel.insertInitialValue()
+                mainActivityViewModel.insertInitialValue(this@MainActivity)
             }
             settings.edit().putBoolean("first_launch", false).apply()
         }

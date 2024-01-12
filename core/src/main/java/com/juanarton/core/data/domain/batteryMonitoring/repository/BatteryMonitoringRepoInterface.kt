@@ -1,5 +1,10 @@
 package com.juanarton.core.data.domain.batteryMonitoring.repository
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
+import com.juanarton.core.utils.BatteryUtils
 import java.util.Date
 
 interface BatteryMonitoringRepoInterface {
@@ -19,11 +24,23 @@ interface BatteryMonitoringRepoInterface {
 
     fun insertScreenOffTime(seconds: Long)
 
-    fun getDeepSleep(): Long
-
-    fun insertDeepSleep(cpuAwake: Long)
-
     fun getCpuAwake(): Long
 
     fun insertCpuAwake(cpuAwake: Long)
+
+    fun getBatteryLevel(context: Context): Int
+
+    fun insertBatteryLevel(level: Int)
+
+    fun getInitialBatteryLevel(context: Context): Int
+
+    fun insertInitialBatteryLevel(level: Int)
+
+    fun getScreenOnDrain(): Int
+
+    fun insertScreenOnDrain(level: Int)
+
+    fun getScreenOffDrain(): Int
+
+    fun insertScreenOffDrain(level: Int)
 }

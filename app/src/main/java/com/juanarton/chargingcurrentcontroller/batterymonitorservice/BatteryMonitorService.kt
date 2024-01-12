@@ -46,7 +46,8 @@ class BatteryMonitorService : Service() {
     private val screenStateReceiver = ScreenStateReceiver()
     private val powerStateReceiver = PowerStateReceiver()
     private val batteryStateReceiver = BatteryStateReceiver()
-    private var screenOn = true
+    private var screenOnDrainPerHr = 0.0
+    private var screenOffDrainPerHr = 0.0
 
     companion object {
         const val NOTIFICATION_ID = 1
@@ -60,6 +61,7 @@ class BatteryMonitorService : Service() {
         var deepSleep: Long = 0
         var deepSleepBuffer: Long = 0
         var cpuAwake: Long = 0
+        var screenOn = true
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -100,15 +102,22 @@ class BatteryMonitorService : Service() {
     private fun monitorBattery(): Job {
         return CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
+                val screenOnTime = batteryMonitoringRepoInterface.getScreenOnTime()
+                val screenOffTime = batteryMonitoringRepoInterface.getScreenOffTime()
+                val screenOnDrain = batteryMonitoringRepoInterface.getScreenOnDrain()
+                val screenOffDrain = batteryMonitoringRepoInterface.getScreenOffDrain()
                 batteryInfoRepositoryInterface.getBatteryInfo().collect {
                     updateNotification(
-                        it,
-                        batteryMonitoringRepoInterface.getScreenOnTime(),
-                        batteryMonitoringRepoInterface.getScreenOffTime()
+                        it, screenOnTime, screenOffTime, screenOnDrainPerHr, screenOffDrainPerHr,
+                        screenOnDrain, screenOffDrain
                     )
                     when (screenOn) {
                         true -> {
                             insertScreenOnTime()
+                            screenOnDrainPerHr =
+                                screenOnDrain / (screenOnTime.toDouble()/3600)
+                            screenOffDrainPerHr =
+                                screenOffDrain / (screenOffTime.toDouble()/3600)
                         }
                         false -> {
                             insertScreenOffTime()
@@ -180,17 +189,13 @@ class BatteryMonitorService : Service() {
     }
 
     private fun updateNotification(
-        batteryInfo: BatteryInfo,
-        screenOnTime: Long,
-        screenOffTime: Long
+        batteryInfo: BatteryInfo, screenOnTime: Long, screenOffTime: Long, screenOnDrainPerHr: Double,
+        screenOffDrainPerHr: Double, screenOnDrain:Int, screenOffDrain: Int
     ) {
         val title = ServiceUtil.buildTitle(batteryInfo, applicationContext)
         val content = ServiceUtil.buildContent(
-            batteryInfo,
-            deepSleep,
-            screenOnTime,
-            screenOffTime,
-            cpuAwake
+            batteryInfo, deepSleep, screenOnTime, screenOffTime, cpuAwake, screenOnDrainPerHr,
+            screenOffDrainPerHr, screenOnDrain, screenOffDrain
         )
 
         builder.setContentTitle(title)

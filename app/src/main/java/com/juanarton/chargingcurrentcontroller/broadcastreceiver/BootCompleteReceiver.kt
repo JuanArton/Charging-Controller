@@ -10,6 +10,7 @@ import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMoni
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.ServiceState
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceState
 import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
+import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,7 @@ class BootCompleteReceiver: BroadcastReceiver() {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED && getServiceState(context) == ServiceState.STARTED) {
             CoroutineScope(Dispatchers.IO).launch {
                 batteryMonitoringRepoInterface.insertDeepSleepInitialValue(0)
+                batteryMonitoringRepoInterface.insertBatteryLevel(BatteryUtils.getBatteryLevel(context))
             }
             Intent(context, BatteryMonitorService::class.java).also {
                 it.action = Action.START.name

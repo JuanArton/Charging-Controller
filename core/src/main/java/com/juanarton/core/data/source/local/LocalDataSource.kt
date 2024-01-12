@@ -1,6 +1,10 @@
 package com.juanarton.core.data.source.local
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
+import com.juanarton.core.utils.BatteryUtils
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,20 +47,47 @@ class LocalDataSource @Inject constructor(context: Context) {
         editor.putLong("screenOffTime", screenOffEntity)
         editor.apply()
     }
-
-    fun getDeepSleep(): Long =
-        sharedPreferences.getLong("deepSleep", 0)
-
-    fun insertDeepSleep(cpuAwake: Long) {
-        editor.putLong("deepSleep", cpuAwake)
-        editor.apply()
-    }
-
     fun getCpuAwake(): Long =
         sharedPreferences.getLong("deviceAwake", 0)
 
     fun insertCpuAwake(cpuAwake: Long) {
         editor.putLong("deviceAwake", cpuAwake)
+        editor.apply()
+    }
+
+    fun getBatteryLevel(context: Context): Int {
+        return sharedPreferences.getInt("batteryLevel", BatteryUtils.getBatteryLevel(context))
+    }
+
+    fun insertBatteryLevel(level: Int) {
+        editor.putInt("batteryLevel", level)
+        editor.apply()
+    }
+
+    fun getInitialBatteryLevel(context: Context): Int {
+        return sharedPreferences.getInt("initialBatteryLevel", BatteryUtils.getBatteryLevel(context))
+    }
+
+    fun insertInitialBatteryLevel(level: Int) {
+        editor.putInt("initialBatteryLevel", level)
+        editor.apply()
+    }
+
+    fun getScreenOnDrain(): Int {
+        return sharedPreferences.getInt("screenOnDrain", 0)
+    }
+
+    fun insertScreenOnDrain(level: Int) {
+        editor.putInt("screenOnDrain", level)
+        editor.apply()
+    }
+
+    fun getScreenOffDrain(): Int {
+        return sharedPreferences.getInt("screenOffDrain", 0)
+    }
+
+    fun insertScreenOffDrain(level: Int) {
+        editor.putInt("screenOffDrain", level)
         editor.apply()
     }
 }

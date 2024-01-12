@@ -11,6 +11,7 @@ import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMoni
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.ServiceState
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceState
 import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
+import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,11 @@ class PowerStateReceiver: BroadcastReceiver() {
                     batteryMonitoringRepoInterface.insertScreenOnTime(0)
                     batteryMonitoringRepoInterface.insertScreenOffTime(0)
                     batteryMonitoringRepoInterface.insertCpuAwake(0)
+                    val level = BatteryUtils.getBatteryLevel(context)
+                    batteryMonitoringRepoInterface.insertBatteryLevel(level)
+                    batteryMonitoringRepoInterface.insertInitialBatteryLevel(level)
+                    batteryMonitoringRepoInterface.insertScreenOnDrain(0)
+                    batteryMonitoringRepoInterface.insertScreenOffDrain(0)
                     BatteryMonitorService.deepSleepInitialValue = currentDeepSleep
                     BatteryMonitorService.deepSleepBuffer = 0
                     BatteryMonitorService.deepSleep = 0
@@ -42,20 +48,6 @@ class PowerStateReceiver: BroadcastReceiver() {
                     BatteryMonitorService.screenOffBuffer = 0
                 }
             }
-        }
-    }
-
-    private fun actionOnService(action: Action, context: Context) {
-        if (getServiceState(context) == ServiceState.STOPPED && action == Action.STOP) return
-        Intent(context, BatteryMonitorService::class.java).also {
-            it.action = Action.START.name
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.d("BootCompleteReceiver", "Starting the service in >=26 Mode from a BroadcastReceiver")
-                context.startForegroundService(it)
-                return
-            }
-            Log.d("BootCompleteReceiver", "Starting the service in < 26 Mode from a BroadcastReceiver")
-            context.startService(it)
         }
     }
 }

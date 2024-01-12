@@ -21,18 +21,18 @@ object ServiceUtil {
     }
 
     fun buildContent(
-        batteryInfo: BatteryInfo,
-        deepSleep: Long,
-        screenOnTime: Long,
-        screenOffTime: Long,
-        cpuAwake: Long
+        batteryInfo: BatteryInfo, deepSleep: Long, screenOnTime: Long, screenOffTime: Long,
+        cpuAwake: Long, screenOnDrainPerHr: Double, screenOffDrainPerHr: Double, screenOnDrain:Int, screenOffDrain: Int
     ): String {
+        val deepSleepPercentage = (deepSleep.toDouble()/screenOffTime.toDouble())*100
+        val cpuAwakePercentage = 100.0 - deepSleepPercentage
         return buildString {
             append("Power: ${String.format("%.2f", abs(batteryInfo.power))}W\n")
-            append("Screen on: ${formatTime(screenOnTime)}\n")
-            append("Screen off: ${formatTime(screenOffTime)}\n")
-            append("Deep sleep: ${formatTime(deepSleep)}\n")
-            append("CPU awake: ${formatTime(cpuAwake)}\n")
+            append("Screen on: ${formatTime(screenOnTime)}  ·  $screenOnDrain%\n")
+            append("Screen off: ${formatTime(screenOffTime)}  ·  $screenOffDrain%\n")
+            append("Deep sleep: ${formatTime(deepSleep)}  ·  ${String.format("%.2f", deepSleepPercentage)}%\n")
+            append("CPU awake: ${formatTime(cpuAwake)}  ·  ${String.format("%.2f", cpuAwakePercentage)}%\n")
+            append("Active drain: ${String.format("%.2f", screenOnDrainPerHr)}% /h · Idle drain: ${String.format("%.2f", screenOffDrainPerHr)}% /h")
         }
     }
 
@@ -42,14 +42,13 @@ object ServiceUtil {
         val remainingSeconds = seconds % 60
 
         return when {
-            hours > 0 -> String.format("%2dh %2dm %2ds", hours, minutes, remainingSeconds)
-            minutes > 0 -> String.format("%2dm %2ds", minutes, remainingSeconds)
-            else -> String.format("%2ds", remainingSeconds)
+            hours > 0 -> String.format("%1dh %1dm %1ds", hours, minutes, remainingSeconds)
+            minutes > 0 -> String.format("%1dm %1ds", minutes, remainingSeconds)
+            else -> String.format("%1ds", remainingSeconds)
         }
     }
 
     fun calculateTimeInterval(firstDate: Date, secondDate: Date): Long {
         return (firstDate.time - secondDate.time) / 1000
-
     }
 }

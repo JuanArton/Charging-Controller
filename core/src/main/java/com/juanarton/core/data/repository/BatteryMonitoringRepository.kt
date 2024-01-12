@@ -1,5 +1,6 @@
 package com.juanarton.core.data.repository
 
+import android.content.Context
 import android.util.Log
 import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
 import com.juanarton.core.data.source.local.LocalDataSource
@@ -43,19 +44,38 @@ class BatteryMonitoringRepository @Inject constructor(
         localDataSource.insertScreenOffTime(seconds)
     }
 
-    override fun getDeepSleep(): Long {
-        Log.d("test", "test")
-        return 0
-    }
-
-    override fun insertDeepSleep(cpuAwake: Long) {
-        Log.d("test", "test")
-    }
-
     override fun getCpuAwake(): Long =
         localDataSource.getCpuAwake()
 
     override fun insertCpuAwake(cpuAwake: Long) {
         localDataSource.insertCpuAwake(cpuAwake)
+    }
+
+    override fun getBatteryLevel(context: Context): Int =
+        localDataSource.getBatteryLevel(context)
+
+    override fun insertBatteryLevel(level: Int) {
+        localDataSource.insertBatteryLevel(level)
+    }
+
+    override fun getInitialBatteryLevel(context: Context): Int =
+        localDataSource.getInitialBatteryLevel(context)
+
+    override fun insertInitialBatteryLevel(level: Int) {
+        localDataSource.insertInitialBatteryLevel(level)
+    }
+
+    override fun getScreenOnDrain(): Int =
+        localDataSource.getScreenOnDrain()
+
+    override fun insertScreenOnDrain(level: Int) {
+        localDataSource.insertScreenOnDrain(level)
+    }
+
+    override fun getScreenOffDrain(): Int =
+        localDataSource.getScreenOffDrain()
+
+    override fun insertScreenOffDrain(level: Int) {
+        localDataSource.insertScreenOffDrain(level)
     }
 }
