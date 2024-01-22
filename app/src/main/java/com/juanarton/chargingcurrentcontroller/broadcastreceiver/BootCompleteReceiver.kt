@@ -26,7 +26,6 @@ class BootCompleteReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED && getServiceState(context) == ServiceState.STARTED) {
             CoroutineScope(Dispatchers.IO).launch {
-                batteryMonitoringRepoInterface.insertDeepSleepInitialValue(0)
                 batteryMonitoringRepoInterface.insertBatteryLevel(BatteryUtils.getBatteryLevel(context))
             }
             Intent(context, BatteryMonitorService::class.java).also {

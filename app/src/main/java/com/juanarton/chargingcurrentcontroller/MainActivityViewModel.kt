@@ -7,6 +7,7 @@ import android.os.BatteryManager
 import android.os.SystemClock
 import androidx.lifecycle.ViewModel
 import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringRepoUseCase
+import com.juanarton.core.data.repository.BatteryInfoRepository
 import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date

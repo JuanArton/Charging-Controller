@@ -35,5 +35,8 @@
     <string name="battery_level_alarm">Battery Level Alarm</string>
     <string name="setBatteryThresholdError">Failed to set threshold alarm, please try again!</string>
     <string name="serviceNotificationTitle">3C - Battery Monitor</string>
+    <string name="batteryLevelAlarmNotifTitle">3C - Battery Monitor</string>
+    <string name="batteryLevelMaxReached">Maximum battery level reached, please disconnect charger!</string>
+    <string name="batteryLevelMinReached">Minimum battery level reached, please disconnect charger!</string>
     <string name="notificationPermissionDenied">Please grant notification permission to show notification battery monitoring</string>
 </resources>

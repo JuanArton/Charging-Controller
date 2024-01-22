@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.fondesa.kpermissions.allDenied
-import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.coroutines.sendSuspend
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.Action

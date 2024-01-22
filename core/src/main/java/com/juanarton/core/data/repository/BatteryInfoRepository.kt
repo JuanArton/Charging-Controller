@@ -28,6 +28,7 @@ class BatteryInfoRepository @Inject constructor(private val context: Context):
         const val BATTERY_MIN_LEVEL = "min"
         const val BATTERY_MAX_LEVEL = "max"
         const val BATTERY_LEVEL_ALARM_KEY = "levelAlarm"
+        const val BATTERY_ALARM_PREF = "BatteryAlarmPref"
     }
 
     override fun getConfig(): Flow<Config> =
@@ -198,10 +199,10 @@ class BatteryInfoRepository @Inject constructor(private val context: Context):
 
     override fun setBatteryLevelThreshold(min: Int, max: Int, callback: (Boolean) -> Unit) {
         try {
-            val sharedPreferences = context.getSharedPreferences("BatteryLevelThreshold", Context.MODE_PRIVATE)
+            val sharedPreferences = context.getSharedPreferences(BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
-            editor.putInt("min", min)
-            editor.putInt("max", max)
+            editor.putInt(BATTERY_MIN_LEVEL, min)
+            editor.putInt(BATTERY_MAX_LEVEL, max)
             editor.apply()
 
             callback(true)
@@ -211,7 +212,7 @@ class BatteryInfoRepository @Inject constructor(private val context: Context):
     }
 
     override fun getBatteryLevelThreshold(): Pair<Int, Int> {
-        val sharedPreferences = context.getSharedPreferences("BatteryLevelThreshold", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences(BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
 
         val min = sharedPreferences.getInt(BATTERY_MIN_LEVEL, 20)
 

@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract  class BatteryMonitoringRepositoryModule {
+abstract class BatteryMonitoringRepositoryModule {
     @Binds
     abstract fun provideBatteryMonitoringRepository(
         batteryMonitoringRepository: BatteryMonitoringRepository

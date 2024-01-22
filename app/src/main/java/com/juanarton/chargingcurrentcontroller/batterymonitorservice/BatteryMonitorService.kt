@@ -50,8 +50,8 @@ class BatteryMonitorService : Service() {
     private var screenOffDrainPerHr = 0.0
 
     companion object {
-        const val NOTIFICATION_ID = 1
-        const val CHANNEL_ID = "BatteryMonitorChannel"
+        const val SERVICE_NOTIFICATION_ID = 1
+        const val SERVICE_NOTIF_CHANNEL_ID = "BatteryMonitorChannel"
         var isRegistered = false
         var delayDuration: Long = 5
         var serviceJob: Job? = null
@@ -92,11 +92,18 @@ class BatteryMonitorService : Service() {
         applicationContext.getSystemService(Context.ALARM_SERVICE)
         val alarmService: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
+        registerReceiver()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        registerReceiver()
     }
 
     private fun monitorBattery(): Job {
@@ -137,7 +144,6 @@ class BatteryMonitorService : Service() {
         if (!isServiceStarted) {
             isServiceStarted = true
 
-            registerReceiver()
             isRegistered = true
 
             deepSleepInitialValue =
@@ -150,7 +156,7 @@ class BatteryMonitorService : Service() {
             batteryMonitoringRepoInterface.insertStartTime(Date())
 
             setServiceState(this, ServiceState.STARTED)
-            startForeground(NOTIFICATION_ID, createNotification())
+            startForeground(SERVICE_NOTIFICATION_ID, createNotification())
 
             startMonitoring()
         }
@@ -171,14 +177,13 @@ class BatteryMonitorService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "3C Battery Monitor"
             val description = "Battery Monitor Service Channel"
-            val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(CHANNEL_ID, name, importance)
+            val channel = NotificationChannel(SERVICE_NOTIF_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
             channel.description = description
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
 
-        builder = NotificationCompat.Builder(this, CHANNEL_ID)
+        builder = NotificationCompat.Builder(this, SERVICE_NOTIF_CHANNEL_ID)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .setSmallIcon(R.drawable.power)
             .setContentTitle(getString(R.string.serviceNotificationTitle))
@@ -204,7 +209,7 @@ class BatteryMonitorService : Service() {
                 NotificationCompat.BigTextStyle()
                     .bigText(content)
             )
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
+        notificationManager.notify(SERVICE_NOTIFICATION_ID, builder.build())
     }
 
     private fun insertScreenOnTime() {
