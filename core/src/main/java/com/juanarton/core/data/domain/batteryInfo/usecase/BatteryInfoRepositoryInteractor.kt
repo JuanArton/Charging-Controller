@@ -33,9 +33,21 @@ class BatteryInfoRepositoryInteractor @Inject constructor(
 
     override fun getBatteryLevelThreshold(): Pair<Int, Int> =
         batteryInfoRepositoryInterface.getBatteryLevelThreshold()
-    override fun setAlarmStatus(key: String, value: Boolean, callback: (Boolean) -> Unit) =
-        batteryInfoRepositoryInterface.setAlarmStatus(key, value, callback)
+    override fun setBatteryLevelAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) =
+        batteryInfoRepositoryInterface.setBatteryLevelAlarmStatus(value, callback)
 
-    override fun getAlarmStatus(key: String): Boolean =
-        batteryInfoRepositoryInterface.getAlarmStatus(key)
+    override fun getBatteryLevelAlarmStatus(): Boolean =
+        batteryInfoRepositoryInterface.getBatteryLevelAlarmStatus()
+
+    override fun setBatteryTemperatureThreshold(temperature: Int, callback: (Boolean) -> Unit) =
+        batteryInfoRepositoryInterface.setBatteryTemperatureThreshold(temperature, callback)
+
+    override fun getBatteryTemperatureThreshold(): Int =
+        batteryInfoRepositoryInterface.getBatteryTemperatureThreshold()
+
+    override fun setBatteryTemperatureAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) =
+        batteryInfoRepositoryInterface.setBatteryTemperatureAlarmStatus(value, callback)
+
+    override fun getBatteryTemperatureAlarmStatus(): Boolean =
+        batteryInfoRepositoryInterface.getBatteryTemperatureAlarmStatus()
 }

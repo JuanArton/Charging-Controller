@@ -25,10 +25,12 @@ class BatteryInfoRepository @Inject constructor(private val context: Context):
 
     companion object {
         const val PATH = "/data/adb/modules/3C"
-        const val BATTERY_MIN_LEVEL = "min"
-        const val BATTERY_MAX_LEVEL = "max"
+        const val BATTERY_MIN_LEVEL = "levelMin"
+        const val BATTERY_MAX_LEVEL = "levelMax"
         const val BATTERY_LEVEL_ALARM_KEY = "levelAlarm"
         const val BATTERY_ALARM_PREF = "BatteryAlarmPref"
+        const val BATTERY_TEMPERATURE_ALARM_KEY = "temperatureAlarm"
+        const val BATTERY_MAX_TEMP = "tempMax"
     }
 
     override fun getConfig(): Flow<Config> =
@@ -221,11 +223,11 @@ class BatteryInfoRepository @Inject constructor(private val context: Context):
         return Pair(min, max)
     }
 
-    override fun setAlarmStatus(key: String, value: Boolean, callback: (Boolean) -> Unit) {
+    override fun setBatteryLevelAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) {
         try {
             val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
-            editor.putBoolean(key, value).apply()
+            editor.putBoolean(BATTERY_LEVEL_ALARM_KEY, value).apply()
 
             callback(true)
         } catch (e: Exception) {
@@ -233,9 +235,47 @@ class BatteryInfoRepository @Inject constructor(private val context: Context):
         }
     }
 
-    override fun getAlarmStatus(key: String): Boolean {
+    override fun getBatteryLevelAlarmStatus(): Boolean {
         val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
 
-        return sharedPreferences.getBoolean(key, false)
+        return sharedPreferences.getBoolean(BATTERY_LEVEL_ALARM_KEY, false)
+    }
+
+    override fun setBatteryTemperatureThreshold(temperature: Int, callback: (Boolean) -> Unit) {
+        try {
+            val sharedPreferences = context.getSharedPreferences(BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putInt(BATTERY_MAX_TEMP, temperature)
+            editor.apply()
+
+            callback(true)
+        } catch (e: Exception) {
+            callback(false)
+        }
+    }
+
+    override fun getBatteryTemperatureThreshold(): Int {
+        val sharedPreferences =
+            context.getSharedPreferences(BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
+
+        return sharedPreferences.getInt(BATTERY_MAX_TEMP, 38)
+    }
+
+    override fun setBatteryTemperatureAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) {
+        try {
+            val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(BATTERY_TEMPERATURE_ALARM_KEY, value).apply()
+
+            callback(true)
+        } catch (e: Exception) {
+            callback(false)
+        }
+    }
+
+    override fun getBatteryTemperatureAlarmStatus(): Boolean {
+        val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
+
+        return sharedPreferences.getBoolean(BATTERY_TEMPERATURE_ALARM_KEY, false)
     }
 }

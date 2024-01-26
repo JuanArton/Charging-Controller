@@ -91,7 +91,7 @@
                 android:id="@+id/tvMAH"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/rs_battery_level_threshold"
+                android:layout_above="@+id/sliderChargingCurrent"
                 android:layout_alignParentEnd="true"
                 android:text="@string/ma" />
 

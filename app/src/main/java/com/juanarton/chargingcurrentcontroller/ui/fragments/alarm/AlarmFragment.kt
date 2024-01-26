@@ -1,6 +1,7 @@
 package com.juanarton.chargingcurrentcontroller.ui.fragments.alarm
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.google.android.material.slider.RangeSlider
+import com.google.android.material.slider.Slider
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentAlarmBinding
-import com.juanarton.core.data.repository.BatteryInfoRepository.Companion.BATTERY_LEVEL_ALARM_KEY
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +34,9 @@ class AlarmFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         alarmViewModel.getBatteryLevelThreshold()
-        alarmViewModel.getBatteryLevelAlarmStatus(BATTERY_LEVEL_ALARM_KEY)
+        alarmViewModel.getBatteryLevelAlarmStatus()
+        alarmViewModel.getBatteryTemperatureThreshold()
+        alarmViewModel.getBatteryTemperatureAlarmStatus()
 
         binding?.apply {
             with (alarmViewModel) {
@@ -41,12 +44,31 @@ class AlarmFragment : Fragment() {
                     batteryLevelAlarmSwitch.isChecked = it
                 }
 
-                batterLevelThreshold.observe(viewLifecycleOwner) {
+                batteryLevelThreshold.observe(viewLifecycleOwner) {
                     rsBatteryLevelThreshold.values = listOf(it.first.toFloat(), it.second.toFloat())
+                    tvMinBatteryLevel.text = it.first.toString()
+                    tvMaxBatteryLevel.text = it.second.toString()
+                }
+
+                batteryTemperatureAlarmStatus.observe(viewLifecycleOwner) {
+                    temperatureAlarmSwitch.isChecked = it
+                }
+
+                batteryTemperatureThreshold.observe(viewLifecycleOwner) {
+                    sliderMaxTemperature.value = it.toFloat()
+                    tvMaxTemperature.text = it.toString()
                 }
 
                 batteryLevelAlarmSwitch.setOnCheckedChangeListener { _, isChecked ->
-                    setBatteryLevelAlarmStatus(BATTERY_LEVEL_ALARM_KEY, isChecked) { isSuccess ->
+                    setBatteryLevelAlarmStatus(isChecked) { isSuccess ->
+                        if (!isSuccess) {
+                            getBatteryLevelThreshold()
+                        }
+                    }
+                }
+
+                temperatureAlarmSwitch.setOnCheckedChangeListener { _, isChecked ->
+                    setBatteryTemperatureAlarmStatus(isChecked) { isSuccess ->
                         if (!isSuccess) {
                             getBatteryLevelThreshold()
                         }
@@ -65,7 +87,24 @@ class AlarmFragment : Fragment() {
                                 tvMaxBatteryLevel.text = max.toString()
                             } else {
                                 Toast.makeText(
-                                    requireContext(), getString(R.string.setBatteryThresholdError), Toast.LENGTH_SHORT
+                                    requireContext(), getString(R.string.setBatteryLevelThresholdError), Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                })
+
+                sliderMaxTemperature.addOnSliderTouchListener(object : Slider.OnSliderTouchListener{
+                    override fun onStartTrackingTouch(slider: Slider) {}
+
+                    override fun onStopTrackingTouch(slider: Slider) {
+                        val maxTemp = slider.value.toInt()
+                        setBatteryTemperatureThreshold(maxTemp) { isSuccess ->
+                            if (isSuccess)  {
+                                tvMaxTemperature.text = maxTemp.toString()
+                            } else {
+                                Toast.makeText(
+                                    requireContext(), getString(R.string.setBatteryLevelThresholdError), Toast.LENGTH_SHORT
                                 ).show()
                             }
                         }

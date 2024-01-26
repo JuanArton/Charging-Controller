@@ -26,7 +26,15 @@ interface BatteryInfoRepositoryUseCase {
 
     fun getBatteryLevelThreshold(): Pair<Int, Int>
 
-    fun setAlarmStatus(key: String, value: Boolean, callback: (Boolean) -> Unit)
+    fun setBatteryLevelAlarmStatus(value: Boolean, callback: (Boolean) -> Unit)
 
-    fun getAlarmStatus(key: String): Boolean
+    fun getBatteryLevelAlarmStatus(): Boolean
+
+    fun setBatteryTemperatureThreshold(temperature: Int, callback: (Boolean) -> Unit)
+
+    fun getBatteryTemperatureThreshold(): Int
+
+    fun setBatteryTemperatureAlarmStatus(value: Boolean, callback: (Boolean) -> Unit)
+
+    fun getBatteryTemperatureAlarmStatus(): Boolean
 }
