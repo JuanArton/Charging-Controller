@@ -63,4 +63,6 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation("com.github.fondesa:kpermissions-coroutines:3.4.0")
+
+    implementation("com.scwang.wave:MultiWaveHeader:1.0.0-andx")
 }

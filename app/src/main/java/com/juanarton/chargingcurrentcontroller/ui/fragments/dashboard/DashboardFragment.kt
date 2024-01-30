@@ -148,16 +148,22 @@ class DashboardFragment : Fragment() {
             if (firstRun) {
                 dashboardViewModel.currentMin = abs(it.currentNow)
                 dashboardViewModel.tempMin = abs(it.temperature)
-                dashboardViewModel.powerMin = abs(it.power.toInt())
+                dashboardViewModel.powerMin = abs((it.power * 100).toInt())
                 firstRun = false
             }
 
             binding?.apply {
-                arcBatteryPercentage.progress = it.level
-                arcBatteryPercentage.bottomText = buildString {
-                    append((batteryCapacity * it.level/100).toInt())
-                    append(" ")
-                    append(currentUnit)
+                changeWaveHeight(waveAnimation, rescaleNumber(it.level))
+
+                tvBatteryPercentage.text = buildString {
+                    append(it.level)
+                    append("%")
+                }
+
+                tvBatteryCapacity.text = buildString{
+                    append("${(batteryCapacity * it.level / 100).toInt()} ${getString(R.string.mah)}")
+                    append(" of ")
+                    append("${batteryCapacity.toInt()} ${getString(R.string.mah)}")
                 }
 
                 tvBatteryStatus.text = Utils.mapBatteryStatus(it.status, requireContext())
@@ -215,14 +221,26 @@ class DashboardFragment : Fragment() {
 
                     currentMin = minChecker(currentMin, abs(it.currentNow))
                     tempMin = minChecker(tempMin, abs(it.temperature))
-                    powerMin = minChecker(powerMin, abs(it.power.toInt()))
+                    powerMin = minChecker(powerMin, abs((it.power * 100).toInt()))
 
                     currentMax = maxChecker(currentMax, abs(it.currentNow))
                     tempMax = maxChecker(tempMax, abs(it.temperature))
-                    powerMax = maxChecker(powerMax, abs(it.power.toInt()))
+                    powerMax = maxChecker(powerMax, abs((it.power * 100).toInt()))
 
-                    setMinMaxText(tvChartMin, currentMin)
-                    setMinMaxText(tvChartMax, currentMax)
+                    when {
+                        currentGraph -> {
+                            setMinMaxText(tvChartMin, currentMin)
+                            setMinMaxText(tvChartMax, currentMax)
+                        }
+                        temperatureGraph -> {
+                            setMinMaxText(tvChartMin, tempMin)
+                            setMinMaxText(tvChartMax, tempMax)
+                        }
+                        powerGraph -> {
+                            setMinMaxText(tvChartMin, powerMin)
+                            setMinMaxText(tvChartMax, powerMax)
+                        }
+                    }
                 }
             }
         }
@@ -348,6 +366,19 @@ class DashboardFragment : Fragment() {
 
     private fun maxChecker(oldValue: Int, newValue: Int): Int {
         return if (newValue > oldValue ) newValue else oldValue
+    }
+
+    private fun rescaleNumber(input: Int): Int {
+        return (input.toDouble() / 100.0 * 246.0).toInt()
+    }
+
+    private fun changeWaveHeight(view: View, heightInDp: Int) {
+        val density = view.resources.displayMetrics.density
+        val heightInPixels = (heightInDp * density).toInt()
+
+        val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+        layoutParams.height = heightInPixels
+        view.layoutParams = layoutParams
     }
 
     override fun onPause() {
