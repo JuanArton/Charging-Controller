@@ -42,4 +42,6 @@
     <string name="batteryTemperatureReached">Battery temperature reached, please disconnect charger or stop using device to cool down!</string>
     <string name="notificationPermissionDenied">Please grant notification permission to show notification battery monitoring</string>
     <string name="alarm">Alarm</string>
+    <string name="battery_history">Battery History</string>
+    <string name="idle_mode_desc">This will disable charging, allowing device to consume power directly from charger.</string>
 </resources>

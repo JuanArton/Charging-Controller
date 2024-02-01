@@ -18,6 +18,7 @@ class QuickSettingFragment : Fragment() {
     private var _binding: FragmentQuickSettingBinding? = null
     private val binding get() = _binding
     private val qsViewModel: QuickSettingViewModel by viewModels()
+    private var firstRun = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +47,11 @@ class QuickSettingFragment : Fragment() {
 
                 tvCSDescription.visibility =
                     if (config.chargingLimitTriggered) View.VISIBLE else View.INVISIBLE
+
+                if (firstRun) {
+                    registerListener()
+                    firstRun = false
+                }
             }
         }
 
@@ -60,7 +66,9 @@ class QuickSettingFragment : Fragment() {
         qsViewModel.setTargetCurrent().observe(viewLifecycleOwner, reapplyConfigListener)
         qsViewModel.setChargingLimitStatus().observe(viewLifecycleOwner, reapplyConfigListener)
         qsViewModel.setMaximumCapacity().observe(viewLifecycleOwner, reapplyConfigListener)
+    }
 
+    private fun registerListener() {
         binding?.apply {
             sliderChargingCurrent.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: Slider) {}

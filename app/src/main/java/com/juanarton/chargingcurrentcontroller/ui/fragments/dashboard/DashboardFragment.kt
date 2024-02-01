@@ -293,6 +293,7 @@ class DashboardFragment : Fragment() {
             description.isEnabled = false
             legend.isEnabled = false
             data = lineData
+            animateY(1000)
         }
     }
 
