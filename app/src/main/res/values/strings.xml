@@ -44,4 +44,13 @@
     <string name="alarm">Alarm</string>
     <string name="battery_history">Battery History</string>
     <string name="idle_mode_desc">This will disable charging, allowing device to consume power directly from charger.</string>
+    <string name="set_limit_of_charging_current">Set limit of charging current</string>
+    <string name="level_alarm_desc">Enable battery level alarm when the specified threshold reached in form of a notification.</string>
+    <string name="temperature_alarm_desc">Enable battery temperature alarm when the specified threshold reached in form of a notification.</string>
+    <string name="charging_limit_desc">Enable app to automatically enable idle mode to stop charging when the specified battery level reached.</string>
+    <string name="screen_on">Screen On</string>
+    <string name="screen_off">Screen Off</string>
+    <string name="runtime">Runtime</string>
+    <string name="usage_summary">Usage Summary</string>
+    <string name="total_time">Total Time</string>
 </resources>

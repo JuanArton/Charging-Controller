@@ -43,7 +43,7 @@ object ServiceUtil {
         }
     }
 
-    private fun formatTime(seconds: Long): String {
+    fun formatTime(seconds: Long): String {
         val hours = seconds / 3600
         val minutes = (seconds % 3600) / 60
         val remainingSeconds = seconds % 60

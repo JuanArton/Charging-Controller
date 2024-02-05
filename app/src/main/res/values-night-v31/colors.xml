@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="power">#d9df00</color>
-    <color name="temperature">#5e8aff</color>
-
-    <color name="powerBackground">#70d9df00</color>
-    <color name="temperatureBackground">#705e8aff</color>
-</resources>

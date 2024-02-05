@@ -19,7 +19,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvBatteryLevelSlider"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:strokeWidth="0dp"
         app:cardBackgroundColor="?attr/cardBackgroundColor"
@@ -41,49 +41,65 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                android:scaleX="0.8"
+                android:scaleY="0.8"/>
+
+            <TextView
+                android:id="@+id/tvLevelAlarmDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/batteryLevelAlarmSwitch"
+                android:layout_marginTop="10dp"
+                android:textSize="13sp"
+                android:text="@string/level_alarm_desc"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/rs_battery_level_threshold"
-                android:layout_toEndOf="@id/tvMinBatteryLevel"
+                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
-                android:layout_alignParentEnd="true"
-                android:text="%" />
+                android:layout_toEndOf="@id/tvMinBatteryLevel"
+                android:text="%"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tvMinBatteryLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/rs_battery_level_threshold"
+                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_marginTop="10dp"
                 android:layout_alignParentStart="true"
                 android:text="20"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvMAH"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/rs_battery_level_threshold"
+                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_marginTop="10dp"
                 android:layout_alignParentEnd="true"
-                android:text="%" />
+                android:text="%"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tvMaxBatteryLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/rs_battery_level_threshold"
+                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_marginTop="10dp"
                 android:layout_toStartOf="@+id/tvMAH"
                 android:layout_marginEnd="5dp"
                 android:text="80"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/rs_battery_level_threshold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_below="@id/tvMaxBatteryLevel"
                 android:valueFrom="0"
                 android:valueTo="100"
                 android:stepSize="1"
@@ -94,7 +110,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvTemperatureSlider"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:strokeWidth="0dp"
         app:cardBackgroundColor="?attr/cardBackgroundColor"
@@ -116,15 +132,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                android:scaleX="0.8"
+                android:scaleY="0.8"/>
+
+            <TextView
+                android:id="@+id/tvTempAlarmDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/temperatureAlarmSwitch"
+                android:layout_marginTop="10dp"
+                android:textSize="13sp"
+                android:text="@string/temperature_alarm_desc"/>
 
             <TextView
                 android:id="@+id/tvDegree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/sliderMaxTemperature"
+                android:layout_below="@id/tvTempAlarmDesc"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
                 android:layout_alignParentEnd="true"
+                android:textSize="12sp"
                 android:text="@string/degree_symbol" />
 
 
@@ -132,16 +161,17 @@
                 android:id="@+id/tvMaxTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/sliderMaxTemperature"
+                android:layout_below="@id/tvTempAlarmDesc"
+                android:layout_marginTop="10dp"
                 android:layout_toStartOf="@+id/tvDegree"
                 android:text="38"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/sliderMaxTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_below="@id/tvMaxTemperature"
                 android:valueFrom="0"
                 android:valueTo="50"
                 android:stepSize="1"

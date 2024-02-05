@@ -9,8 +9,11 @@
     <color name="brightSurface">#fbf9f6</color>
     <color name="accent" >#0044dd</color>
 
-    <color name="power">#c0cf00</color>
-    <color name="temperature">#0003ff</color>
+    <color name="yellow">#ffc857</color>
+    <color name="blue">#79beee</color>
+    <color name="green">#44a985</color>
+    <color name="red">#ee6055</color>
+    <color name="purple">#b388eb</color>
 
     <color name="powerBackground">#70a4b200</color>
     <color name="temperatureBackground">#700003ff</color>

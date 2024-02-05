@@ -10,6 +10,7 @@
         <item name="cardBackgroundColor">@color/brightCardBackground</item>
 
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="Theme.ChargingCurrentController" parent="Base.Theme.ChargingCurrentController" />

@@ -9,6 +9,7 @@
         <item name="cardBackgroundColor">@color/darkCardBackground</item>
 
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">

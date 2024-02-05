@@ -18,6 +18,13 @@ import androidx.core.app.NotificationCompat
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.broadcastreceiver.BatteryStateReceiver
 import com.juanarton.chargingcurrentcontroller.broadcastreceiver.PowerStateReceiver
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.addScreenOffDrainPerHr
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.addScreenOffTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.addScreenOnDrainPerHr
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.addScreenOnTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrainPerHr
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnTime
 import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.repository.BatteryInfoRepositoryInterface
@@ -46,8 +53,6 @@ class BatteryMonitorService : Service() {
     private val screenStateReceiver = ScreenStateReceiver()
     private val powerStateReceiver = PowerStateReceiver()
     private val batteryStateReceiver = BatteryStateReceiver()
-    private var screenOnDrainPerHr = 0.0
-    private var screenOffDrainPerHr = 0.0
 
     companion object {
         const val SERVICE_NOTIFICATION_ID = 1
@@ -109,22 +114,20 @@ class BatteryMonitorService : Service() {
     private fun monitorBattery(): Job {
         return CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
-                val screenOnTime = batteryMonitoringRepoInterface.getScreenOnTime()
-                val screenOffTime = batteryMonitoringRepoInterface.getScreenOffTime()
+                addScreenOnTime(batteryMonitoringRepoInterface.getScreenOnTime())
+                addScreenOffTime(batteryMonitoringRepoInterface.getScreenOffTime())
                 val screenOnDrain = batteryMonitoringRepoInterface.getScreenOnDrain()
                 val screenOffDrain = batteryMonitoringRepoInterface.getScreenOffDrain()
                 batteryInfoRepositoryInterface.getBatteryInfo().collect {
                     updateNotification(
-                        it, screenOnTime, screenOffTime, screenOnDrainPerHr, screenOffDrainPerHr,
-                        screenOnDrain, screenOffDrain
+                        it, getScreenOnTime(), getScreenOffTime(), getScreenOnDrainPerHr(),
+                        getScreenOnDrainPerHr(), screenOnDrain, screenOffDrain
                     )
                     when (screenOn) {
                         true -> {
                             insertScreenOnTime()
-                            screenOnDrainPerHr =
-                                screenOnDrain / (screenOnTime.toDouble()/3600)
-                            screenOffDrainPerHr =
-                                screenOffDrain / (screenOffTime.toDouble()/3600)
+                            addScreenOnDrainPerHr(screenOnDrain / (getScreenOnTime().toDouble()/3600))
+                            addScreenOffDrainPerHr(screenOffDrain / (getScreenOffTime().toDouble()/3600))
                         }
                         false -> {
                             insertScreenOffTime()

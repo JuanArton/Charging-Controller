@@ -2,8 +2,6 @@ package com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -24,6 +22,13 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentDashboardBinding
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffDrainPerHr
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrainPerHr
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnTime
+import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil
+import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil.formatTime
 import com.juanarton.core.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
@@ -55,15 +60,6 @@ class DashboardFragment : Fragment() {
     @SuppressLint("PrivateApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val typedValue = TypedValue()
-        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
-        val mainColor = typedValue.data
-        val currentBackground = Color.argb(128, Color.red(mainColor), Color.green(mainColor), Color.blue(mainColor))
-        val temperatureBackground = ContextCompat.getColor(requireContext(), R.color.temperatureBackground)
-        val powerBackground = ContextCompat.getColor(requireContext(), R.color.powerBackground)
-        val temperatureColor = ContextCompat.getColor(requireContext(), R.color.temperature)
-        val powerColor = ContextCompat.getColor(requireContext(), R.color.power)
 
         var batteryCapacity = 0.0
         val powerProfileClass = "com.android.internal.os.PowerProfile"
@@ -101,13 +97,6 @@ class DashboardFragment : Fragment() {
 
                         ivChartInfo1.setImageResource(R.drawable.temperature)
                         ivChartInfo2.setImageResource(R.drawable.power)
-
-                        ivChartInfo1.backgroundTintList = ColorStateList.valueOf(temperatureBackground)
-                        ivChartInfo2.backgroundTintList = ColorStateList.valueOf(powerBackground)
-
-                        tvChartMin.setTextColor(mainColor)
-                        tvChartMax.setTextColor(mainColor)
-                        tvChartValue.setTextColor(mainColor)
                     }
                     chipTemperature.id -> {
                         showTemperature()
@@ -116,13 +105,6 @@ class DashboardFragment : Fragment() {
 
                         ivChartInfo1.setImageResource(R.drawable.charging_current)
                         ivChartInfo2.setImageResource(R.drawable.power)
-
-                        ivChartInfo1.backgroundTintList = ColorStateList.valueOf(currentBackground)
-                        ivChartInfo2.backgroundTintList = ColorStateList.valueOf(powerBackground)
-
-                        tvChartMin.setTextColor(temperatureColor)
-                        tvChartMax.setTextColor(temperatureColor)
-                        tvChartValue.setTextColor(temperatureColor)
                     }
                     chipPower.id -> {
                         showPower()
@@ -131,20 +113,13 @@ class DashboardFragment : Fragment() {
 
                         ivChartInfo1.setImageResource(R.drawable.charging_current)
                         ivChartInfo2.setImageResource(R.drawable.temperature)
-
-                        ivChartInfo1.backgroundTintList = ColorStateList.valueOf(currentBackground)
-                        ivChartInfo2.backgroundTintList = ColorStateList.valueOf(temperatureBackground)
-
-                        tvChartMin.setTextColor(powerColor)
-                        tvChartMax.setTextColor(powerColor)
-                        tvChartValue.setTextColor(powerColor)
                     }
                 }
             }
         }
 
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
-
+            updateUsageTime()
             if (firstRun) {
                 dashboardViewModel.currentMin = abs(it.currentNow)
                 dashboardViewModel.tempMin = abs(it.temperature)
@@ -241,15 +216,19 @@ class DashboardFragment : Fragment() {
                             setMinMaxText(tvChartMax, powerMax)
                         }
                     }
+
+                    updateUsageTime()
                 }
             }
         }
         dashboardViewModel.startBatteryMonitoring()
     }
 
-    private fun setUpLineChart(lineDataSet: LineDataSet, lineData: LineData, mainColor: Int, accentColor: Int, fillGradient: Drawable?) {
+    private fun setUpLineChart(lineDataSet: LineDataSet, lineData: LineData, fillGradient: Drawable?) {
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+
         lineDataSet.apply {
-            color = mainColor
             setDrawValues(false)
             setDrawCircles(false)
             axisDependency = YAxis.AxisDependency.RIGHT
@@ -257,6 +236,9 @@ class DashboardFragment : Fragment() {
             setDrawFilled(true)
             isHighlightEnabled = false
             fillDrawable = fillGradient
+            lineWidth = 2.0F
+            mode = LineDataSet.Mode.CUBIC_BEZIER
+            color = typedValue.data
         }
 
         binding?.chargingCurrentChart?.apply {
@@ -265,25 +247,21 @@ class DashboardFragment : Fragment() {
                 setLabelCount(13, true)
                 axisMinimum = 0F
                 axisMaximum = 60F
-                textColor = mainColor
-                axisLineColor = mainColor
-                gridColor = accentColor
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String = "${60 - value.toInt()}s"
                 }
                 labelRotationAngle = -45f
+                textColor = typedValue.data
             }
 
             axisRight.apply {
                 isEnabled = true
                 setLabelCount(8, true)
-                textColor = mainColor
-                axisLineColor = mainColor
-                gridColor = accentColor
                 granularity = 100F
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String = value.toInt().toString()
                 }
+                textColor = typedValue.data
             }
 
             axisLeft.isEnabled = false
@@ -293,25 +271,22 @@ class DashboardFragment : Fragment() {
             description.isEnabled = false
             legend.isEnabled = false
             data = lineData
-            animateY(1000)
+            animateXY(1000, 1000)
         }
     }
 
-    private fun showChart(lineDataSet: LineDataSet, lineData: LineData, gradientDrawable: Int, colorId: Int) {
+    private fun showChart(lineDataSet: LineDataSet, lineData: LineData, gradientDrawable: Int) {
         val typedValue = TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
-        val mainColor = if (colorId == 0) typedValue.data else ContextCompat.getColor(requireContext(), colorId)
-        val accentColor = ContextCompat.getColor(requireContext(), R.color.accent)
 
-        setUpLineChart(lineDataSet, lineData, mainColor, accentColor, ContextCompat.getDrawable(requireContext(), gradientDrawable))
+        setUpLineChart(lineDataSet, lineData, ContextCompat.getDrawable(requireContext(), gradientDrawable))
     }
 
     private fun showCurrent() {
         showChart(
             dashboardViewModel.currentLineDataSet,
             dashboardViewModel.currentData,
-            R.drawable.chart_gradient_current,
-            0
+            R.drawable.chart_gradient
         )
         currentGraph = true
         temperatureGraph = false
@@ -322,8 +297,7 @@ class DashboardFragment : Fragment() {
         showChart(
             dashboardViewModel.temperatureLineDataSet,
             dashboardViewModel.temperatureData,
-            R.drawable.chart_gradient_temperature,
-            R.color.temperature
+            R.drawable.chart_gradient
         )
         currentGraph = false
         temperatureGraph = true
@@ -334,12 +308,19 @@ class DashboardFragment : Fragment() {
         showChart(
             dashboardViewModel.powerLineDataSet,
             dashboardViewModel.powerData,
-            R.drawable.chart_gradient_power,
-            R.color.power
+            R.drawable.chart_gradient
         )
         currentGraph = false
         temperatureGraph = false
         powerGraph = true
+    }
+
+    private fun updateUsageTime() {
+        binding?.apply {
+            tvScreenOnValue.text = formatTime(getScreenOnTime())
+            tvScreenOffValue.text = formatTime(getScreenOffTime())
+            tvTotalTimeValue.text = formatTime(getScreenOffTime() + getScreenOnTime())
+        }
     }
 
     private fun setMinMaxText(tv: TextView, value: Int) {
