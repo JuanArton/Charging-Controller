@@ -22,13 +22,18 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentDashboardBinding
-import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getAwakeTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getDeepSleepTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getLastChargeLevel
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffDrain
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffDrainPerHr
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnTime
-import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil
 import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil.formatTime
+import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePerHour
+import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePercentage
 import com.juanarton.core.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
@@ -119,7 +124,7 @@ class DashboardFragment : Fragment() {
         }
 
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
-            updateUsageTime()
+            updateUsageData()
             if (firstRun) {
                 dashboardViewModel.currentMin = abs(it.currentNow)
                 dashboardViewModel.tempMin = abs(it.temperature)
@@ -217,7 +222,7 @@ class DashboardFragment : Fragment() {
                         }
                     }
 
-                    updateUsageTime()
+                    updateUsageData()
                 }
             }
         }
@@ -315,11 +320,23 @@ class DashboardFragment : Fragment() {
         powerGraph = true
     }
 
-    private fun updateUsageTime() {
+    private fun updateUsageData() {
+        val screenOffDrainPerHrTmp = if (getScreenOffDrainPerHr().isNaN()) 0.0 else getScreenOffDrainPerHr()
+        val screenOnDrainPerHrTmp = if (getScreenOnDrainPerHr().isNaN()) 0.0 else getScreenOnDrainPerHr()
         binding?.apply {
             tvScreenOnValue.text = formatTime(getScreenOnTime())
             tvScreenOffValue.text = formatTime(getScreenOffTime())
             tvTotalTimeValue.text = formatTime(getScreenOffTime() + getScreenOnTime())
+            tvScreenOnUsage.text = formatUsagePercentage(getScreenOnDrain(), getLastChargeLevel())
+            tvScreenOffUsage.text = formatUsagePercentage(getScreenOffDrain(), getLastChargeLevel())
+            tvTotalUsage.text = formatUsagePercentage(
+                getScreenOffDrain() + getScreenOnDrain(),
+                getLastChargeLevel()
+            )
+            tvActiveDrainPerHrValue.text = formatUsagePerHour(screenOnDrainPerHrTmp)
+            tvIdleDrainPerHrValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
+            tvAwakeValue.text = formatTime(getAwakeTime())
+            tvDeepSleepValue.text = formatTime(getDeepSleepTime())
         }
     }
 

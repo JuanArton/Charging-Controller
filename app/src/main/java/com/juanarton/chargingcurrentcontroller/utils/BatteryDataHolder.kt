@@ -7,6 +7,11 @@ object BatteryDataHolder {
     private var screenOffTime = 0L
     private var screenOnDrainPerHr = 0.0
     private var screenOffDrainPerHr = 0.0
+    private var screenOnDrain = 0
+    private var screenOffDrain = 0
+    private var lastChargeLevel = 0
+    private var cpuAwake = 0L
+    private var deepSleep = 0L
 
     fun addScreenOnTime(screenOnTime: Long) {
         this.screenOnTime = screenOnTime
@@ -38,5 +43,45 @@ object BatteryDataHolder {
 
     fun getScreenOffDrainPerHr(): Double {
         return screenOffDrainPerHr
+    }
+
+    fun addScreenOnDrain(screenOnDrain: Int) {
+        this.screenOnDrain = screenOnDrain
+    }
+
+    fun getScreenOnDrain(): Int {
+        return screenOnDrain
+    }
+
+    fun addScreenOffDrain(screenOffDrain: Int) {
+        this.screenOffDrain = screenOffDrain
+    }
+
+    fun getScreenOffDrain(): Int {
+        return screenOffDrain
+    }
+
+    fun addLastChargeLevel(lastChargeLevel: Int) {
+        this.lastChargeLevel = lastChargeLevel
+    }
+
+    fun getLastChargeLevel(): Int {
+        return lastChargeLevel
+    }
+
+    fun addAwakeTime(awake: Long) {
+        this.cpuAwake = awake
+    }
+
+    fun getAwakeTime(): Long {
+        return cpuAwake
+    }
+
+    fun addDeepSleepTime(deepSleep: Long) {
+        this.deepSleep = deepSleep
+    }
+
+    fun getDeepSleepTime(): Long {
+        return deepSleep
     }
 }

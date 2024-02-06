@@ -52,5 +52,10 @@
     <string name="screen_off">Screen Off</string>
     <string name="runtime">Runtime</string>
     <string name="usage_summary">Usage Summary</string>
-    <string name="total_time">Total Time</string>
+    <string name="total">Total</string>
+    <string name="of">of</string>
+    <string name="active_drain_hour">Active Drain / Hour</string>
+    <string name="awake">Awake</string>
+    <string name="deep_sleep">Deep sleep</string>
+    <string name="idle_drain_hour">Idle Drain / Hour</string>
 </resources>
