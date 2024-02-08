@@ -32,6 +32,9 @@ import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreen
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnTime
 import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil.formatTime
+import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateCpuAwakePercentage
+import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepPercentage
+import com.juanarton.chargingcurrentcontroller.utils.Utils.formatDeepSleepAwake
 import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePerHour
 import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePercentage
 import com.juanarton.core.utils.Utils
@@ -323,6 +326,14 @@ class DashboardFragment : Fragment() {
     private fun updateUsageData() {
         val screenOffDrainPerHrTmp = if (getScreenOffDrainPerHr().isNaN()) 0.0 else getScreenOffDrainPerHr()
         val screenOnDrainPerHrTmp = if (getScreenOnDrainPerHr().isNaN()) 0.0 else getScreenOnDrainPerHr()
+        val deepSleepPercentage =
+            calculateDeepSleepPercentage(
+                getDeepSleepTime().toDouble(), getScreenOffTime().toDouble()
+            )
+        val cpuAwakePercentage =
+            calculateCpuAwakePercentage(
+                deepSleepPercentage
+            )
         binding?.apply {
             tvScreenOnValue.text = formatTime(getScreenOnTime())
             tvScreenOffValue.text = formatTime(getScreenOffTime())
@@ -337,6 +348,8 @@ class DashboardFragment : Fragment() {
             tvIdleDrainPerHrValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
             tvAwakeValue.text = formatTime(getAwakeTime())
             tvDeepSleepValue.text = formatTime(getDeepSleepTime())
+            tvAwakePercentage.text = formatDeepSleepAwake(cpuAwakePercentage)
+            tvDeepSleepPercentage.text = formatDeepSleepAwake(deepSleepPercentage)
         }
     }
 

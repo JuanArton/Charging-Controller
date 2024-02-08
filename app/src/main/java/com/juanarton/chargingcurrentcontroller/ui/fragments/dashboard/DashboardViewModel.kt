@@ -58,7 +58,7 @@ class DashboardViewModel @Inject constructor(private val batteryInfoRepositoryUs
                         }
                     }
                 },
-                0, 1, TimeUnit.SECONDS
+                0, 3, TimeUnit.SECONDS
             )
             isMonitoring = true
         }

@@ -54,8 +54,9 @@
     <string name="usage_summary">Usage Summary</string>
     <string name="total">Total</string>
     <string name="of">of</string>
-    <string name="active_drain_hour">Active Drain / Hour</string>
+    <string name="active_drain_hour">Active Drain</string>
     <string name="awake">Awake</string>
     <string name="deep_sleep">Deep sleep</string>
-    <string name="idle_drain_hour">Idle Drain / Hour</string>
+    <string name="idle_drain_hour">Idle Drain</string>
+    <string name="of_screen_off_time">of screen off time</string>
 </resources>

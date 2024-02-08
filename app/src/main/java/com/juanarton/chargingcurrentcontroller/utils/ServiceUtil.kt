@@ -2,6 +2,8 @@ package com.juanarton.chargingcurrentcontroller.utils
 
 import android.content.Context
 import com.juanarton.chargingcurrentcontroller.R
+import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateCpuAwakePercentage
+import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.utils.Utils
 import java.util.Date
@@ -24,11 +26,10 @@ object ServiceUtil {
         batteryInfo: BatteryInfo, deepSleep: Long, screenOnTime: Long, screenOffTime: Long,
         cpuAwake: Long, screenOnDrainPerHr: Double, screenOffDrainPerHr: Double, screenOnDrain: Int, screenOffDrain: Int
     ): String {
-        var deepSleepPercentage = (deepSleep.toDouble()/screenOffTime.toDouble())*100
-        deepSleepPercentage = if (deepSleepPercentage.isNaN()) 0.0 else deepSleepPercentage
-
-        var cpuAwakePercentage = 100.0 - deepSleepPercentage
-        cpuAwakePercentage = if (cpuAwakePercentage.isNaN()) 0.0 else cpuAwakePercentage
+        val deepSleepPercentage = calculateDeepSleepPercentage(
+            deepSleep.toDouble(), screenOffTime.toDouble()
+        )
+        val cpuAwakePercentage = calculateCpuAwakePercentage(deepSleepPercentage)
 
         val screenOffDrainPerHrTmp = if (screenOffDrainPerHr.isNaN()) 0.0 else screenOffDrainPerHr
         val screenOnDrainPerHrTmp = if (screenOnDrainPerHr.isNaN()) 0.0 else screenOnDrainPerHr

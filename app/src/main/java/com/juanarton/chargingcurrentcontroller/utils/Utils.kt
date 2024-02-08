@@ -17,4 +17,26 @@ object Utils {
         }
     }
 
+    fun calculateDeepSleepPercentage(deepSleep: Double, screenOffTime: Double): Double {
+        val deepSleepPercentage = (deepSleep / screenOffTime) * 100
+        return if (deepSleepPercentage.isNaN()) 0.0 else deepSleepPercentage
+    }
+
+    fun calculateCpuAwakePercentage(deepSleepPercentage: Double): Double {
+        val cpuAwakePercentage = 100.0 - deepSleepPercentage
+        return if (cpuAwakePercentage.isNaN()) 0.0 else cpuAwakePercentage
+    }
+
+    fun formatDeepSleepAwake(value: Double): String {
+        return buildString {
+            append("${String.format("%.2f", value)}% ")
+            append("of screen off time")
+        }
+    }
+
+    fun calculateDeepSleepAwake(number: Double): Double {
+        val eightyFivePercent = 0.85 * number
+        val onePercent = 0.01 * eightyFivePercent
+        return 0.2283 * onePercent
+    }
 }

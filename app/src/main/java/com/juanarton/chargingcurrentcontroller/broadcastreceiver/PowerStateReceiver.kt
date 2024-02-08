@@ -11,6 +11,7 @@ import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMoni
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.ServiceState
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceState
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.addAwakeTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.addDeepSleepTime
 import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
 import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +44,7 @@ class PowerStateReceiver: BroadcastReceiver() {
                     batteryMonitoringRepoInterface.insertScreenOffDrain(0)
                     BatteryMonitorService.deepSleepInitialValue = currentDeepSleep
                     BatteryMonitorService.deepSleepBuffer = 0
-                    BatteryMonitorService.deepSleep = 0
+                    addDeepSleepTime(0)
                     addAwakeTime(0)
                     BatteryMonitorService.screenOnBuffer = 0
                     BatteryMonitorService.screenOffBuffer = 0

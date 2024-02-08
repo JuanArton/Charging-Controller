@@ -30,6 +30,7 @@ import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.addScreen
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getDeepSleepTime
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffDrain
+import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffDrainPerHr
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOffTime
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrainPerHr
@@ -125,11 +126,10 @@ class BatteryMonitorService : Service() {
                 addScreenOffTime(batteryMonitoringRepoInterface.getScreenOffTime())
                 addScreenOnDrain(batteryMonitoringRepoInterface.getScreenOnDrain())
                 addScreenOffDrain(batteryMonitoringRepoInterface.getScreenOffDrain())
-                Log.d("test", getAwakeTime().toString())
                 batteryInfoRepositoryInterface.getBatteryInfo().collect {
                     updateNotification(
                         it, getScreenOnTime(), getScreenOffTime(), getScreenOnDrainPerHr(),
-                        getScreenOnDrainPerHr(), getScreenOnDrain(), getScreenOffDrain()
+                        getScreenOffDrainPerHr(), getScreenOnDrain(), getScreenOffDrain()
                     )
                     when (screenOn) {
                         true -> {
