@@ -34,9 +34,5 @@ object Utils {
         }
     }
 
-    fun calculateDeepSleepAwake(number: Double): Double {
-        val eightyFivePercent = 0.85 * number
-        val onePercent = 0.01 * eightyFivePercent
-        return 0.2283 * onePercent
-    }
+
 }
