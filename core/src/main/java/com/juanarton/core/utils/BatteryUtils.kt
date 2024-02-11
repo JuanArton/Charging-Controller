@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import kotlin.math.abs
 
@@ -15,26 +16,6 @@ object BatteryUtils {
     private var batteryStatus: Intent? = null
 
     private lateinit var batteryManager: BatteryManager
-    fun getBatteryInfo(context: Context): BatteryInfo {
-        registerStickyReceiver(context)
-
-        val voltage = getVoltage()
-
-        val current = getCurrent()
-
-        val power = getVoltage() * current / 1000
-
-        return BatteryInfo(
-            getChargingStatus(),
-            getACCharge(),
-            getUSBCharge(),
-            getLevel(),
-            voltage,
-            getCurrent().toInt(),
-            abs(power),
-            getTemperature()
-        )
-    }
 
     fun getCurrent(): Float {
         return -(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)).toFloat() / 1000
@@ -95,5 +76,17 @@ object BatteryUtils {
         }
 
         return level!!
+    }
+
+    fun getUptime(): Long {
+        return SystemClock.uptimeMillis()/1000
+    }
+
+    fun getCycleCount(): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            (batteryStatus?.getIntExtra(BatteryManager.EXTRA_CYCLE_COUNT, -1) ?: -1).toString()
+        } else {
+            "Only android 14+"
+        }
     }
 }

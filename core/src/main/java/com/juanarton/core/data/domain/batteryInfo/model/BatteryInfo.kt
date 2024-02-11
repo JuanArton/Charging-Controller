@@ -12,5 +12,7 @@ data class BatteryInfo (
     val voltage: Float = 0.0f,
     val currentNow: Int = 0,
     val power: Float = 0.0f,
-    val temperature: Int = 0
+    val temperature: Int = 0,
+    val uptime: Long = 0,
+    val cycleCount: String,
 ): Parcelable

@@ -227,6 +227,8 @@ class DashboardFragment : Fragment() {
                         }
                     }
 
+                    tvUptimeValue.text = formatTime(it.uptime)
+                    tvCycleValue.text = it.cycleCount
                     updateUsageData()
                 }
             }
@@ -413,6 +415,8 @@ class DashboardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        dashboardViewModel.startBatteryMonitoring()
+        if (!firstRun) {
+            dashboardViewModel.startBatteryMonitoring()
+        }
     }
 }

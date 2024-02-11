@@ -6,9 +6,11 @@ import com.juanarton.core.utils.BatteryUtils
 import com.juanarton.core.utils.BatteryUtils.getACCharge
 import com.juanarton.core.utils.BatteryUtils.getChargingStatus
 import com.juanarton.core.utils.BatteryUtils.getCurrent
+import com.juanarton.core.utils.BatteryUtils.getCycleCount
 import com.juanarton.core.utils.BatteryUtils.getLevel
 import com.juanarton.core.utils.BatteryUtils.getTemperature
 import com.juanarton.core.utils.BatteryUtils.getUSBCharge
+import com.juanarton.core.utils.BatteryUtils.getUptime
 import com.juanarton.core.utils.BatteryUtils.getVoltage
 import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import java.util.Date
@@ -30,7 +32,7 @@ class LMonitoringDataSource @Inject constructor(context: Context) {
 
         return BatteryInfo(
             getChargingStatus(), getACCharge(), getUSBCharge(), getLevel(), voltage,
-            current.toInt(), abs(power), getTemperature()
+            current.toInt(), abs(power), getTemperature(), getUptime(), getCycleCount()
         )
     }
 

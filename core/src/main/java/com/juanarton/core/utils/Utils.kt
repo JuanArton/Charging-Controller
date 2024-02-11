@@ -3,12 +3,13 @@ package com.juanarton.core.utils
 import android.content.Context
 import com.juanarton.core.R
 import com.juanarton.core.data.repository.AppConfigRepository
+import com.juanarton.core.data.source.local.appConfig.LAppConfigDataSource.Companion.PATH
 import com.topjohnwu.superuser.Shell
 
 object Utils {
     fun getValue(config: String): Shell.Result {
         val command =
-            "grep '$config' ${AppConfigRepository.PATH}/3C.conf | awk -F '=' '{print \$2}' | tr -d ' '"
+            "grep '$config' ${PATH}/3C.conf | awk -F '=' '{print \$2}' | tr -d ' '"
 
         return Shell.cmd(command).exec()
     }

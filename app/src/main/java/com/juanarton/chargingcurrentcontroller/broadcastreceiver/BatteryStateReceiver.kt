@@ -83,7 +83,6 @@ class BatteryStateReceiver : BroadcastReceiver(){
 
     private fun checkBatteryTemperatureAlarm(context: Context, temp: Int) {
         if (iAppConfigRepository.getBatteryTemperatureAlarmStatus()) {
-            Log.d("test", temp.toString())
             if (temp >= iAppConfigRepository.getBatteryTemperatureThreshold()) {
                 val message = buildString {
                     append("$temp - ${context.getString(R.string.batteryTemperatureReached)}")
