@@ -10,9 +10,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMonitorService
-import com.juanarton.core.data.domain.batteryInfo.repository.BatteryInfoRepositoryInterface
-import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
-import com.juanarton.core.data.repository.BatteryInfoRepository
+import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
+import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -20,10 +19,10 @@ import javax.inject.Inject
 class BatteryStateReceiver : BroadcastReceiver(){
 
     @Inject
-    lateinit var batteryMonitoringRepoInterface: BatteryMonitoringRepoInterface
+    lateinit var iBatteryMonitoringRepository: IBatteryMonitoringRepository
 
     @Inject
-    lateinit var batteryInfoRepository: BatteryInfoRepositoryInterface
+    lateinit var iAppConfigRepository: IAppConfigRepository
 
     private var batteryUsed = 0
 
@@ -33,7 +32,7 @@ class BatteryStateReceiver : BroadcastReceiver(){
     }
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BATTERY_CHANGED) {
-            val batteryLevel = batteryMonitoringRepoInterface.getBatteryLevel(context)
+            val batteryLevel = iBatteryMonitoringRepository.getBatteryLevel(context)
             val newLevel = intent.getIntExtra("level", -1)
             val temperature = intent.getIntExtra("temperature", -1)/10
 
@@ -42,15 +41,15 @@ class BatteryStateReceiver : BroadcastReceiver(){
 
                 when(BatteryMonitorService.screenOn) {
                     true -> {
-                        val drain = batteryMonitoringRepoInterface.getScreenOnDrain()
-                        batteryMonitoringRepoInterface.insertScreenOnDrain(drain + batteryUsed)
+                        val drain = iBatteryMonitoringRepository.getScreenOnDrain()
+                        iBatteryMonitoringRepository.insertScreenOnDrain(drain + batteryUsed)
                     }
                     false -> {
-                        val drain = batteryMonitoringRepoInterface.getScreenOffDrain()
-                        batteryMonitoringRepoInterface.insertScreenOffDrain(drain + batteryUsed)
+                        val drain = iBatteryMonitoringRepository.getScreenOffDrain()
+                        iBatteryMonitoringRepository.insertScreenOffDrain(drain + batteryUsed)
                     }
                 }
-                batteryMonitoringRepoInterface.insertBatteryLevel(newLevel)
+                iBatteryMonitoringRepository.insertBatteryLevel(newLevel)
                 batteryUsed = 0
             }
 
@@ -61,8 +60,8 @@ class BatteryStateReceiver : BroadcastReceiver(){
     }
 
     private fun checkBatteryLevelAlarm(context: Context, level: Int) {
-        if (batteryInfoRepository.getBatteryLevelAlarmStatus()) {
-            if (level <= batteryInfoRepository.getBatteryLevelThreshold().first) {
+        if (iAppConfigRepository.getBatteryLevelAlarmStatus()) {
+            if (level <= iAppConfigRepository.getBatteryLevelThreshold().first) {
                 val message = buildString {
                     append("$level - ${context.getString(R.string.batteryLevelMinReached)}")
                 }
@@ -70,7 +69,7 @@ class BatteryStateReceiver : BroadcastReceiver(){
                     context,
                     message
                 )
-            } else if (level >= batteryInfoRepository.getBatteryLevelThreshold().second) {
+            } else if (level >= iAppConfigRepository.getBatteryLevelThreshold().second) {
                 val message = buildString {
                     append("$level - ${context.getString(R.string.batteryLevelMaxReached)}")
                 }
@@ -83,9 +82,9 @@ class BatteryStateReceiver : BroadcastReceiver(){
     }
 
     private fun checkBatteryTemperatureAlarm(context: Context, temp: Int) {
-        if (batteryInfoRepository.getBatteryTemperatureAlarmStatus()) {
+        if (iAppConfigRepository.getBatteryTemperatureAlarmStatus()) {
             Log.d("test", temp.toString())
-            if (temp >= batteryInfoRepository.getBatteryTemperatureThreshold()) {
+            if (temp >= iAppConfigRepository.getBatteryTemperatureThreshold()) {
                 val message = buildString {
                     append("$temp - ${context.getString(R.string.batteryTemperatureReached)}")
                 }

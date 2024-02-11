@@ -1,9 +1,13 @@
-package com.juanarton.core.data.domain.batteryMonitoring.usecase
+package com.juanarton.core.data.domain.batteryMonitoring.repository
 
 import android.content.Context
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
-interface BatteryMonitoringRepoUseCase {
+interface IBatteryMonitoringRepository {
+
+    fun getBatteryInfo(): Flow<BatteryInfo>
     fun getDeepSleepInitialValue(): Long
 
     fun insertDeepSleepInitialValue(deepSleepInitialVale: Long)

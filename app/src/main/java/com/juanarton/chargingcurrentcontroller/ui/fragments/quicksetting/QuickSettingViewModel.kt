@@ -7,13 +7,15 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.juanarton.core.data.domain.batteryInfo.model.Config
-import com.juanarton.core.data.domain.batteryInfo.usecase.BatteryInfoRepositoryUseCase
+import com.juanarton.core.data.domain.batteryInfo.usecase.AppConfigUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class QuickSettingViewModel @Inject constructor(private val batteryInfoRepositoryUseCase: BatteryInfoRepositoryUseCase): ViewModel(){
+class QuickSettingViewModel @Inject constructor(
+    private val appConfigUseCase: AppConfigUseCase
+): ViewModel(){
     private var targetCurrent: MutableLiveData<String> = MutableLiveData()
     private var chargingSwitch: MutableLiveData<Boolean> = MutableLiveData()
     private var limitChargingSwitch: MutableLiveData<Boolean> = MutableLiveData()
@@ -24,7 +26,7 @@ class QuickSettingViewModel @Inject constructor(private val batteryInfoRepositor
 
     fun getConfig() {
         viewModelScope.launch {
-            batteryInfoRepositoryUseCase.getConfig().collect {
+            appConfigUseCase.getConfig().collect {
                 _config.value = it
             }
         }
@@ -35,7 +37,7 @@ class QuickSettingViewModel @Inject constructor(private val batteryInfoRepositor
     }
 
     fun setTargetCurrent() = targetCurrent.switchMap {
-        batteryInfoRepositoryUseCase.setTargetCurrent(it).asLiveData()
+        appConfigUseCase.setTargetCurrent(it).asLiveData()
     }
 
     fun setChargingSwitch(chargingSwitch: Boolean) {
@@ -43,7 +45,7 @@ class QuickSettingViewModel @Inject constructor(private val batteryInfoRepositor
     }
 
     fun setChargingSwitchStatus() = chargingSwitch.switchMap {
-        batteryInfoRepositoryUseCase.setChargingSwitchStatus(it).asLiveData()
+        appConfigUseCase.setChargingSwitchStatus(it).asLiveData()
     }
 
     fun setChargingLimitSwitch(limitChargingSwitch: Boolean) {
@@ -51,7 +53,7 @@ class QuickSettingViewModel @Inject constructor(private val batteryInfoRepositor
     }
 
     fun setChargingLimitStatus() = limitChargingSwitch.switchMap {
-        batteryInfoRepositoryUseCase.setChargingLimitStatus(it).asLiveData()
+        appConfigUseCase.setChargingLimitStatus(it).asLiveData()
     }
 
     fun setMaximumCapacityValue(maximumLimitValue: String) {
@@ -59,6 +61,6 @@ class QuickSettingViewModel @Inject constructor(private val batteryInfoRepositor
     }
 
     fun setMaximumCapacity() = maximumLimitValue.switchMap {
-        batteryInfoRepositoryUseCase.setMaximumCapacity(it).asLiveData()
+        appConfigUseCase.setMaximumCapacity(it).asLiveData()
     }
 }

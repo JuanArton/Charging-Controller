@@ -9,7 +9,7 @@ import com.juanarton.chargingcurrentcontroller.batterymonitorservice.Action
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMonitorService
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.ServiceState
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceState
-import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
+import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -21,12 +21,12 @@ import javax.inject.Inject
 class BootCompleteReceiver: BroadcastReceiver() {
 
     @Inject
-    lateinit var batteryMonitoringRepoInterface: BatteryMonitoringRepoInterface
+    lateinit var iBatteryMonitoringRepository: IBatteryMonitoringRepository
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED && getServiceState(context) == ServiceState.STARTED) {
             CoroutineScope(Dispatchers.IO).launch {
-                batteryMonitoringRepoInterface.insertBatteryLevel(BatteryUtils.getBatteryLevel(context))
+                iBatteryMonitoringRepository.insertBatteryLevel(BatteryUtils.getBatteryLevel(context))
             }
             Intent(context, BatteryMonitorService::class.java).also {
                 it.action = Action.START.name

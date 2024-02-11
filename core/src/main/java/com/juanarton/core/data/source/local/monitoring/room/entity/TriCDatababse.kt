@@ -1,8 +1,8 @@
-package com.juanarton.core.data.source.local.room.entity
+package com.juanarton.core.data.source.local.monitoring.room.entity
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.juanarton.core.data.source.local.room.DAO
+import com.juanarton.core.data.source.local.monitoring.room.DAO
 
 @Database(entities = [
     DeepSleepEntity::class,

@@ -1,18 +1,15 @@
-package com.juanarton.core.data.domain.batteryInfo.repository
+package com.juanarton.core.data.domain.batteryInfo.usecase
 
-import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import kotlinx.coroutines.flow.Flow
 
-interface BatteryInfoRepositoryInterface {
+interface AppConfigUseCase {
     fun getConfig(): Flow<Config>
 
     fun setTargetCurrent(targetCurrent: String): Flow<Result>
 
     fun setChargingSwitchStatus(switchStat: Boolean): Flow<Result>
-
-    fun getBatteryInfo(): Flow<BatteryInfo>
 
     fun setChargingLimitStatus(
         switchStat: Boolean

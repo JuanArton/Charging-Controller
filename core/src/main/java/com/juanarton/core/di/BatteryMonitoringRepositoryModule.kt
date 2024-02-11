@@ -1,6 +1,6 @@
 package com.juanarton.core.di
 
-import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
+import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.data.repository.BatteryMonitoringRepository
 import dagger.Binds
 import dagger.Module
@@ -13,13 +13,5 @@ abstract class BatteryMonitoringRepositoryModule {
     @Binds
     abstract fun provideBatteryMonitoringRepository(
         batteryMonitoringRepository: BatteryMonitoringRepository
-    ): BatteryMonitoringRepoInterface
+    ): IBatteryMonitoringRepository
 }
-
-/*@Module
-@InstallIn(SingletonComponent::class)
-class LocalDataSourceModule {
-    @Singleton
-    @Provides
-    fun provideLocalDataSource(dao: DAO) = LocalDataSource(dao)
-}*/

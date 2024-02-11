@@ -1,16 +1,39 @@
-package com.juanarton.core.data.source.local
+package com.juanarton.core.data.source.local.monitoring
 
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.utils.BatteryUtils
+import com.juanarton.core.utils.BatteryUtils.getACCharge
+import com.juanarton.core.utils.BatteryUtils.getChargingStatus
+import com.juanarton.core.utils.BatteryUtils.getCurrent
+import com.juanarton.core.utils.BatteryUtils.getLevel
+import com.juanarton.core.utils.BatteryUtils.getTemperature
+import com.juanarton.core.utils.BatteryUtils.getUSBCharge
+import com.juanarton.core.utils.BatteryUtils.getVoltage
+import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.abs
 
 @Singleton
-class LocalDataSource @Inject constructor(context: Context) {
+class LMonitoringDataSource @Inject constructor(context: Context) {
+
+    fun getBatteryInfo(context: Context): BatteryInfo {
+        registerStickyReceiver(context)
+
+        val voltage = getVoltage()
+
+        val current = getCurrent()
+
+        val power = voltage * current / 1000
+
+        return BatteryInfo(
+            getChargingStatus(), getACCharge(), getUSBCharge(), getLevel(), voltage,
+            current.toInt(), abs(power), getTemperature()
+        )
+    }
+
     private val sharedPreferences = context.getSharedPreferences(
         "batteryMonitoringData", Context.MODE_PRIVATE
     )

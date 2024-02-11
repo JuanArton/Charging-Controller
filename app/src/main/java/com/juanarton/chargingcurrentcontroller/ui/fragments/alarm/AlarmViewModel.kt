@@ -2,12 +2,14 @@ package com.juanarton.chargingcurrentcontroller.ui.fragments.alarm
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.juanarton.core.data.domain.batteryInfo.usecase.BatteryInfoRepositoryUseCase
+import com.juanarton.core.data.domain.batteryInfo.usecase.AppConfigUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AlarmViewModel @Inject constructor(private val batteryInfoRepositoryUseCase: BatteryInfoRepositoryUseCase) : ViewModel() {
+class AlarmViewModel @Inject constructor(
+    private val appConfigUseCase: AppConfigUseCase
+) : ViewModel() {
 
     private val _batteryLevelThreshold: MutableLiveData<Pair<Int, Int>> = MutableLiveData()
     val batteryLevelThreshold = _batteryLevelThreshold
@@ -22,32 +24,32 @@ class AlarmViewModel @Inject constructor(private val batteryInfoRepositoryUseCas
     val batteryTemperatureAlarmStatus = _batteryTempAlarmStatus
 
     fun getBatteryLevelThreshold() {
-        _batteryLevelThreshold.value = batteryInfoRepositoryUseCase.getBatteryLevelThreshold()
+        _batteryLevelThreshold.value = appConfigUseCase.getBatteryLevelThreshold()
     }
 
     fun setBatteryLevelThreshold (min: Int, max: Int, callback: (Boolean) -> Unit) =
-        batteryInfoRepositoryUseCase.setBatteryLevelThreshold(min, max, callback)
+        appConfigUseCase.setBatteryLevelThreshold(min, max, callback)
 
     fun getBatteryLevelAlarmStatus() {
-        _batteryLevelAlarmStatus.value = batteryInfoRepositoryUseCase.getBatteryLevelAlarmStatus()
+        _batteryLevelAlarmStatus.value = appConfigUseCase.getBatteryLevelAlarmStatus()
     }
 
     fun setBatteryLevelAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) =
-        batteryInfoRepositoryUseCase.setBatteryLevelAlarmStatus(value, callback)
+        appConfigUseCase.setBatteryLevelAlarmStatus(value, callback)
 
     fun getBatteryTemperatureThreshold() {
-        _batteryTemperatureThreshold.value = batteryInfoRepositoryUseCase.getBatteryTemperatureThreshold()
+        _batteryTemperatureThreshold.value = appConfigUseCase.getBatteryTemperatureThreshold()
     }
 
     fun setBatteryTemperatureThreshold(temp: Int, callback: (Boolean) -> Unit) {
-        batteryInfoRepositoryUseCase.setBatteryTemperatureThreshold(temp, callback)
+        appConfigUseCase.setBatteryTemperatureThreshold(temp, callback)
     }
 
     fun getBatteryTemperatureAlarmStatus() {
-        _batteryTempAlarmStatus.value = batteryInfoRepositoryUseCase.getBatteryTemperatureAlarmStatus()
+        _batteryTempAlarmStatus.value = appConfigUseCase.getBatteryTemperatureAlarmStatus()
     }
 
     fun setBatteryTemperatureAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) {
-        batteryInfoRepositoryUseCase.setBatteryTemperatureAlarmStatus(value, callback)
+        appConfigUseCase.setBatteryTemperatureAlarmStatus(value, callback)
     }
 }

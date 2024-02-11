@@ -33,8 +33,10 @@ import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreen
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnTime
 import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil.formatTime
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateCpuAwakePercentage
+import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.chargingcurrentcontroller.utils.Utils.formatDeepSleepAwake
+import com.juanarton.chargingcurrentcontroller.utils.Utils.formatSpeed
 import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePerHour
 import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePercentage
 import com.juanarton.core.utils.Utils
@@ -350,6 +352,12 @@ class DashboardFragment : Fragment() {
             tvDeepSleepValue.text = formatTime(getDeepSleepTime())
             tvAwakePercentage.text = formatDeepSleepAwake(cpuAwakePercentage)
             tvDeepSleepPercentage.text = formatDeepSleepAwake(deepSleepPercentage)
+            tvAwakePerHrValue.text = formatSpeed(
+                calculateDeepSleepAwakeSpeed(cpuAwakePercentage, screenOffDrainPerHrTmp)
+            )
+            tvDeepSleepPerHrValue.text = formatSpeed(
+                calculateDeepSleepAwakeSpeed(deepSleepPercentage, screenOffDrainPerHrTmp)
+            )
         }
     }
 

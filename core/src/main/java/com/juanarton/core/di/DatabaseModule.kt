@@ -2,8 +2,8 @@ package com.juanarton.core.di
 
 import android.content.Context
 import androidx.room.Room
-import com.juanarton.core.data.source.local.room.DAO
-import com.juanarton.core.data.source.local.room.entity.TriCDatababse
+import com.juanarton.core.data.source.local.monitoring.room.DAO
+import com.juanarton.core.data.source.local.monitoring.room.entity.TriCDatababse
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

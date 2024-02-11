@@ -1,81 +1,89 @@
 package com.juanarton.core.data.repository
 
 import android.content.Context
-import android.util.Log
-import com.juanarton.core.data.domain.batteryMonitoring.repository.BatteryMonitoringRepoInterface
-import com.juanarton.core.data.source.local.LocalDataSource
+import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
+import com.juanarton.core.data.source.local.monitoring.LMonitoringDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
 class BatteryMonitoringRepository @Inject constructor(
-    private val localDataSource: LocalDataSource
-): BatteryMonitoringRepoInterface {
+    private val lMonitoringDataSource: LMonitoringDataSource,
+    private val context: Context
+): IBatteryMonitoringRepository {
+    override fun getBatteryInfo(): Flow<BatteryInfo> = flow {
+        emit(lMonitoringDataSource.getBatteryInfo(context))
+    }.flowOn(Dispatchers.IO)
+
     override fun getDeepSleepInitialValue(): Long =
-        localDataSource.getDeepSleepInitialValue()
+        lMonitoringDataSource.getDeepSleepInitialValue()
 
 
     override fun insertDeepSleepInitialValue(deepSleepInitialVale: Long) {
-        localDataSource.insertDeepSleepInitialValue(deepSleepInitialVale)
+        lMonitoringDataSource.insertDeepSleepInitialValue(deepSleepInitialVale)
     }
 
     override fun getStartTime(): Date {
         val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
-        return dateFormat.parse(localDataSource.getStartTime())
+        return dateFormat.parse(lMonitoringDataSource.getStartTime())
     }
 
-
     override fun insertStartTime(startTime: Date) {
-        localDataSource.insertStartTime(startTime.toString())
+        lMonitoringDataSource.insertStartTime(startTime.toString())
     }
 
     override fun getScreenOnTime(): Long =
-        localDataSource.getScreenOnTime()
+        lMonitoringDataSource.getScreenOnTime()
 
 
     override fun insertScreenOnTime(seconds: Long) {
-        localDataSource.insertScreenOnTime(seconds)
+        lMonitoringDataSource.insertScreenOnTime(seconds)
     }
 
     override fun getScreenOffTime(): Long =
-        localDataSource.getScreenOffTime()
+        lMonitoringDataSource.getScreenOffTime()
 
     override fun insertScreenOffTime(seconds: Long) {
-        localDataSource.insertScreenOffTime(seconds)
+        lMonitoringDataSource.insertScreenOffTime(seconds)
     }
 
     override fun getCpuAwake(): Long =
-        localDataSource.getCpuAwake()
+        lMonitoringDataSource.getCpuAwake()
 
     override fun insertCpuAwake(cpuAwake: Long) {
-        localDataSource.insertCpuAwake(cpuAwake)
+        lMonitoringDataSource.insertCpuAwake(cpuAwake)
     }
 
     override fun getBatteryLevel(context: Context): Int =
-        localDataSource.getBatteryLevel(context)
+        lMonitoringDataSource.getBatteryLevel(context)
 
     override fun insertBatteryLevel(level: Int) {
-        localDataSource.insertBatteryLevel(level)
+        lMonitoringDataSource.insertBatteryLevel(level)
     }
 
     override fun getInitialBatteryLevel(context: Context): Int =
-        localDataSource.getInitialBatteryLevel(context)
+        lMonitoringDataSource.getInitialBatteryLevel(context)
 
     override fun insertInitialBatteryLevel(level: Int) {
-        localDataSource.insertInitialBatteryLevel(level)
+        lMonitoringDataSource.insertInitialBatteryLevel(level)
     }
 
     override fun getScreenOnDrain(): Int =
-        localDataSource.getScreenOnDrain()
+        lMonitoringDataSource.getScreenOnDrain()
 
     override fun insertScreenOnDrain(level: Int) {
-        localDataSource.insertScreenOnDrain(level)
+        lMonitoringDataSource.insertScreenOnDrain(level)
     }
 
     override fun getScreenOffDrain(): Int =
-        localDataSource.getScreenOffDrain()
+        lMonitoringDataSource.getScreenOffDrain()
 
     override fun insertScreenOffDrain(level: Int) {
-        localDataSource.insertScreenOffDrain(level)
+        lMonitoringDataSource.insertScreenOffDrain(level)
     }
 }

@@ -1,13 +1,13 @@
-package com.juanarton.core.data.source.local.room
+package com.juanarton.core.data.source.local.monitoring.room
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.juanarton.core.data.source.local.room.entity.DeepSleepEntity
-import com.juanarton.core.data.source.local.room.entity.ScreenOffEntity
-import com.juanarton.core.data.source.local.room.entity.ScreenOnEntity
-import com.juanarton.core.data.source.local.room.entity.StartTimeEntity
+import com.juanarton.core.data.source.local.monitoring.room.entity.DeepSleepEntity
+import com.juanarton.core.data.source.local.monitoring.room.entity.ScreenOffEntity
+import com.juanarton.core.data.source.local.monitoring.room.entity.ScreenOnEntity
+import com.juanarton.core.data.source.local.monitoring.room.entity.StartTimeEntity
 
 @Dao
 interface DAO {

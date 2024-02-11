@@ -1,9 +1,9 @@
 package com.juanarton.chargingcurrentcontroller.di
 
-import com.juanarton.core.data.domain.batteryInfo.usecase.BatteryInfoRepositoryInteractor
-import com.juanarton.core.data.domain.batteryInfo.usecase.BatteryInfoRepositoryUseCase
-import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringRepoInteractor
-import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringRepoUseCase
+import com.juanarton.core.data.domain.batteryInfo.usecase.AppConfigInteractor
+import com.juanarton.core.data.domain.batteryInfo.usecase.AppConfigUseCase
+import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringInteractor
+import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,12 +17,12 @@ abstract class AppModule {
     @Binds
     @ViewModelScoped
     abstract fun provideBatteryInfoRepositoryUseCase(
-        batteryInfoRepositoryInteractor: BatteryInfoRepositoryInteractor
-    ): BatteryInfoRepositoryUseCase
+        appConfigInteractor: AppConfigInteractor
+    ): AppConfigUseCase
 
     @Binds
     @ViewModelScoped
     abstract fun provideBatteryMonitoringRepositoryUseCase(
-        batteryMonitoringRepoInteractor: BatteryMonitoringRepoInteractor
-    ): BatteryMonitoringRepoUseCase
+        batteryMonitoringInteractor: BatteryMonitoringInteractor
+    ): BatteryMonitoringUseCase
 }

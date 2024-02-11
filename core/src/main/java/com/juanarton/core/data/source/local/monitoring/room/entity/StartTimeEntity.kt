@@ -1,4 +1,4 @@
-package com.juanarton.core.data.source.local.room.entity
+package com.juanarton.core.data.source.local.monitoring.room.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

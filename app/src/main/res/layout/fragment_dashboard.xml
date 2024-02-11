@@ -563,6 +563,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tvScreenOnValue"
+                        android:layout_marginTop="5dp"
                         android:textSize="13sp" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -622,6 +623,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tvScreenOffValue"
+                        android:layout_marginTop="5dp"
                         android:textSize="13sp" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -681,6 +683,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tvTotalTimeValue"
+                        android:layout_marginTop="5dp"
                         android:textSize="13sp" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -779,6 +782,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tvAwakeValue"
+                            android:layout_marginTop="5dp"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvAwakePerHrValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvAwakePercentage"
+                            android:layout_marginTop="5dp"
                             android:textSize="13sp" />
                     </RelativeLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -868,6 +880,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tvDeepSleepValue"
+                            android:layout_marginTop="5dp"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvDeepSleepPerHrValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvDeepSleepPercentage"
+                            android:layout_marginTop="5dp"
                             android:textSize="13sp" />
                     </RelativeLayout>
                 </com.google.android.material.card.MaterialCardView>
