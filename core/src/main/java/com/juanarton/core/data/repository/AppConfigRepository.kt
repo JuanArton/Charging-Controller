@@ -1,13 +1,10 @@
 package com.juanarton.core.data.repository
 
 import android.content.Context
-import android.util.Log
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
 import com.juanarton.core.data.source.local.appConfig.LAppConfigDataSource
-import com.juanarton.core.utils.Utils
-import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -19,15 +16,6 @@ class AppConfigRepository @Inject constructor(
     private val lAppConfigDataSource: LAppConfigDataSource,
     private val context: Context
 ): IAppConfigRepository {
-    companion object {
-        const val PATH = "/data/adb/modules/3C"
-        const val BATTERY_MIN_LEVEL = "levelMin"
-        const val BATTERY_MAX_LEVEL = "levelMax"
-        const val BATTERY_LEVEL_ALARM_KEY = "levelAlarm"
-        const val BATTERY_ALARM_PREF = "BatteryAlarmPref"
-        const val BATTERY_TEMPERATURE_ALARM_KEY = "temperatureAlarm"
-        const val BATTERY_MAX_TEMP = "tempMax"
-    }
 
     override fun getConfig(): Flow<Config> =
         flow {

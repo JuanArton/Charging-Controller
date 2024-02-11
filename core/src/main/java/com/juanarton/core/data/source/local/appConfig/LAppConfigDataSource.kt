@@ -4,11 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
-import com.juanarton.core.data.repository.AppConfigRepository
-import com.juanarton.core.data.repository.AppConfigRepository.Companion.BATTERY_ALARM_PREF
 import com.juanarton.core.utils.Utils
 import com.topjohnwu.superuser.Shell
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
@@ -49,30 +46,28 @@ class LAppConfigDataSource {
     }
 
     fun setTargetCurrent(targetCurrent: String): Result {
-        val command = "${AppConfigRepository.PATH}/3c.sh setValue chargingCurrent $targetCurrent"
+        val command = "${PATH}/3c.sh setValue chargingCurrent $targetCurrent"
         val result = Shell.cmd(command).exec()
 
         val readResult = Utils.getValue("chargingCurrent")
         val value = readResult.out[0]
 
-        if (result.isSuccess) {
-            return if (value == targetCurrent) {
-                Shell.cmd("${AppConfigRepository.PATH}/3c.sh restartCurrentController").exec()
+        return if (result.isSuccess) {
+            if (value == targetCurrent) {
+                Shell.cmd("${PATH}/3c.sh restartCurrentController").exec()
                 Result("Success", true)
             } else {
                 Result("Failed to set new target Current", false)
             }
         } else {
-            return (
-                Result("Error: ${result.err}", true)
-            )
+            Result("Error: ${result.err}", true)
         }
     }
 
     fun setChargingSwitchStatus(switchStat: Boolean): Result {
         val stat = if (switchStat) "0" else "1"
 
-        val command = "${AppConfigRepository.PATH}/3c.sh setValue enableCharging $stat"
+        val command = "${PATH}/3c.sh setValue enableCharging $stat"
         val result = Shell.cmd(command).exec()
 
         val readResult = Utils.getValue("enableCharging")
@@ -80,7 +75,7 @@ class LAppConfigDataSource {
 
         return if (result.isSuccess) {
             if(value != switchStat) {
-                Shell.cmd("${AppConfigRepository.PATH}/3c.sh applyChargingSwitch").exec()
+                Shell.cmd("${PATH}/3c.sh applyChargingSwitch").exec()
                 Result("Success", true)
             } else {
                 Result("Failed to switch charging", false)
@@ -93,7 +88,7 @@ class LAppConfigDataSource {
     fun setChargingLimitStatus(switchStat: Boolean): Result {
         val stat = if (switchStat) "1" else "0"
 
-        val command = "${AppConfigRepository.PATH}/3c.sh setValue enableLimitCharging $stat"
+        val command = "${PATH}/3c.sh setValue enableLimitCharging $stat"
         val result = Shell.cmd(command).exec()
 
         val readStatus = Utils.getValue("enableLimitCharging")
@@ -102,9 +97,9 @@ class LAppConfigDataSource {
         return if (result.isSuccess) {
             if(statusValue == switchStat) {
                 if(statusValue) {
-                    Shell.cmd("${AppConfigRepository.PATH}/3c.sh restartBatteryMonitor").exec()
+                    Shell.cmd("${PATH}/3c.sh restartBatteryMonitor").exec()
                 } else {
-                    Shell.cmd("${AppConfigRepository.PATH}/3c.sh killBateryMonitor").exec()
+                    Shell.cmd("${PATH}/3c.sh killBateryMonitor").exec()
                 }
                 Result("Success", true)
             } else {
@@ -116,7 +111,7 @@ class LAppConfigDataSource {
     }
 
     fun setMaximumCapacity(maxCapacity: String): Result {
-        val command = "${AppConfigRepository.PATH}/3c.sh setValue maxCapacity ${maxCapacity.toInt()}"
+        val command = "${PATH}/3c.sh setValue maxCapacity ${maxCapacity.toInt()}"
         val result = Shell.cmd(command).exec()
 
         Log.d("test", maxCapacity.toInt().toString())
@@ -125,7 +120,7 @@ class LAppConfigDataSource {
 
         return if (result.isSuccess) {
             if(capacityValue == maxCapacity.toInt().toString()) {
-                Shell.cmd("${AppConfigRepository.PATH}/3c.sh restartBatteryMonitor").exec()
+                Shell.cmd("${PATH}/3c.sh restartBatteryMonitor").exec()
                 Result("Success", true)
             } else {
                 Result("Failed to switch charging limit", false)
@@ -149,11 +144,11 @@ class LAppConfigDataSource {
     }
 
     fun getBatteryLevelThreshold(context: Context): Pair<Int, Int> {
-        val sharedPreferences = context.getSharedPreferences(AppConfigRepository.BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences(BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
 
-        val min = sharedPreferences.getInt(AppConfigRepository.BATTERY_MIN_LEVEL, 20)
+        val min = sharedPreferences.getInt(BATTERY_MIN_LEVEL, 20)
 
-        val max = sharedPreferences.getInt(AppConfigRepository.BATTERY_MAX_LEVEL, 80)
+        val max = sharedPreferences.getInt(BATTERY_MAX_LEVEL, 80)
 
         return Pair(min, max)
     }
@@ -162,7 +157,7 @@ class LAppConfigDataSource {
         return try {
             val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
-            editor.putBoolean(AppConfigRepository.BATTERY_LEVEL_ALARM_KEY, value).apply()
+            editor.putBoolean(BATTERY_LEVEL_ALARM_KEY, value).apply()
             true
         } catch (e: Exception) {
             false
@@ -172,14 +167,14 @@ class LAppConfigDataSource {
     fun getBatteryLevelAlarmStatus(context: Context): Boolean {
         val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
 
-        return sharedPreferences.getBoolean(AppConfigRepository.BATTERY_LEVEL_ALARM_KEY, false)
+        return sharedPreferences.getBoolean(BATTERY_LEVEL_ALARM_KEY, false)
     }
 
     fun setBatteryTemperatureThreshold(temperature: Int, context: Context): Boolean {
         return try {
-            val sharedPreferences = context.getSharedPreferences(AppConfigRepository.BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
+            val sharedPreferences = context.getSharedPreferences(BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
-            editor.putInt(AppConfigRepository.BATTERY_MAX_TEMP, temperature)
+            editor.putInt(BATTERY_MAX_TEMP, temperature)
             editor.apply()
 
             true
@@ -190,16 +185,16 @@ class LAppConfigDataSource {
 
     fun getBatteryTemperatureThreshold(context: Context): Int {
         val sharedPreferences =
-            context.getSharedPreferences(AppConfigRepository.BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
+            context.getSharedPreferences(BATTERY_ALARM_PREF, Context.MODE_PRIVATE)
 
-        return sharedPreferences.getInt(AppConfigRepository.BATTERY_MAX_TEMP, 38)
+        return sharedPreferences.getInt(BATTERY_MAX_TEMP, 38)
     }
 
     fun setBatteryTemperatureAlarmStatus(value: Boolean, context: Context): Boolean {
         return try {
             val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
-            editor.putBoolean(AppConfigRepository.BATTERY_TEMPERATURE_ALARM_KEY, value).apply()
+            editor.putBoolean(BATTERY_TEMPERATURE_ALARM_KEY, value).apply()
 
             true
         } catch (e: Exception) {
@@ -210,6 +205,6 @@ class LAppConfigDataSource {
     fun getBatteryTemperatureAlarmStatus(context: Context): Boolean {
         val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
 
-        return sharedPreferences.getBoolean(AppConfigRepository.BATTERY_TEMPERATURE_ALARM_KEY, false)
+        return sharedPreferences.getBoolean(BATTERY_TEMPERATURE_ALARM_KEY, false)
     }
 }
