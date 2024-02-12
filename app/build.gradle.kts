@@ -64,5 +64,6 @@ dependencies {
 
     implementation("com.github.fondesa:kpermissions-coroutines:3.4.0")
 
+    //noinspection GradleDependency
     implementation("com.scwang.wave:MultiWaveHeader:1.0.0-andx")
 }

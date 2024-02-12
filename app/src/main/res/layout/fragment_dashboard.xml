@@ -52,7 +52,7 @@
                     <com.scwang.wave.MultiWaveHeader
                         android:id="@+id/waveAnimation"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_alignParentBottom="true"
                         android:scaleY="-1"
                         app:mwhCloseColor="?attr/colorPrimary"
@@ -128,9 +128,11 @@
                                 android:id="@+id/tvStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
-                                android:textSize="14sp"
-                                android:text="@string/status" />
+                                android:layout_toStartOf="@+id/imageView"
+                                android:text="@string/status"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/tvBatteryStatus"
@@ -164,6 +166,7 @@
                             android:layout_height="match_parent">
 
                             <ImageView
+                                android:id="@+id/imageView2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
@@ -176,9 +179,11 @@
                                 android:id="@+id/tvType"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
-                                android:textSize="14sp"
-                                android:text="@string/type" />
+                                android:layout_toStartOf="@+id/imageView2"
+                                android:text="@string/type"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/tvChargingType"
@@ -212,21 +217,24 @@
                         android:layout_height="match_parent">
 
                         <ImageView
+                            android:id="@+id/imageView3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
+                            android:contentDescription="@string/charging_voltage_icon"
                             android:scaleType="center"
-                            android:src="@drawable/bolt"
-                            android:contentDescription="@string/charging_voltage_icon" />
+                            android:src="@drawable/bolt" />
 
                         <TextView
                             android:id="@+id/tvVoltage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
-                            android:textSize="14sp"
-                            android:text="@string/voltage" />
+                            android:layout_toStartOf="@+id/imageView3"
+                            android:text="@string/voltage"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvBatteryVoltage"
@@ -298,9 +306,11 @@
                         android:id="@+id/tvChartInfoTitle1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:textSize="14sp"
-                        android:text="@string/temperature" />
+                        android:layout_toStartOf="@+id/ivChartInfo1"
+                        android:text="@string/temperature"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvChartInfoValue1"
@@ -344,9 +354,11 @@
                         android:id="@+id/tvChartInfoTitle2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:textSize="14sp"
-                        android:text="@string/power" />
+                        android:layout_toStartOf="@+id/ivChartInfo2"
+                        android:text="@string/power"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvChartInfoValue2"
@@ -696,6 +708,7 @@
             android:orientation="horizontal"
             android:weightSum="2"
             android:layout_marginTop="10dp"
+            android:baselineAligned="false"
             app:layout_constraintTop_toBottomOf="@id/linearLayout3">
 
             <LinearLayout

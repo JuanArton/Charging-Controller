@@ -2,7 +2,6 @@ package com.juanarton.core.utils
 
 import android.content.Context
 import com.juanarton.core.R
-import com.juanarton.core.data.repository.AppConfigRepository
 import com.juanarton.core.data.source.local.appConfig.LAppConfigDataSource.Companion.PATH
 import com.topjohnwu.superuser.Shell
 

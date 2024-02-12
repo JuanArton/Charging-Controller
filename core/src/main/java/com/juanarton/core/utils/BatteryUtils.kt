@@ -6,9 +6,6 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.os.SystemClock
-import android.util.Log
-import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
-import kotlin.math.abs
 
 object BatteryUtils {
 

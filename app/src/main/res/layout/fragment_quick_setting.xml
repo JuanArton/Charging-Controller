@@ -73,6 +73,7 @@
                         android:layout_below="@id/tvIdleModeDesc"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="5dp"
+                        android:layout_toStartOf="@+id/chargingSwitch"
                         android:gravity="center_vertical|start"
                         android:text="@string/trigerred_by_charging_limit"
                         android:textSize="11sp"
