@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
@@ -31,6 +30,12 @@ import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreen
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.currentData
+import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.currentLineDataSet
+import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.temperatureData
+import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.temperatureLineDataSet
+import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.powerData
+import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.powerLineDataSet
 import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil.formatTime
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepAwakeSpeed
@@ -177,11 +182,6 @@ class DashboardFragment : Fragment() {
                 }
 
                 with(dashboardViewModel) {
-                    addData(
-                        Entry(60F, abs(it.currentNow.toFloat())),
-                        Entry(60F, abs(it.temperature.toFloat())),
-                        Entry(60F, abs(it.power))
-                    )
                     currentData.notifyDataChanged()
                     chargingCurrentChart.notifyDataSetChanged()
                     chargingCurrentChart.invalidate()
@@ -296,8 +296,8 @@ class DashboardFragment : Fragment() {
 
     private fun showCurrent() {
         showChart(
-            dashboardViewModel.currentLineDataSet,
-            dashboardViewModel.currentData,
+            currentLineDataSet,
+            currentData,
             R.drawable.chart_gradient
         )
         currentGraph = true
@@ -307,8 +307,8 @@ class DashboardFragment : Fragment() {
 
     private fun showTemperature() {
         showChart(
-            dashboardViewModel.temperatureLineDataSet,
-            dashboardViewModel.temperatureData,
+            temperatureLineDataSet,
+            temperatureData,
             R.drawable.chart_gradient
         )
         currentGraph = false
@@ -318,8 +318,8 @@ class DashboardFragment : Fragment() {
 
     private fun showPower() {
         showChart(
-            dashboardViewModel.powerLineDataSet,
-            dashboardViewModel.powerData,
+            powerLineDataSet,
+            powerData,
             R.drawable.chart_gradient
         )
         currentGraph = false

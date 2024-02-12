@@ -15,6 +15,7 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.github.mikephil.charting.data.Entry
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.broadcastreceiver.BatteryStateReceiver
 import com.juanarton.chargingcurrentcontroller.broadcastreceiver.PowerStateReceiver
@@ -35,6 +36,7 @@ import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreen
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getScreenOnTime
+import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder
 import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
@@ -49,6 +51,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class BatteryMonitorService : Service() {
@@ -96,6 +99,7 @@ class BatteryMonitorService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent) {
         unregisterReceiver()
+        serviceJob?.cancel()
         val restartServiceIntent = Intent(applicationContext, BatteryMonitorService::class.java).also {
             it.setPackage(packageName)
         }
@@ -111,12 +115,14 @@ class BatteryMonitorService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver()
+        serviceJob?.cancel()
     }
 
     override fun onCreate() {
         super.onCreate()
 
         registerReceiver()
+        serviceJob?.cancel()
     }
 
     private fun monitorBattery(): Job {
@@ -127,10 +133,6 @@ class BatteryMonitorService : Service() {
                 addScreenOnDrain(iBatteryMonitoringRepository.getScreenOnDrain())
                 addScreenOffDrain(iBatteryMonitoringRepository.getScreenOffDrain())
                 iBatteryMonitoringRepository.getBatteryInfo().collect {
-                    updateNotification(
-                        it, getScreenOnTime(), getScreenOffTime(), getScreenOnDrainPerHr(),
-                        getScreenOffDrainPerHr(), getScreenOnDrain(), getScreenOffDrain()
-                    )
                     when (screenOn) {
                         true -> {
                             insertScreenOnTime()
@@ -141,6 +143,10 @@ class BatteryMonitorService : Service() {
                             insertScreenOffTime()
                         }
                     }
+                    updateNotification(
+                        it, getScreenOnTime(), getScreenOffTime(), getScreenOnDrainPerHr(),
+                        getScreenOffDrainPerHr(), getScreenOnDrain(), getScreenOffDrain()
+                    )
                 }
                 delay(delayDuration * 1000)
             }
@@ -171,6 +177,7 @@ class BatteryMonitorService : Service() {
             startForeground(SERVICE_NOTIFICATION_ID, createNotification())
 
             startMonitoring()
+            startBatteryHistory()
         }
     }
 
@@ -238,6 +245,21 @@ class BatteryMonitorService : Service() {
                 Date(), iBatteryMonitoringRepository.getStartTime()
             )
         )
+    }
+
+    private fun startBatteryHistory() {
+        CoroutineScope(Dispatchers.IO).launch {
+            while (isActive) {
+                iBatteryMonitoringRepository.getBatteryInfo().collect {
+                    BatteryHistoryHolder.addData(
+                        Entry(60F, abs(it.currentNow.toFloat())),
+                        Entry(60F, abs(it.temperature.toFloat())),
+                        Entry(60F, abs(it.power))
+                    )
+                }
+                delay(1 * 1000)
+            }
+        }
     }
 
     private fun insertDeepSleepAndAwake() {

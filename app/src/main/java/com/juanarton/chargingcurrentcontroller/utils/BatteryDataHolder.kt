@@ -1,7 +1,5 @@
 package com.juanarton.chargingcurrentcontroller.utils
 
-import com.airbnb.lottie.L
-
 object BatteryDataHolder {
     private var screenOnTime = 0L
     private var screenOffTime = 0L
