@@ -99,7 +99,6 @@ class BatteryMonitorService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent) {
         unregisterReceiver()
-        serviceJob?.cancel()
         val restartServiceIntent = Intent(applicationContext, BatteryMonitorService::class.java).also {
             it.setPackage(packageName)
         }
@@ -115,14 +114,12 @@ class BatteryMonitorService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver()
-        serviceJob?.cancel()
     }
 
     override fun onCreate() {
         super.onCreate()
 
         registerReceiver()
-        serviceJob?.cancel()
     }
 
     private fun monitorBattery(): Job {
