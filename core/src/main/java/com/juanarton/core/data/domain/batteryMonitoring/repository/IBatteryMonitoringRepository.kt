@@ -2,6 +2,8 @@ package com.juanarton.core.data.domain.batteryMonitoring.repository
 
 import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
+import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryEntity
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
@@ -43,4 +45,6 @@ interface IBatteryMonitoringRepository {
     fun getScreenOffDrain(): Int
 
     fun insertScreenOffDrain(level: Int)
+
+    fun insertHistory(batteryHistory: BatteryHistory)
 }

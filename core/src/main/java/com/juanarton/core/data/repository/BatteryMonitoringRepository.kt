@@ -2,8 +2,11 @@ package com.juanarton.core.data.repository
 
 import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.data.source.local.monitoring.LMonitoringDataSource
+import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryEntity
+import com.juanarton.core.utils.DomainUtils.mapHistoryDomainToEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -85,5 +88,17 @@ class BatteryMonitoringRepository @Inject constructor(
 
     override fun insertScreenOffDrain(level: Int) {
         lMonitoringDataSource.insertScreenOffDrain(level)
+    }
+
+    override fun insertHistory(batteryHistory: BatteryHistory) {
+        if (lMonitoringDataSource.getRowCount() >= 21600) {
+            lMonitoringDataSource.deleteFirst(
+                lMonitoringDataSource.getFirst()
+            )
+        }
+
+        lMonitoringDataSource.insertHistory(
+            mapHistoryDomainToEntity(batteryHistory)
+        )
     }
 }

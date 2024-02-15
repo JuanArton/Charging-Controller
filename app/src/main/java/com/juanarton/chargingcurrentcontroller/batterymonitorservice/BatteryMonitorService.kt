@@ -40,12 +40,12 @@ import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder
 import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
+import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -61,6 +61,7 @@ class BatteryMonitorService : Service() {
     lateinit var iAppConfigRepository: IAppConfigRepository
     @Inject
     lateinit var iBatteryMonitoringRepository: IBatteryMonitoringRepository
+
     private lateinit var notificationManager:NotificationManager
     private lateinit var builder: NotificationCompat.Builder
     private val screenStateReceiver = ScreenStateReceiver()
@@ -72,7 +73,6 @@ class BatteryMonitorService : Service() {
         const val SERVICE_NOTIF_CHANNEL_ID = "BatteryMonitorChannel"
         var isRegistered = false
         var delayDuration: Long = 5
-        var serviceJob: Job? = null
         var deepSleepInitialValue: Long = 0
         var screenOnBuffer: Long = 0
         var screenOffBuffer: Long = 0
@@ -122,8 +122,8 @@ class BatteryMonitorService : Service() {
         registerReceiver()
     }
 
-    private fun monitorBattery(): Job {
-        return CoroutineScope(Dispatchers.IO).launch {
+    private fun monitorBattery() {
+        CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 addScreenOnTime(iBatteryMonitoringRepository.getScreenOnTime())
                 addScreenOffTime(iBatteryMonitoringRepository.getScreenOffTime())
@@ -144,6 +144,12 @@ class BatteryMonitorService : Service() {
                         it, getScreenOnTime(), getScreenOffTime(), getScreenOnDrainPerHr(),
                         getScreenOffDrainPerHr(), getScreenOnDrain(), getScreenOffDrain()
                     )
+                    iBatteryMonitoringRepository.insertHistory(
+                        BatteryHistory(
+                            System.currentTimeMillis(), it.level, it.currentNow, it.temperature,
+                            it.power, it.voltage
+                        )
+                    )
                 }
                 delay(delayDuration * 1000)
             }
@@ -151,7 +157,7 @@ class BatteryMonitorService : Service() {
     }
 
     private fun startMonitoring() {
-        serviceJob = monitorBattery()
+        monitorBattery()
     }
 
     private fun startService() {

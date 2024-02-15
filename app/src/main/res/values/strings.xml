@@ -62,4 +62,5 @@
     <string name="speed">Speed :</string>
     <string name="uptime">Uptime</string>
     <string name="cycle_count">Cycle Count</string>
+    <string name="see_full_battery_history">See full battery history</string>
 </resources>

@@ -1,7 +1,13 @@
 package com.juanarton.core.data.source.local.monitoring
 
 import android.content.Context
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.source.local.monitoring.room.DAO
+import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryEntity
 import com.juanarton.core.utils.BatteryUtils
 import com.juanarton.core.utils.BatteryUtils.getACCharge
 import com.juanarton.core.utils.BatteryUtils.getChargingStatus
@@ -19,7 +25,10 @@ import javax.inject.Singleton
 import kotlin.math.abs
 
 @Singleton
-class LMonitoringDataSource @Inject constructor(context: Context) {
+class LMonitoringDataSource @Inject constructor(
+    context: Context,
+    private val dao: DAO
+) {
 
     fun getBatteryInfo(context: Context): BatteryInfo {
         registerStickyReceiver(context)
@@ -114,5 +123,25 @@ class LMonitoringDataSource @Inject constructor(context: Context) {
     fun insertScreenOffDrain(level: Int) {
         editor.putInt("screenOffDrain", level)
         editor.apply()
+    }
+
+    fun getChunkOfData(limit: Int, offset: Int): List<HistoryEntity> {
+        return dao.getBatteryHistory(limit, offset)
+    }
+
+    fun insertHistory(historyEntity: HistoryEntity) {
+        dao.insertHistory(historyEntity)
+    }
+
+    fun getRowCount(): Int {
+        return dao.getRowCount()
+    }
+
+    fun getFirst(): HistoryEntity {
+        return dao.getFirst()
+    }
+
+    fun deleteFirst(historyEntity: HistoryEntity) {
+        dao.deleteFirst(historyEntity)
     }
 }

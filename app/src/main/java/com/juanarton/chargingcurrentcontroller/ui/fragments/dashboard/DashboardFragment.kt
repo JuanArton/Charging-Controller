@@ -102,32 +102,32 @@ class DashboardFragment : Fragment() {
         val wattageUnit = getString(R.string.wattage)
 
         binding?.apply {
-            cgGraphSelector.check(R.id.chipChargingCurrent)
-            cgGraphSelector.setOnCheckedStateChangeListener { group, _ ->
+            batteryHistoryPanel.cgGraphSelector.check(R.id.chipChargingCurrent)
+            batteryHistoryPanel.cgGraphSelector.setOnCheckedStateChangeListener { group, _ ->
                 when (group.checkedChipId) {
-                    chipChargingCurrent.id -> {
+                    batteryHistoryPanel.chipChargingCurrent.id -> {
                         showCurrent()
-                        tvChartInfoTitle1.text = temperatureTitle
-                        tvChartInfoTitle2.text = powerTitle
+                        batteryInfoPanel.tvChartInfoTitle1.text = temperatureTitle
+                        batteryInfoPanel.tvChartInfoTitle2.text = powerTitle
 
-                        ivChartInfo1.setImageResource(R.drawable.temperature)
-                        ivChartInfo2.setImageResource(R.drawable.power)
+                        batteryInfoPanel.ivChartInfo1.setImageResource(R.drawable.temperature)
+                        batteryInfoPanel.ivChartInfo2.setImageResource(R.drawable.power)
                     }
-                    chipTemperature.id -> {
+                    batteryHistoryPanel.chipTemperature.id -> {
                         showTemperature()
-                        tvChartInfoTitle1.text = currentTitle
-                        tvChartInfoTitle2.text = powerTitle
+                        batteryInfoPanel.tvChartInfoTitle1.text = currentTitle
+                        batteryInfoPanel.tvChartInfoTitle2.text = powerTitle
 
-                        ivChartInfo1.setImageResource(R.drawable.charging_current)
-                        ivChartInfo2.setImageResource(R.drawable.power)
+                        batteryInfoPanel.ivChartInfo1.setImageResource(R.drawable.charging_current)
+                        batteryInfoPanel.ivChartInfo2.setImageResource(R.drawable.power)
                     }
-                    chipPower.id -> {
+                    batteryHistoryPanel.chipPower.id -> {
                         showPower()
-                        tvChartInfoTitle1.text = currentTitle
-                        tvChartInfoTitle2.text = temperatureTitle
+                        batteryInfoPanel.tvChartInfoTitle1.text = currentTitle
+                        batteryInfoPanel.tvChartInfoTitle2.text = temperatureTitle
 
-                        ivChartInfo1.setImageResource(R.drawable.charging_current)
-                        ivChartInfo2.setImageResource(R.drawable.temperature)
+                        batteryInfoPanel.ivChartInfo1.setImageResource(R.drawable.charging_current)
+                        batteryInfoPanel.ivChartInfo2.setImageResource(R.drawable.temperature)
                     }
                 }
             }
@@ -143,24 +143,24 @@ class DashboardFragment : Fragment() {
             }
 
             binding?.apply {
-                changeWaveHeight(waveAnimation, rescaleNumber(it.level))
+                changeWaveHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
 
-                tvBatteryPercentage.text = buildString {
+                batteryInfoPanel.tvBatteryPercentage.text = buildString {
                     append(it.level)
                     append("%")
                 }
 
-                tvBatteryCapacity.text = buildString{
+                batteryInfoPanel.tvBatteryCapacity.text = buildString{
                     append("${(batteryCapacity * it.level / 100).toInt()} ${getString(R.string.mah)}")
                     append(" of ")
                     append("${batteryCapacity.toInt()} ${getString(R.string.mah)}")
                 }
 
-                tvBatteryStatus.text = Utils.mapBatteryStatus(it.status, requireContext())
+                batteryInfoPanel.tvBatteryStatus.text = Utils.mapBatteryStatus(it.status, requireContext())
 
-                tvBatteryVoltage.text = it.voltage.toString()
+                batteryInfoPanel.tvBatteryVoltage.text = it.voltage.toString()
 
-                tvChargingType.text = when {
+                batteryInfoPanel.tvChargingType.text = when {
                     it.acCharge -> getString(R.string.ac)
                     it.usbCharge -> getString(R.string.usb)
                     else -> getString(R.string.battery)
@@ -183,24 +183,24 @@ class DashboardFragment : Fragment() {
 
                 with(dashboardViewModel) {
                     currentData.notifyDataChanged()
-                    chargingCurrentChart.notifyDataSetChanged()
-                    chargingCurrentChart.invalidate()
+                    batteryHistoryPanel.chargingCurrentChart.notifyDataSetChanged()
+                    batteryHistoryPanel.chargingCurrentChart.invalidate()
 
                     when {
                         currentGraph -> {
-                            tvChartValue.text = currentValue
-                            tvChartInfoValue1.text = temperatureValue
-                            tvChartInfoValue2.text = powerValue
+                            batteryHistoryPanel.tvChartValue.text = currentValue
+                            batteryInfoPanel.tvChartInfoValue1.text = temperatureValue
+                            batteryInfoPanel.tvChartInfoValue2.text = powerValue
                         }
                         temperatureGraph -> {
-                            tvChartValue.text = temperatureValue
-                            tvChartInfoValue1.text = currentValue
-                            tvChartInfoValue2.text = powerValue
+                            batteryHistoryPanel.tvChartValue.text = temperatureValue
+                            batteryInfoPanel.tvChartInfoValue1.text = currentValue
+                            batteryInfoPanel.tvChartInfoValue2.text = powerValue
                         }
                         powerGraph -> {
-                            tvChartValue.text = powerValue
-                            tvChartInfoValue1.text = currentValue
-                            tvChartInfoValue2.text = temperatureValue
+                            batteryHistoryPanel.tvChartValue.text = powerValue
+                            batteryInfoPanel.tvChartInfoValue1.text = currentValue
+                            batteryInfoPanel.tvChartInfoValue2.text = temperatureValue
                         }
                     }
 
@@ -214,21 +214,21 @@ class DashboardFragment : Fragment() {
 
                     when {
                         currentGraph -> {
-                            setMinMaxText(tvChartMin, currentMin)
-                            setMinMaxText(tvChartMax, currentMax)
+                            setMinMaxText(batteryHistoryPanel.tvChartMin, currentMin)
+                            setMinMaxText(batteryHistoryPanel.tvChartMax, currentMax)
                         }
                         temperatureGraph -> {
-                            setMinMaxText(tvChartMin, tempMin)
-                            setMinMaxText(tvChartMax, tempMax)
+                            setMinMaxText(batteryHistoryPanel.tvChartMin, tempMin)
+                            setMinMaxText(batteryHistoryPanel.tvChartMax, tempMax)
                         }
                         powerGraph -> {
-                            setMinMaxText(tvChartMin, powerMin)
-                            setMinMaxText(tvChartMax, powerMax)
+                            setMinMaxText(batteryHistoryPanel.tvChartMin, powerMin)
+                            setMinMaxText(batteryHistoryPanel.tvChartMax, powerMax)
                         }
                     }
 
-                    tvUptimeValue.text = formatTime(it.uptime)
-                    tvCycleValue.text = it.cycleCount
+                    usageSummaryPanel.tvUptimeValue.text = formatTime(it.uptime)
+                    usageSummaryPanel.tvCycleValue.text = it.cycleCount
                     updateUsageData()
                 }
             }
@@ -253,7 +253,7 @@ class DashboardFragment : Fragment() {
             color = typedValue.data
         }
 
-        binding?.chargingCurrentChart?.apply {
+        binding?.batteryHistoryPanel?.chargingCurrentChart?.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 setLabelCount(13, true)
@@ -339,25 +339,25 @@ class DashboardFragment : Fragment() {
                 deepSleepPercentage
             )
         binding?.apply {
-            tvScreenOnValue.text = formatTime(getScreenOnTime())
-            tvScreenOffValue.text = formatTime(getScreenOffTime())
-            tvTotalTimeValue.text = formatTime(getScreenOffTime() + getScreenOnTime())
-            tvScreenOnUsage.text = formatUsagePercentage(getScreenOnDrain(), getLastChargeLevel())
-            tvScreenOffUsage.text = formatUsagePercentage(getScreenOffDrain(), getLastChargeLevel())
-            tvTotalUsage.text = formatUsagePercentage(
+            usageSummaryPanel.tvScreenOnValue.text = formatTime(getScreenOnTime())
+            usageSummaryPanel.tvScreenOffValue.text = formatTime(getScreenOffTime())
+            usageSummaryPanel.tvTotalTimeValue.text = formatTime(getScreenOffTime() + getScreenOnTime())
+            usageSummaryPanel.tvScreenOnUsage.text = formatUsagePercentage(getScreenOnDrain(), getLastChargeLevel())
+            usageSummaryPanel.tvScreenOffUsage.text = formatUsagePercentage(getScreenOffDrain(), getLastChargeLevel())
+            usageSummaryPanel.tvTotalUsage.text = formatUsagePercentage(
                 getScreenOffDrain() + getScreenOnDrain(),
                 getLastChargeLevel()
             )
-            tvActiveDrainPerHrValue.text = formatUsagePerHour(screenOnDrainPerHrTmp)
-            tvIdleDrainPerHrValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
-            tvAwakeValue.text = formatTime(getAwakeTime())
-            tvDeepSleepValue.text = formatTime(getDeepSleepTime())
-            tvAwakePercentage.text = formatDeepSleepAwake(cpuAwakePercentage)
-            tvDeepSleepPercentage.text = formatDeepSleepAwake(deepSleepPercentage)
-            tvAwakePerHrValue.text = formatSpeed(
+            usageSummaryPanel.tvActiveDrainPerHrValue.text = formatUsagePerHour(screenOnDrainPerHrTmp)
+            usageSummaryPanel.tvIdleDrainPerHrValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
+            usageSummaryPanel.tvAwakeValue.text = formatTime(getAwakeTime())
+            usageSummaryPanel.tvDeepSleepValue.text = formatTime(getDeepSleepTime())
+            usageSummaryPanel.tvAwakePercentage.text = formatDeepSleepAwake(cpuAwakePercentage)
+            usageSummaryPanel.tvDeepSleepPercentage.text = formatDeepSleepAwake(deepSleepPercentage)
+            usageSummaryPanel.tvAwakePerHrValue.text = formatSpeed(
                 calculateDeepSleepAwakeSpeed(cpuAwakePercentage, screenOffDrainPerHrTmp)
             )
-            tvDeepSleepPerHrValue.text = formatSpeed(
+            usageSummaryPanel.tvDeepSleepPerHrValue.text = formatSpeed(
                 calculateDeepSleepAwakeSpeed(deepSleepPercentage, screenOffDrainPerHrTmp)
             )
         }

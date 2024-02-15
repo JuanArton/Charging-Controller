@@ -5,11 +5,8 @@ import androidx.room.RoomDatabase
 import com.juanarton.core.data.source.local.monitoring.room.DAO
 
 @Database(entities = [
-    DeepSleepEntity::class,
-    ScreenOnEntity::class,
-    ScreenOffEntity::class,
-    StartTimeEntity::class
+    HistoryEntity::class
 ], version = 1, exportSchema = false)
-abstract class TriCDatababse: RoomDatabase() {
+abstract class HistoryDatabase: RoomDatabase() {
     abstract  fun dbDao(): DAO
 }
