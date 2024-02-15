@@ -1,4 +1,4 @@
-package com.juanarton.chargingcurrentcontroller
+package com.juanarton.chargingcurrentcontroller.ui.activity.main
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

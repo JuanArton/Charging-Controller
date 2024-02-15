@@ -14,4 +14,17 @@ object DomainUtils {
             batteryHistory.voltage,
         )
     }
+
+    fun mapHistoryEntityToDomain(batteryHistory: List<HistoryEntity>) = run {
+        batteryHistory.map {
+            BatteryHistory(
+                it.timestamp,
+                it.level,
+                it.current,
+                it.temperature,
+                it.power,
+                it.voltage,
+            )
+        }
+    }
 }

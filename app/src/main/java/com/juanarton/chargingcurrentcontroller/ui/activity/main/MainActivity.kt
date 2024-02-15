@@ -1,4 +1,4 @@
-package com.juanarton.chargingcurrentcontroller
+package com.juanarton.chargingcurrentcontroller.ui.activity.main
 
 import android.Manifest
 import android.content.Intent
@@ -20,6 +20,9 @@ import androidx.fragment.app.FragmentTransaction
 import com.fondesa.kpermissions.allDenied
 import com.fondesa.kpermissions.coroutines.sendSuspend
 import com.fondesa.kpermissions.extension.permissionsBuilder
+import com.juanarton.chargingcurrentcontroller.BuildConfig
+import com.juanarton.chargingcurrentcontroller.R
+import com.juanarton.chargingcurrentcontroller.RootCheckActivity
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.Action
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMonitorService
 import com.juanarton.chargingcurrentcontroller.batterymonitorservice.BatteryMonitorService.Companion.isRegistered

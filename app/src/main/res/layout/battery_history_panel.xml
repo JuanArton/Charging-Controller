@@ -143,6 +143,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cgGraphSelector" />
 
     <TextView
+        android:id="@+id/tvFullHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -150,8 +151,10 @@
         android:textColor="?attr/colorPrimary"
         android:textStyle="italic|bold"
         android:textSize="15sp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/btFullHistory"
         app:layout_constraintEnd_toStartOf="@+id/btFullHistory"
-        app:layout_constraintTop_toTopOf="@+id/btFullHistory" />
+        app:layout_constraintTop_toTopOf="@+id/btFullHistory"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

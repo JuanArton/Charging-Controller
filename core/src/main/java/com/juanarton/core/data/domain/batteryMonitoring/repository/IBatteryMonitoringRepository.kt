@@ -47,4 +47,6 @@ interface IBatteryMonitoringRepository {
     fun insertScreenOffDrain(level: Int)
 
     fun insertHistory(batteryHistory: BatteryHistory)
+
+    fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<HistoryEntity>>
 }

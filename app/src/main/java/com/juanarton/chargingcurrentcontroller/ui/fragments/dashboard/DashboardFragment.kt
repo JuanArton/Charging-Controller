@@ -2,6 +2,7 @@ package com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,7 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.FragmentDashboardBinding
+import com.juanarton.chargingcurrentcontroller.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getDeepSleepTime
 import com.juanarton.chargingcurrentcontroller.utils.BatteryDataHolder.getLastChargeLevel
@@ -130,6 +132,9 @@ class DashboardFragment : Fragment() {
                         batteryInfoPanel.ivChartInfo2.setImageResource(R.drawable.temperature)
                     }
                 }
+            }
+            batteryHistoryPanel.btFullHistory.setOnClickListener {
+                startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
             }
         }
 

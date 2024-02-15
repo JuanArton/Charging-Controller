@@ -101,4 +101,9 @@ class BatteryMonitoringRepository @Inject constructor(
             mapHistoryDomainToEntity(batteryHistory)
         )
     }
+
+    override fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<HistoryEntity>> =
+        flow {
+            emit(lMonitoringDataSource.getHistoryDataChunk(limit, offset))
+        }.flowOn(Dispatchers.IO)
 }

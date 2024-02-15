@@ -125,7 +125,7 @@ class LMonitoringDataSource @Inject constructor(
         editor.apply()
     }
 
-    fun getChunkOfData(limit: Int, offset: Int): List<HistoryEntity> {
+    fun getHistoryDataChunk(limit: Int, offset: Int): List<HistoryEntity> {
         return dao.getBatteryHistory(limit, offset)
     }
 
