@@ -6,4 +6,17 @@
     <string name="unknown">Unknown</string>
     <string name="not_charging">Not Charging</string>
     <string name="full">Full</string>
+    <string name="degree_symbol">°C</string>
+    <string name="wattage">W</string>
+    <string name="volt_unit">V</string>
+    <string name="ma">mA</string>
+
+
+    <string name="temp">Temp</string>
+    <string name="volt">Volt</string>
+    <string name="time">Time</string>
+    <string name="power">Power</string>
+    <string name="no">No</string>
+    <string name="level">Level</string>
+    <string name="current">Current</string>
 </resources>

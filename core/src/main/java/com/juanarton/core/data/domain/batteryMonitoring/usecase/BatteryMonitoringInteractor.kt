@@ -73,7 +73,7 @@ class BatteryMonitoringInteractor @Inject constructor(
         iBatteryMonitoringRepository.insertHistory(batteryHistory)
     }
 
-    override fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<HistoryEntity>> =
+    override fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<BatteryHistory>> =
         iBatteryMonitoringRepository.getHistoryDataChunk(limit, offset)
 
 }

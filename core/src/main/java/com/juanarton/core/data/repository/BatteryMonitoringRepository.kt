@@ -5,8 +5,8 @@ import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.data.source.local.monitoring.LMonitoringDataSource
-import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryEntity
 import com.juanarton.core.utils.DomainUtils.mapHistoryDomainToEntity
+import com.juanarton.core.utils.DomainUtils.mapHistoryEntityToDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -102,8 +102,10 @@ class BatteryMonitoringRepository @Inject constructor(
         )
     }
 
-    override fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<HistoryEntity>> =
+    override fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<BatteryHistory>> =
         flow {
-            emit(lMonitoringDataSource.getHistoryDataChunk(limit, offset))
+            emit(
+                mapHistoryEntityToDomain(lMonitoringDataSource.getHistoryDataChunk(limit, offset))
+            )
         }.flowOn(Dispatchers.IO)
 }

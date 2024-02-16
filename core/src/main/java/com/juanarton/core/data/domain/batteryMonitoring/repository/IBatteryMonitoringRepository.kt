@@ -48,5 +48,5 @@ interface IBatteryMonitoringRepository {
 
     fun insertHistory(batteryHistory: BatteryHistory)
 
-    fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<HistoryEntity>>
+    fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<BatteryHistory>>
 }

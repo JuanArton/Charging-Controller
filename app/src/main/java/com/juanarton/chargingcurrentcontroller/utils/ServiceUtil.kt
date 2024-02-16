@@ -1,6 +1,13 @@
 package com.juanarton.chargingcurrentcontroller.utils
 
 import android.content.Context
+import android.os.Build
+import android.view.View
+import android.view.Window
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepPercentage

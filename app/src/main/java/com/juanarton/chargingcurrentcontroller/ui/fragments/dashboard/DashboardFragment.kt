@@ -136,6 +136,9 @@ class DashboardFragment : Fragment() {
             batteryHistoryPanel.btFullHistory.setOnClickListener {
                 startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
             }
+            batteryHistoryPanel.tvFullHistory.setOnClickListener {
+                startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
+            }
         }
 
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {

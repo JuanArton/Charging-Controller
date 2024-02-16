@@ -9,7 +9,7 @@ import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryEntity
 
 @Dao
 interface DAO {
-    @Query("SELECT * FROM batteryHistory LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM batteryHistory ORDER BY timestamp DESC LIMIT :limit OFFSET :offset")
     fun getBatteryHistory(limit: Int, offset: Int): List<HistoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = HistoryEntity::class)

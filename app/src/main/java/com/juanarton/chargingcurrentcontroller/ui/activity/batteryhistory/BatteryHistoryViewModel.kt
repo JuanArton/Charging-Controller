@@ -1,17 +1,25 @@
 package com.juanarton.chargingcurrentcontroller.ui.activity.batteryhistory
 
-import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringUseCase
-import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Date
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BatteryHistoryViewModel @Inject constructor(
     private val batteryMonitoringUseCase: BatteryMonitoringUseCase
 ) : ViewModel() {
-    fun getBatteryHistory() = batteryMonitoringUseCase.getHistoryDataChunk(21600, 0).asLiveData()
+    private val _batteryHistory = MutableLiveData<List<BatteryHistory>>()
+    val batteryHistory = _batteryHistory
+    fun getBatteryHistory() {
+        viewModelScope.launch {
+            batteryMonitoringUseCase.getHistoryDataChunk(216001 , 0).collect {
+                _batteryHistory.value = it
+            }
+        }
+    }
 }

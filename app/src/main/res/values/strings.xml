@@ -18,6 +18,10 @@
     <string name="volt_unit">V</string>
     <string name="wattage">W</string>
     <string name="power">Power</string>
+    <string name="time">Time</string>
+    <string name="no">No</string>
+    <string name="level">Level</string>
+    <string name="volt">Volt</string>
     <string name="battery">Battery</string>
     <string name="degree_symbol">°C</string>
     <string name="temperature">Temperature</string>
