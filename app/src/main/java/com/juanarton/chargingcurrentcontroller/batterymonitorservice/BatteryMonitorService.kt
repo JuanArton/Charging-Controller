@@ -43,6 +43,7 @@ import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepositor
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.utils.BatteryUtils
+import com.juanarton.core.utils.BatteryUtils.getCurrentTimeMillis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -146,7 +147,7 @@ class BatteryMonitorService : Service() {
                     )
                     iBatteryMonitoringRepository.insertHistory(
                         BatteryHistory(
-                            System.currentTimeMillis(), it.level, it.currentNow, it.temperature,
+                            getCurrentTimeMillis(), it.level, it.currentNow, it.temperature,
                             it.power, it.voltage
                         )
                     )
@@ -282,6 +283,7 @@ class BatteryMonitorService : Service() {
 
         val powerConnectedIntentFilter = IntentFilter()
         powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
         registerReceiver(powerStateReceiver, powerConnectedIntentFilter)
 
         val batteryStatIntentFilter = IntentFilter()

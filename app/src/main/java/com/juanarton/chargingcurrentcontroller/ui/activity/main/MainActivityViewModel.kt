@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringUseCase
 import com.juanarton.core.utils.BatteryUtils
+import com.juanarton.core.utils.BatteryUtils.getBatteryLevel
+import com.juanarton.core.utils.BatteryUtils.getCurrentTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
 import javax.inject.Inject
@@ -20,8 +22,9 @@ class MainActivityViewModel @Inject constructor(
         batteryMonitoringUseCase.insertScreenOffTime(0)
         batteryMonitoringUseCase.insertStartTime(Date())
 
-        val batteryLevel = BatteryUtils.getBatteryLevel(context)
+        val batteryLevel = getBatteryLevel(context)
         batteryMonitoringUseCase.insertBatteryLevel(batteryLevel)
         batteryMonitoringUseCase.insertInitialBatteryLevel(batteryLevel)
+        batteryMonitoringUseCase.insertLastUnpPlugged(getCurrentTimeMillis(), getBatteryLevel(context))
     }
 }

@@ -1,11 +1,13 @@
 package com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -16,6 +18,10 @@ import javax.inject.Inject
 class DashboardViewModel @Inject constructor(
     private var batteryMonitoringUseCase: BatteryMonitoringUseCase
 ) : ViewModel() {
+
+    init {
+        startBatteryMonitoring()
+    }
 
     private val _batteryInfo = MutableLiveData<BatteryInfo>()
     val batteryInfo = _batteryInfo

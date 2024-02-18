@@ -1,13 +1,14 @@
 package com.juanarton.core.data.source.local.monitoring
 
 import android.content.Context
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
-import com.juanarton.core.data.source.local.monitoring.room.DAO
-import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryEntity
+import com.juanarton.core.data.source.local.monitoring.room.batteryHistory.BatteryHistoryDAO
+import com.juanarton.core.data.source.local.monitoring.room.batteryHistory.entity.BatteryHistoryEntity
+import com.juanarton.core.data.source.local.monitoring.room.chargingHistory.ChargingHistoryDAO
+import com.juanarton.core.data.source.local.monitoring.room.chargingHistory.entity.ChargingHistoryEntity
 import com.juanarton.core.utils.BatteryUtils
 import com.juanarton.core.utils.BatteryUtils.getACCharge
 import com.juanarton.core.utils.BatteryUtils.getChargingStatus
@@ -27,7 +28,8 @@ import kotlin.math.abs
 @Singleton
 class LMonitoringDataSource @Inject constructor(
     context: Context,
-    private val dao: DAO
+    private val batteryHistoryDao: BatteryHistoryDAO,
+    private val chargingHistoryDAO: ChargingHistoryDAO
 ) {
 
     fun getBatteryInfo(context: Context): BatteryInfo {
@@ -125,23 +127,54 @@ class LMonitoringDataSource @Inject constructor(
         editor.apply()
     }
 
-    fun getHistoryDataChunk(limit: Int, offset: Int): List<HistoryEntity> {
-        return dao.getBatteryHistory(limit, offset)
+    fun getHistoryDataChunk(limit: Int, offset: Int): List<BatteryHistoryEntity> {
+        return batteryHistoryDao.getBatteryHistory(limit, offset)
     }
 
-    fun insertHistory(historyEntity: HistoryEntity) {
-        dao.insertHistory(historyEntity)
+    fun insertHistory(batteryHistoryEntity: BatteryHistoryEntity) {
+        batteryHistoryDao.insertBatteryHistory(batteryHistoryEntity)
     }
 
     fun getRowCount(): Int {
-        return dao.getRowCount()
+        return batteryHistoryDao.getRowCount()
     }
 
-    fun getFirst(): HistoryEntity {
-        return dao.getFirst()
+    fun getFirst(): BatteryHistoryEntity {
+        return batteryHistoryDao.getFirst()
     }
 
-    fun deleteFirst(historyEntity: HistoryEntity) {
-        dao.deleteFirst(historyEntity)
+    fun deleteFirst(batteryHistoryEntity: BatteryHistoryEntity) {
+        batteryHistoryDao.deleteFirst(batteryHistoryEntity)
+    }
+
+    fun getLastPlugged(): Pair<Long, Int> =
+        Pair(
+            sharedPreferences.getLong("lastPlugged", 0),
+            sharedPreferences.getInt("lastPluggedLevel", 0)
+        )
+
+    fun insertLastPlugged(lastPlugged: Long, lastPluggedLevel: Int) {
+        editor.putLong("lastPlugged", lastPlugged)
+        editor.putInt("lastPluggedLevel", lastPluggedLevel)
+        editor.apply()
+    }
+
+    fun getLastUnplugged(): Pair<Long, Int> =
+        Pair(
+            sharedPreferences.getLong("lastUnplugged", 0),
+            sharedPreferences.getInt("lastUnpluggedLevel", 0)
+        )
+
+    fun insertLastUnpPlugged(lastUnplugged: Long, lastUnpluggedLevel: Int) {
+        editor.putLong("lastUnplugged", lastUnplugged)
+        editor.putInt("lastUnpluggedLevel", lastUnpluggedLevel)
+        editor.apply()
+    }
+
+    fun getChargingHistory(): List<ChargingHistoryEntity> =
+        chargingHistoryDAO.getChargingHistory()
+
+    fun insertChargingHistory(chargingHistoryEntity: ChargingHistoryEntity) {
+        chargingHistoryDAO.insertChargingHistory(chargingHistoryEntity)
     }
 }

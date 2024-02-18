@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.juanarton.core.R
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
-import com.juanarton.core.databinding.HistoryItemViewBinding
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.juanarton.core.databinding.BatteryHistoryItemViewBinding
+import com.juanarton.core.utils.Utils.convertMillisToDateTime
 
-class HistoryAdapter (
+class BatteryHistoryAdapter (
     private val context: Context
-) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<BatteryHistoryAdapter.ViewHolder>() {
 
     private val batteryHistories: ArrayList<BatteryHistory> = arrayListOf()
     fun setData(items: List<BatteryHistory>?) {
@@ -26,8 +24,8 @@ class HistoryAdapter (
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): HistoryAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.history_item_view, parent, false)
+    ): BatteryHistoryAdapter.ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.battery_history_item_view, parent, false)
         return ViewHolder(view)
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(batteryHistories[position])
@@ -35,7 +33,7 @@ class HistoryAdapter (
     override fun getItemCount(): Int = batteryHistories.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        private val binding = HistoryItemViewBinding.bind(itemView)
+        private val binding = BatteryHistoryItemViewBinding.bind(itemView)
         fun bind(batteryHistory: BatteryHistory){
             binding.apply {
                 val position = layoutPosition + 1
@@ -65,12 +63,5 @@ class HistoryAdapter (
                 }
             }
         }
-    }
-
-    fun convertMillisToDateTime(millis: Long): String {
-        val sdf = SimpleDateFormat("dd-MM HH:mm:ss", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
-        return sdf.format(calendar.time)
     }
 }

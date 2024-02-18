@@ -16,6 +16,11 @@ import javax.inject.Inject
 class QuickSettingViewModel @Inject constructor(
     private val appConfigUseCase: AppConfigUseCase
 ): ViewModel(){
+
+    init {
+        getConfig()
+    }
+
     private var targetCurrent: MutableLiveData<String> = MutableLiveData()
     private var chargingSwitch: MutableLiveData<Boolean> = MutableLiveData()
     private var limitChargingSwitch: MutableLiveData<Boolean> = MutableLiveData()

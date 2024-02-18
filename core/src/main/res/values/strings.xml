@@ -19,4 +19,14 @@
     <string name="no">No</string>
     <string name="level">Level</string>
     <string name="current">Current</string>
+    <string name="dummy_text">Dummy Text</string>
+
+    <string name="charged_for">Charged for</string>
+    <string name="discharged_for">Discharged for</string>
+
+    <string name="charging_started">Charging started</string>
+    <string name="charging_ended">Charging ended</string>
+
+    <string name="discharging_started">Discharging started</string>
+    <string name="discharging_ended">Discharging ended</string>
 </resources>

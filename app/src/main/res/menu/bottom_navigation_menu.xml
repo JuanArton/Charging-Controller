@@ -11,4 +11,8 @@
     <item
         android:icon="@drawable/alarm_add"
         android:title="@string/battery_alarm"/>
+
+    <item
+        android:icon="@drawable/baseline_history_24"
+        android:title="@string/history"/>
 </menu>

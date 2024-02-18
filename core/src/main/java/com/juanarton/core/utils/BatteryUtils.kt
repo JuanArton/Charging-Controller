@@ -86,4 +86,8 @@ object BatteryUtils {
             "Only android 14+"
         }
     }
+
+    fun getCurrentTimeMillis(): Long {
+        return System.currentTimeMillis()
+    }
 }

@@ -13,6 +13,7 @@ import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateCpuAwakePerc
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.utils.Utils
+import com.juanarton.core.utils.Utils.formatTime
 import java.util.Date
 import kotlin.math.abs
 
@@ -48,18 +49,6 @@ object ServiceUtil {
             append("Deep sleep: ${formatTime(deepSleep)}  ·  ${String.format("%.2f", deepSleepPercentage)}%\n")
             append("CPU awake: ${formatTime(cpuAwake)}  ·  ${String.format("%.2f", cpuAwakePercentage)}%\n")
             append("Active drain: ${String.format("%.2f", screenOnDrainPerHrTmp)}% /h · Idle drain: ${String.format("%.2f", screenOffDrainPerHrTmp)}% /h")
-        }
-    }
-
-    fun formatTime(seconds: Long): String {
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
-        val remainingSeconds = seconds % 60
-
-        return when {
-            hours > 0 -> String.format("%1dh %1dm %1ds", hours, minutes, remainingSeconds)
-            minutes > 0 -> String.format("%1dm %1ds", minutes, remainingSeconds)
-            else -> String.format("%1ds", remainingSeconds)
         }
     }
 

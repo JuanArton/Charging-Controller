@@ -67,4 +67,7 @@
     <string name="uptime">Uptime</string>
     <string name="cycle_count">Cycle Count</string>
     <string name="see_full_battery_history">See full battery history</string>
+    <string name="history">History</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -2,8 +2,9 @@ package com.juanarton.core.di
 
 import android.content.Context
 import androidx.room.Room
-import com.juanarton.core.data.source.local.monitoring.room.DAO
-import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryDatabase
+import com.juanarton.core.data.source.local.monitoring.room.batteryHistory.BatteryHistoryDAO
+import com.juanarton.core.data.source.local.monitoring.room.HistoryDatabase
+import com.juanarton.core.data.source.local.monitoring.room.chargingHistory.ChargingHistoryDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +32,9 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDao(database: HistoryDatabase): DAO = database.dbDao()
+    fun provideBatteryHistoryDao(database: HistoryDatabase): BatteryHistoryDAO = database.batteryHistoryDao()
+
+    @Provides
+    @Singleton
+    fun provideChargingHistoryDao(database: HistoryDatabase): ChargingHistoryDAO = database.chargingHistoryDao()
 }

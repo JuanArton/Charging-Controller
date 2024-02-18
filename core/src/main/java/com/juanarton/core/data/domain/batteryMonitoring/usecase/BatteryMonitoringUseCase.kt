@@ -3,7 +3,7 @@ package com.juanarton.core.data.domain.batteryMonitoring.usecase
 import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
-import com.juanarton.core.data.source.local.monitoring.room.entity.HistoryEntity
+import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
@@ -48,4 +48,16 @@ interface BatteryMonitoringUseCase {
     fun insertHistory(batteryHistory: BatteryHistory)
 
     fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<BatteryHistory>>
+
+    fun getLastPlugged(): Pair<Long, Int>
+
+    fun insertLastPlugged(lastPlugged: Long, lastPluggedLevel: Int)
+
+    fun getLastUnplugged(): Pair<Long, Int>
+
+    fun insertLastUnpPlugged(lastUnplugged: Long, lastUnpluggedLevel: Int)
+
+    fun getChargingHistory(): Flow<List<ChargingHistory>>
+
+    fun insertChargingHistory(chargingHistory: ChargingHistory)
 }

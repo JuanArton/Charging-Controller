@@ -1,11 +1,11 @@
-package com.juanarton.core.data.source.local.monitoring.room.entity
+package com.juanarton.core.data.source.local.monitoring.room.batteryHistory.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "batteryHistory")
-data class HistoryEntity (
+data class BatteryHistoryEntity (
     @PrimaryKey
     @ColumnInfo(name = "timestamp")
     val timestamp: Long,

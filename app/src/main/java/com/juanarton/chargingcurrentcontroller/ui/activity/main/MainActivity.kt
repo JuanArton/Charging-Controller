@@ -31,6 +31,7 @@ import com.juanarton.chargingcurrentcontroller.batterymonitorservice.getServiceS
 import com.juanarton.chargingcurrentcontroller.databinding.ActivityMainBinding
 import com.juanarton.chargingcurrentcontroller.ui.fragments.alarm.AlarmFragment
 import com.juanarton.chargingcurrentcontroller.ui.fragments.dashboard.DashboardFragment
+import com.juanarton.chargingcurrentcontroller.ui.fragments.history.HistoryFragment
 import com.juanarton.chargingcurrentcontroller.ui.fragments.quicksetting.QuickSettingFragment
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
@@ -134,6 +135,7 @@ class MainActivity : AppCompatActivity() {
                         0 -> fragmentBuilder(DashboardFragment())
                         1 -> fragmentBuilder(QuickSettingFragment())
                         2 -> fragmentBuilder(AlarmFragment())
+                        3 -> fragmentBuilder(HistoryFragment())
                     }
                 }
 

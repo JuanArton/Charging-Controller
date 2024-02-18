@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.juanarton.chargingcurrentcontroller.R
 import com.juanarton.chargingcurrentcontroller.databinding.ActivityBatteryHistoryBinding
-import com.juanarton.core.adapter.HistoryAdapter
+import com.juanarton.core.adapter.BatteryHistoryAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +32,7 @@ class BatteryHistoryActivity : AppCompatActivity() {
         }
 
         binding?.rvHistory?.layoutManager = LinearLayoutManager(this)
-        val rvAdapter = HistoryAdapter(this)
+        val rvAdapter = BatteryHistoryAdapter(this)
         binding?.rvHistory?.adapter = rvAdapter
 
         batteryHistoryViewModel.getBatteryHistory()

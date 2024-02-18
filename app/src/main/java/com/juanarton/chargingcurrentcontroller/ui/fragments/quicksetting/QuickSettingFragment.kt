@@ -32,8 +32,6 @@ class QuickSettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        qsViewModel.getConfig()
-
         qsViewModel.config.observe(viewLifecycleOwner) { config ->
             binding?.apply {
                 chargingSwitch.isChecked = config.chargingSwitch

@@ -3,10 +3,13 @@ package com.juanarton.core.data.repository
 import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
+import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.data.source.local.monitoring.LMonitoringDataSource
-import com.juanarton.core.utils.DomainUtils.mapHistoryDomainToEntity
-import com.juanarton.core.utils.DomainUtils.mapHistoryEntityToDomain
+import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryDomainToEntity
+import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryEntityToDomain
+import com.juanarton.core.utils.DomainUtils.mapChargingHistoryDomainToEntity
+import com.juanarton.core.utils.DomainUtils.mapChargingHistoryEntityToDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -98,14 +101,45 @@ class BatteryMonitoringRepository @Inject constructor(
         }
 
         lMonitoringDataSource.insertHistory(
-            mapHistoryDomainToEntity(batteryHistory)
+            mapBatteryHistoryDomainToEntity(batteryHistory)
         )
     }
 
     override fun getHistoryDataChunk(limit: Int, offset: Int): Flow<List<BatteryHistory>> =
         flow {
             emit(
-                mapHistoryEntityToDomain(lMonitoringDataSource.getHistoryDataChunk(limit, offset))
+                mapBatteryHistoryEntityToDomain(
+                    lMonitoringDataSource.getHistoryDataChunk(limit, offset)
+                )
             )
         }.flowOn(Dispatchers.IO)
+
+    override fun getLastPlugged(): Pair<Long, Int> =
+        lMonitoringDataSource.getLastPlugged()
+
+    override fun insertLastPlugged(lastPlugged: Long, lastPluggedLevel: Int) {
+        lMonitoringDataSource.insertLastPlugged(lastPlugged, lastPluggedLevel)
+    }
+
+    override fun getLastUnplugged(): Pair<Long, Int> =
+        lMonitoringDataSource.getLastUnplugged()
+
+    override fun insertLastUnpPlugged(lastUnplugged: Long, lastUnluggedLevel: Int) {
+        lMonitoringDataSource.insertLastUnpPlugged(lastUnplugged, lastUnluggedLevel)
+    }
+
+    override fun getChargingHistory(): Flow<List<ChargingHistory>> =
+        flow {
+            emit(
+                mapChargingHistoryEntityToDomain(
+                    lMonitoringDataSource.getChargingHistory()
+                )
+            )
+        }.flowOn(Dispatchers.IO)
+
+    override fun insertChargingHistory(chargingHistory: ChargingHistory) {
+        lMonitoringDataSource.insertChargingHistory(
+            mapChargingHistoryDomainToEntity(chargingHistory)
+        )
+    }
 }

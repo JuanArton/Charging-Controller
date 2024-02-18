@@ -38,7 +38,6 @@ import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.temper
 import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.temperatureLineDataSet
 import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.powerData
 import com.juanarton.chargingcurrentcontroller.utils.BatteryHistoryHolder.powerLineDataSet
-import com.juanarton.chargingcurrentcontroller.utils.ServiceUtil.formatTime
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.chargingcurrentcontroller.utils.Utils.calculateDeepSleepPercentage
@@ -47,6 +46,7 @@ import com.juanarton.chargingcurrentcontroller.utils.Utils.formatSpeed
 import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePerHour
 import com.juanarton.chargingcurrentcontroller.utils.Utils.formatUsagePercentage
 import com.juanarton.core.utils.Utils
+import com.juanarton.core.utils.Utils.formatTime
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -241,7 +241,6 @@ class DashboardFragment : Fragment() {
                 }
             }
         }
-        dashboardViewModel.startBatteryMonitoring()
     }
 
     private fun setUpLineChart(lineDataSet: LineDataSet, lineData: LineData, fillGradient: Drawable?) {

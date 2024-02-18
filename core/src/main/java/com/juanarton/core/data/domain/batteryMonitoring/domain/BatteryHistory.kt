@@ -16,4 +16,4 @@ data class BatteryHistory(
     val power: Float,
 
     val voltage: Float,
-) : Parcelable
+): Parcelable
