@@ -41,4 +41,9 @@ class HistoryFragment : Fragment() {
             rvAdapter.notifyDataSetChanged()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }
