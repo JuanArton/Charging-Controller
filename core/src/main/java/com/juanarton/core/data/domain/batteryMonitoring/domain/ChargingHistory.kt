@@ -11,5 +11,6 @@ data class ChargingHistory(
     val endTime: Long,
     val startLevel: Int,
     val endLevel: Int,
-    val levelDifference: Int
+    val levelDifference: Int,
+    val isCharging: Boolean
 ): Parcelable

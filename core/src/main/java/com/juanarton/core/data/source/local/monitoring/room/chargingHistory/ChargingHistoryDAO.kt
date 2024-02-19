@@ -8,7 +8,7 @@ import com.juanarton.core.data.source.local.monitoring.room.chargingHistory.enti
 
 @Dao
 interface ChargingHistoryDAO {
-    @Query("SELECT * FROM chargingHistory")
+    @Query("SELECT * FROM chargingHistory ORDER BY id DESC")
     fun getChargingHistory(): List<ChargingHistoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = ChargingHistoryEntity::class)

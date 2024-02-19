@@ -47,7 +47,8 @@ class PowerStateReceiver: BroadcastReceiver() {
                             getCurrentTimeMillis(),
                             lastPluggedLevel,
                             batteryLevel,
-                            getBatteryLevel(context) - lastPlugged.second
+                            getBatteryLevel(context) - lastPlugged.second,
+                            true
                         )
                     )
                 }
@@ -70,7 +71,8 @@ class PowerStateReceiver: BroadcastReceiver() {
                             getCurrentTimeMillis(),
                             lastUnpluggedLevel,
                             batteryLevel,
-                            getBatteryLevel(context) - lastUnplugged.second
+                            getBatteryLevel(context) - lastUnplugged.second,
+                            false
                         )
                     )
                 }

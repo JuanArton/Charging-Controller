@@ -37,7 +37,8 @@ object DomainUtils {
             chargingHistory.endTime,
             chargingHistory.startLevel,
             chargingHistory.endLevel,
-            chargingHistory.levelDifference
+            chargingHistory.levelDifference,
+            chargingHistory.isCharging
         )
     }
 
@@ -49,7 +50,8 @@ object DomainUtils {
                 it.endTime,
                 it.startLevel,
                 it.endLevel,
-                it.levelDifference
+                it.levelDifference,
+                it.isCharging
             )
         }
     }

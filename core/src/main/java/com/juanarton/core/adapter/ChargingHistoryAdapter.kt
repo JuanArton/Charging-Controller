@@ -40,13 +40,13 @@ class ChargingHistoryAdapter (
         private val binding = ChargingHistoryItemViewBinding.bind(itemView)
         fun bind(chargingHistory: ChargingHistory){
             binding.apply {
-                if (chargingHistory.levelDifference >= 0) {
+                if (chargingHistory.isCharging) {
                     val duration = formatTime(
                         (abs(chargingHistory.startTime - chargingHistory.endTime))/1000
                     )
 
-                    piFirstLevel.progress = chargingHistory.startLevel
-                    piSecondLevel.progress = chargingHistory.endLevel
+                    piFirstLevel.progress = chargingHistory.endLevel
+                    piSecondLevel.progress = chargingHistory.startLevel
 
                     setChargingHistoryView(
                         "${context.getString(R.string.charged_for)} $duration", chargingHistory,
@@ -57,8 +57,8 @@ class ChargingHistoryAdapter (
                     (abs(chargingHistory.startTime - chargingHistory.endTime))/1000
                     )
 
-                    piFirstLevel.progress = chargingHistory.endLevel
-                    piSecondLevel.progress = chargingHistory.startLevel
+                    piFirstLevel.progress = chargingHistory.startLevel
+                    piSecondLevel.progress = chargingHistory.endLevel
 
                     setChargingHistoryView(
                         "${context.getString(R.string.discharged_for)} $duration", chargingHistory,

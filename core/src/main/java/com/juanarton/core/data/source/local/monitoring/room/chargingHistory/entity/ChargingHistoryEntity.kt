@@ -23,5 +23,8 @@ data class ChargingHistoryEntity (
     val endLevel: Int,
 
     @ColumnInfo(name = "levelDifference")
-    val levelDifference: Int
+    val levelDifference: Int,
+
+    @ColumnInfo(name = "isCharging")
+    val isCharging: Boolean
 )
