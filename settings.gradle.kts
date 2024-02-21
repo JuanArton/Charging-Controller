@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Charging Current Controller"
+rootProject.name = "Battery Sense"
 include(":app")
 include(":core")

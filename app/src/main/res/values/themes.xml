@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.ChargingCurrentController" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.BatterySense" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primaryVariant</item>
@@ -13,7 +13,7 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="Theme.ChargingCurrentController" parent="Base.Theme.ChargingCurrentController" />
+    <style name="Theme.BatterySense" parent="Base.Theme.BatterySense" />
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation
@@ -24,6 +24,6 @@
 
         <!-- Set the theme of the Activity that directly follows your splash
         screen. This is required. -->
-        <item name="postSplashScreenTheme">@style/Theme.ChargingCurrentController</item>
+        <item name="postSplashScreenTheme">@style/Theme.BatterySense</item>
     </style>
 </resources>

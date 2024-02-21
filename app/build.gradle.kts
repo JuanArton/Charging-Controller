@@ -7,11 +7,11 @@ plugins {
 apply("../shared_dependencies.gradle")
 
 android {
-    namespace = "com.juanarton.chargingcurrentcontroller"
+    namespace = "com.juanarton.batterysense"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.juanarton.chargingcurrentcontroller"
+        applicationId = "com.juanarton.batterysense"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
