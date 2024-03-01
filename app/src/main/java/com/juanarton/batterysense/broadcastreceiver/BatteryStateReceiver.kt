@@ -29,7 +29,6 @@ class BatteryStateReceiver : BroadcastReceiver(){
 
     companion object {
         const val RECEIVER_NOTIF_CHANNEL_ID = "BatteryAlarmChannel"
-        const val RECEIVER_NOTIFICATION_ID = 2
     }
     override fun onReceive(context: Context, intent: Intent) {
         if (temperature == 0) {
@@ -76,19 +75,21 @@ class BatteryStateReceiver : BroadcastReceiver(){
         if (iAppConfigRepository.getBatteryLevelAlarmStatus()) {
             if (level <= iAppConfigRepository.getBatteryLevelThreshold().first) {
                 val message = buildString {
-                    append("$level - ${context.getString(R.string.batteryLevelMinReached)}")
+                    append("$level% - ${context.getString(R.string.batteryLevelMinReached)}")
                 }
                 createNotification(
                     context,
-                    message
+                    message,
+                    2
                 )
             } else if (level >= iAppConfigRepository.getBatteryLevelThreshold().second) {
                 val message = buildString {
-                    append("$level - ${context.getString(R.string.batteryLevelMaxReached)}")
+                    append("$level% - ${context.getString(R.string.batteryLevelMaxReached)}")
                 }
                 createNotification(
                     context,
-                    message
+                    message,
+                    2
                 )
             }
         }
@@ -98,17 +99,20 @@ class BatteryStateReceiver : BroadcastReceiver(){
         if (iAppConfigRepository.getBatteryTemperatureAlarmStatus()) {
             if (temp >= iAppConfigRepository.getBatteryTemperatureThreshold()) {
                 val message = buildString {
-                    append("$temp - ${context.getString(R.string.batteryTemperatureReached)}")
+                    append(
+                        "$temp${context.getString(R.string.degree_symbol)} - ${context.getString(R.string.batteryTemperatureReached)}"
+                    )
                 }
                 createNotification(
                     context,
-                    message
+                    message,
+                    3
                 )
             }
         }
     }
 
-    private fun createNotification(context: Context, message: String) {
+    private fun createNotification(context: Context, message: String, id: Int) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -123,7 +127,7 @@ class BatteryStateReceiver : BroadcastReceiver(){
             .setContentText(message)
             .setShowWhen(false)
 
-        notificationManager.notify(RECEIVER_NOTIFICATION_ID, builder.build())
+        notificationManager.notify(id, builder.build())
     }
 
 }
