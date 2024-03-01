@@ -4,7 +4,6 @@ import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
-import com.juanarton.core.data.source.local.monitoring.room.chargingHistory.entity.ChargingHistoryEntity
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
@@ -62,4 +61,16 @@ interface IBatteryMonitoringRepository {
     fun getChargingHistory(): Flow<List<ChargingHistory>>
 
     fun insertChargingHistory(chargingHistory: ChargingHistory)
+
+    fun getRawCurrent(): Int
+
+    fun getCurrentUnit(): String
+
+    fun insertCurrentUnit(currentUnit: String)
+
+    fun getCapacity(): Int
+
+    fun insertCapacity(capacity: Int)
+
+    fun deleteChargingHistory()
 }

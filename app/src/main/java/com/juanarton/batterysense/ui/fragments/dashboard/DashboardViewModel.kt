@@ -56,4 +56,6 @@ class DashboardViewModel @Inject constructor(
         scheduledExecutorService = null
         isMonitoring = false
     }
+
+    fun getCapacity() = batteryMonitoringUseCase.getCapacity()
 }

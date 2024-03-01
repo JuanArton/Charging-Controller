@@ -8,8 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.slider.Slider
+import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentQuickSettingBinding
 import com.juanarton.core.data.domain.batteryInfo.model.Result
+import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,50 +22,58 @@ class QuickSettingFragment : Fragment() {
     private val qsViewModel: QuickSettingViewModel by viewModels()
     private var firstRun = true
 
+    private lateinit var isRooted: Shell
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentQuickSettingBinding.inflate(inflater, container, false)
-        return binding?.root
+        isRooted = Shell.getShell()
+        return if (isRooted.status == 1) {
+            _binding = FragmentQuickSettingBinding.inflate(inflater, container, false)
+            binding?.root
+        } else {
+            inflater.inflate(R.layout.root_denied_view, container, false)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        qsViewModel.config.observe(viewLifecycleOwner) { config ->
-            binding?.apply {
-                chargingSwitch.isChecked = config.chargingSwitch
+        if (isRooted.status == 1) {
+            qsViewModel.config.observe(viewLifecycleOwner) { config ->
+                binding?.apply {
+                    chargingSwitch.isChecked = config.chargingSwitch
 
-                sliderChargingCurrent.value = config.current
-                tvCurrentValue.text = config.current.toInt().toString()
+                    sliderChargingCurrent.value = config.current
+                    tvCurrentValue.text = config.current.toInt().toString()
 
-                chargingLimitSwitch.isChecked = config.limitSwitch
-                sliderChargingLimit.value = config.maxCapacity
-                tvMaxCapacity.text = config.maxCapacity.toInt().toString()
+                    chargingLimitSwitch.isChecked = config.limitSwitch
+                    sliderChargingLimit.value = config.maxCapacity
+                    tvMaxCapacity.text = config.maxCapacity.toInt().toString()
 
-                tvCSDescription.visibility =
-                    if (config.chargingLimitTriggered) View.VISIBLE else View.INVISIBLE
+                    tvCSDescription.visibility =
+                        if (config.chargingLimitTriggered) View.VISIBLE else View.INVISIBLE
 
-                if (firstRun) {
-                    registerListener()
-                    firstRun = false
+                    if (firstRun) {
+                        registerListener()
+                        firstRun = false
+                    }
                 }
             }
-        }
 
-        val reapplyConfigListener: (Result) -> Unit = { result ->
-            if (!result.success) {
-                qsViewModel.getConfig()
-                Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+            val reapplyConfigListener: (Result) -> Unit = { result ->
+                if (!result.success) {
+                    qsViewModel.getConfig()
+                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                }
             }
-        }
 
-        qsViewModel.setChargingSwitchStatus().observe(viewLifecycleOwner, reapplyConfigListener)
-        qsViewModel.setTargetCurrent().observe(viewLifecycleOwner, reapplyConfigListener)
-        qsViewModel.setChargingLimitStatus().observe(viewLifecycleOwner, reapplyConfigListener)
-        qsViewModel.setMaximumCapacity().observe(viewLifecycleOwner, reapplyConfigListener)
+            qsViewModel.setChargingSwitchStatus().observe(viewLifecycleOwner, reapplyConfigListener)
+            qsViewModel.setTargetCurrent().observe(viewLifecycleOwner, reapplyConfigListener)
+            qsViewModel.setChargingLimitStatus().observe(viewLifecycleOwner, reapplyConfigListener)
+            qsViewModel.setMaximumCapacity().observe(viewLifecycleOwner, reapplyConfigListener)
+        }
     }
 
     private fun registerListener() {

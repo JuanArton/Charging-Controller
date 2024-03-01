@@ -1,11 +1,9 @@
 package com.juanarton.batterysense.ui.fragments.dashboard
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -34,10 +32,10 @@ import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
 import com.juanarton.batterysense.utils.BatteryHistoryHolder.currentData
 import com.juanarton.batterysense.utils.BatteryHistoryHolder.currentLineDataSet
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureData
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureLineDataSet
 import com.juanarton.batterysense.utils.BatteryHistoryHolder.powerData
 import com.juanarton.batterysense.utils.BatteryHistoryHolder.powerLineDataSet
+import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureData
+import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureLineDataSet
 import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
@@ -78,20 +76,7 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var batteryCapacity = 0.0
-        val powerProfileClass = "com.android.internal.os.PowerProfile"
-
-        try {
-            val powerProfile = Class.forName(powerProfileClass)
-                .getConstructor(Context::class.java)
-                .newInstance(requireContext())
-            batteryCapacity = Class
-                .forName(powerProfileClass)
-                .getMethod("getBatteryCapacity")
-                .invoke(powerProfile) as Double
-        } catch (e: Exception) {
-            Log.d("Get Battery Capacity", e.toString())
-        }
+        val batteryCapacity = dashboardViewModel.getCapacity()
 
         showCurrent()
 
@@ -159,9 +144,9 @@ class DashboardFragment : Fragment() {
                 }
 
                 batteryInfoPanel.tvBatteryCapacity.text = buildString{
-                    append("${(batteryCapacity * it.level / 100).toInt()} ${getString(R.string.mah)}")
+                    append("${(batteryCapacity * it.level / 100)} ${getString(R.string.mah)}")
                     append(" of ")
-                    append("${batteryCapacity.toInt()} ${getString(R.string.mah)}")
+                    append("$batteryCapacity ${getString(R.string.mah)}")
                 }
 
                 batteryInfoPanel.tvBatteryStatus.text = Utils.mapBatteryStatus(it.status, requireContext())
@@ -175,7 +160,7 @@ class DashboardFragment : Fragment() {
                 }
 
                 val powerValue = buildString {
-                    append(String.format("%.2f", it.power))
+                    append(String.format("%.1f", it.power))
                     append(wattageUnit)
                 }
 
@@ -382,7 +367,7 @@ class DashboardFragment : Fragment() {
                     append(getString(R.string.degree_symbol))
                 }
                 powerGraph -> {
-                    append(String.format("%.2f", value / 100.0))
+                    append(String.format("%.1f", value / 100.0))
                     append(getString(R.string.wattage))
                 }
             }

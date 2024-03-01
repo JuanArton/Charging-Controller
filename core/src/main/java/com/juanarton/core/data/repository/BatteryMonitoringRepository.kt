@@ -10,10 +10,12 @@ import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryDomainToEntity
 import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryEntityToDomain
 import com.juanarton.core.utils.DomainUtils.mapChargingHistoryDomainToEntity
 import com.juanarton.core.utils.DomainUtils.mapChargingHistoryEntityToDomain
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -141,5 +143,28 @@ class BatteryMonitoringRepository @Inject constructor(
         lMonitoringDataSource.insertChargingHistory(
             mapChargingHistoryDomainToEntity(chargingHistory)
         )
+    }
+
+    override fun getRawCurrent(): Int =
+        lMonitoringDataSource.getRawCurrent()
+
+    override fun getCurrentUnit(): String =
+        lMonitoringDataSource.getCurrentUnit()
+
+    override fun insertCurrentUnit(currentUnit: String) {
+        lMonitoringDataSource.insertCurrentUnit(currentUnit)
+    }
+
+    override fun getCapacity(): Int =
+        lMonitoringDataSource.getCapacity()
+
+    override fun insertCapacity(capacity: Int) {
+        lMonitoringDataSource.insertCapacity(capacity)
+    }
+
+    override fun deleteChargingHistory() {
+        CoroutineScope(Dispatchers.IO).launch {
+            lMonitoringDataSource.deleteChargingHistory()
+        }
     }
 }

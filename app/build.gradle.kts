@@ -65,4 +65,11 @@ dependencies {
 
     //noinspection GradleDependency
     implementation("com.scwang.wave:MultiWaveHeader:1.0.0-andx")
+
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    implementation("com.tbuonomo:dotsindicator:5.0")
+
+    implementation("com.tbuonomo:dotsindicator:5.0")
+
 }

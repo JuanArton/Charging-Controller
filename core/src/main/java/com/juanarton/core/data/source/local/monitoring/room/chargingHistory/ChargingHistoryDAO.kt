@@ -13,4 +13,7 @@ interface ChargingHistoryDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = ChargingHistoryEntity::class)
     fun insertChargingHistory(chargingHistoryEntity: ChargingHistoryEntity)
+
+    @Query("DELETE FROM chargingHistory")
+    fun deleteAll()
 }

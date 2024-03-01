@@ -39,9 +39,9 @@ object ServiceUtil {
             append("Power: ${String.format("%.2f", abs(batteryInfo.power))}W\n")
             append("Screen on: ${formatTime(screenOnTime)}  ·  $screenOnDrain%\n")
             append("Screen off: ${formatTime(screenOffTime)}  ·  $screenOffDrain%\n")
-            append("Deep sleep: ${formatTime(deepSleep)}  ·  ${String.format("%.2f", deepSleepPercentage)}%\n")
-            append("CPU awake: ${formatTime(cpuAwake)}  ·  ${String.format("%.2f", cpuAwakePercentage)}%\n")
-            append("Active drain: ${String.format("%.2f", screenOnDrainPerHrTmp)}% /h · Idle drain: ${String.format("%.2f", screenOffDrainPerHrTmp)}% /h")
+            append("Deep sleep: ${formatTime(deepSleep)}  ·  ${String.format("%.1f", deepSleepPercentage)}%\n")
+            append("CPU awake: ${formatTime(cpuAwake)}  ·  ${String.format("%.1f", cpuAwakePercentage)}%\n")
+            append("Active drain: ${String.format("%.1f", screenOnDrainPerHrTmp)}% /h · Idle drain: ${String.format("%.1f", screenOffDrainPerHrTmp)}% /h")
         }
     }
 

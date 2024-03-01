@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".RootCheckActivity">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,8 +14,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieRootAnimation"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:scaleY="0.7"
@@ -25,7 +23,7 @@
             app:lottie_renderMode="hardware"
             app:lottie_fileName="denied.json"
             app:lottie_autoPlay="true"
-            app:lottie_loop="false" />
+            app:lottie_loop="true" />
 
         <TextView
             android:layout_width="match_parent"
@@ -33,7 +31,7 @@
             android:layout_below="@id/lottieRootAnimation"
             android:textSize="18sp"
             android:gravity="center"
-            android:text="@string/checking_root_access" />
+            android:text="@string/root_access_denied" />
     </RelativeLayout>
 
 

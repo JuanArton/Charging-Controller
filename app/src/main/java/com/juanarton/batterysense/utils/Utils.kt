@@ -12,7 +12,7 @@ object Utils {
 
     fun formatUsagePerHour(value1: Double): String {
         return buildString {
-            append(String.format("%.2f", value1))
+            append(String.format("%.1f", value1))
             append("%/h")
         }
     }
@@ -29,7 +29,7 @@ object Utils {
 
     fun formatDeepSleepAwake(value: Double): String {
         return buildString {
-            append("${String.format("%.2f", value)}% ")
+            append("${String.format("%.1f", value)}% ")
             append("of screen off time")
         }
     }
@@ -41,7 +41,7 @@ object Utils {
     fun formatSpeed(value1: Double): String {
         return buildString {
             append("speed ")
-            append(String.format("%.2f", value1))
+            append(String.format("%.1f", value1))
             append("%/h")
         }
     }

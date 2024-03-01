@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 
 object BatteryUtils {
 
@@ -14,8 +15,17 @@ object BatteryUtils {
 
     private lateinit var batteryManager: BatteryManager
 
-    fun getCurrent(): Float {
-        return -(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)).toFloat() / 1000
+    fun getCurrent(unit: String): Float {
+        return if (unit == "μA") {
+            getRawCurrent().toFloat() / 1000
+        }
+        else {
+            getRawCurrent().toFloat()
+        }
+    }
+
+    fun getRawCurrent(): Int {
+        return -(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW))
     }
 
     fun getVoltage(): Float {
@@ -90,4 +100,36 @@ object BatteryUtils {
     fun getCurrentTimeMillis(): Long {
         return System.currentTimeMillis()
     }
+
+    fun determineCurrentUnit(currentList: List<Int>): String {
+        return if (currentList.all { countDigits(it) > 5 }) {
+            "μA"
+        } else {
+            "mA"
+        }
+    }
+
+    private fun countDigits(number: Int): Int {
+        return number.toString().length
+    }
+
+    fun getDesignedCapacity(context: Context): Double {
+        var batteryCapacity = 0.0
+        val powerProfileClass = "com.android.internal.os.PowerProfile"
+
+        try {
+            val powerProfile = Class.forName(powerProfileClass)
+                .getConstructor(Context::class.java)
+                .newInstance(context)
+            batteryCapacity = Class
+                .forName(powerProfileClass)
+                .getMethod("getBatteryCapacity")
+                .invoke(powerProfile) as Double
+        } catch (e: Exception) {
+            Log.d("Get Battery Capacity", e.toString())
+        }
+
+        return batteryCapacity
+    }
+
 }

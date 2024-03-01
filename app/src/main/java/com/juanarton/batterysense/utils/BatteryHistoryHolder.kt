@@ -6,7 +6,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 object BatteryHistoryHolder {
-    private val batteryCurrent = mutableListOf<Entry>()
+    val batteryCurrent = mutableListOf<Entry>()
     val currentLineDataSet = LineDataSet(batteryCurrent, "battery current")
     private val currentILineDataSet = mutableListOf<ILineDataSet>(currentLineDataSet)
     val currentData = LineData(currentILineDataSet)

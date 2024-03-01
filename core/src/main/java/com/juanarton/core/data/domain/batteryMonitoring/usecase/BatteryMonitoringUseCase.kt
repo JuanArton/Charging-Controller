@@ -60,4 +60,16 @@ interface BatteryMonitoringUseCase {
     fun getChargingHistory(): Flow<List<ChargingHistory>>
 
     fun insertChargingHistory(chargingHistory: ChargingHistory)
+
+    fun getRawCurrent(): Int
+
+    fun getCurrentUnit(): String
+
+    fun insertCurrentUnit(currentUnit: String)
+
+    fun getCapacity(): Int
+
+    fun insertCapacity(capacity: Int)
+
+    fun deleteChargingHistory()
 }

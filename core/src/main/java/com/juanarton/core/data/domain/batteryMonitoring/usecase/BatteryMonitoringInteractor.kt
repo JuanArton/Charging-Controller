@@ -97,4 +97,23 @@ class BatteryMonitoringInteractor @Inject constructor(
         iBatteryMonitoringRepository.insertChargingHistory(chargingHistory)
     }
 
+    override fun getRawCurrent(): Int = iBatteryMonitoringRepository.getRawCurrent()
+    override fun getCurrentUnit(): String =
+        iBatteryMonitoringRepository.getCurrentUnit()
+
+    override fun insertCurrentUnit(currentUnit: String) {
+        iBatteryMonitoringRepository.insertCurrentUnit(currentUnit)
+    }
+
+    override fun getCapacity(): Int =
+        iBatteryMonitoringRepository.getCapacity()
+
+    override fun insertCapacity(capacity: Int) {
+        iBatteryMonitoringRepository.insertCapacity(capacity)
+    }
+
+    override fun deleteChargingHistory() {
+        iBatteryMonitoringRepository.deleteChargingHistory()
+    }
+
 }

@@ -1,9 +1,6 @@
 package com.juanarton.core.data.source.local.monitoring
 
 import android.content.Context
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.source.local.monitoring.room.batteryHistory.BatteryHistoryDAO
 import com.juanarton.core.data.source.local.monitoring.room.batteryHistory.entity.BatteryHistoryEntity
@@ -37,7 +34,7 @@ class LMonitoringDataSource @Inject constructor(
 
         val voltage = getVoltage()
 
-        val current = getCurrent()
+        val current = getCurrent(getCurrentUnit())
 
         val power = voltage * current / 1000
 
@@ -47,9 +44,14 @@ class LMonitoringDataSource @Inject constructor(
         )
     }
 
+    fun getRawCurrent(): Int {
+        return BatteryUtils.getRawCurrent()
+    }
+
     private val sharedPreferences = context.getSharedPreferences(
         "batteryMonitoringData", Context.MODE_PRIVATE
     )
+
     private val editor = sharedPreferences.edit()
 
     fun getDeepSleepInitialValue(): Long =
@@ -176,5 +178,27 @@ class LMonitoringDataSource @Inject constructor(
 
     fun insertChargingHistory(chargingHistoryEntity: ChargingHistoryEntity) {
         chargingHistoryDAO.insertChargingHistory(chargingHistoryEntity)
+    }
+
+    fun deleteChargingHistory() {
+        chargingHistoryDAO.deleteAll()
+    }
+
+    fun getCurrentUnit(): String {
+        return sharedPreferences.getString("currentUnit", "μA")?: "μA"
+    }
+
+    fun insertCurrentUnit(currentUnit: String) {
+        editor.putString("currentUnit", currentUnit)
+        editor.apply()
+    }
+
+    fun getCapacity(): Int {
+        return sharedPreferences.getInt("capacity", 0)
+    }
+
+    fun insertCapacity(capacity: Int) {
+        editor.putInt("capacity", capacity)
+        editor.apply()
     }
 }

@@ -4,7 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#00DDB3</color>
     <color name="primaryVariant">#009b8c</color>
-    <color name="primaryTransparent">#7000DDB3</color>
     <color name="brightCardBackground">#eeeeed</color>
     <color name="brightSurface">#fbf9f6</color>
     <color name="accent" >#0044dd</color>
@@ -13,14 +12,11 @@
     <color name="blue">#79beee</color>
     <color name="green">#44a985</color>
     <color name="red">#ee6055</color>
-    <color name="purple">#b388eb</color>
-
-    <color name="powerBackground">#70a4b200</color>
-    <color name="temperatureBackground">#700003ff</color>
 
     //dark theme
     <color name="darkThemeText">#cdcccc</color>
     <color name="darkSurface">#131212</color>
     <color name="darkCardBackground">#1c1c1c</color>
+    <color name="disabled">#B0C4DE</color>
 
 </resources>

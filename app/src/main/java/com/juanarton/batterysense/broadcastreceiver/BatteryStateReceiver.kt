@@ -24,16 +24,24 @@ class BatteryStateReceiver : BroadcastReceiver(){
     lateinit var iAppConfigRepository: IAppConfigRepository
 
     private var batteryUsed = 0
+    private var temperature: Int = 0
+    private var batteryTmp: Int = 0
 
     companion object {
         const val RECEIVER_NOTIF_CHANNEL_ID = "BatteryAlarmChannel"
         const val RECEIVER_NOTIFICATION_ID = 2
     }
     override fun onReceive(context: Context, intent: Intent) {
+        if (temperature == 0) {
+            temperature = intent.getIntExtra("temperature", -1)/10
+            batteryTmp = intent.getIntExtra("level", -1)
+        }
+
         if (intent.action == Intent.ACTION_BATTERY_CHANGED) {
             val batteryLevel = iBatteryMonitoringRepository.getBatteryLevel(context)
             val newLevel = intent.getIntExtra("level", -1)
-            val temperature = intent.getIntExtra("temperature", -1)/10
+            val newTemperature = intent.getIntExtra("temperature", -1)/10
+
 
             if (newLevel < batteryLevel) {
                 batteryUsed = batteryLevel - newLevel
@@ -52,9 +60,15 @@ class BatteryStateReceiver : BroadcastReceiver(){
                 batteryUsed = 0
             }
 
-            checkBatteryLevelAlarm(context, newLevel)
-            checkBatteryTemperatureAlarm(context, temperature)
+            if (newLevel > batteryTmp) {
+                checkBatteryLevelAlarm(context, newLevel)
+                batteryTmp = newLevel
+            }
 
+            if (newTemperature != temperature) {
+                checkBatteryTemperatureAlarm(context, newTemperature)
+                temperature = newTemperature
+            }
         }
     }
 
