@@ -19,6 +19,7 @@ class LAppConfigDataSource {
         const val BATTERY_ALARM_PREF = "BatteryAlarmPref"
         const val BATTERY_TEMPERATURE_ALARM_KEY = "temperatureAlarm"
         const val BATTERY_MAX_TEMP = "tempMax"
+        const val ONE_TIME_ALARM_KEY = "oneTimeAlarm"
     }
 
     fun getConfig(): Config {
@@ -206,5 +207,23 @@ class LAppConfigDataSource {
         val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
 
         return sharedPreferences.getBoolean(BATTERY_TEMPERATURE_ALARM_KEY, false)
+    }
+
+    fun setOneTimeAlarmStatus(value: Boolean, context: Context): Boolean {
+        return try {
+            val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(ONE_TIME_ALARM_KEY, value).apply()
+
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun getOneTimeAlarmStatus(context: Context): Boolean {
+        val sharedPreferences = context.getSharedPreferences("AlarmStatus", Context.MODE_PRIVATE)
+
+        return sharedPreferences.getBoolean(ONE_TIME_ALARM_KEY, false)
     }
 }

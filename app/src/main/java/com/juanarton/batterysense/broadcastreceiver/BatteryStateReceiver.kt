@@ -6,7 +6,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
@@ -26,6 +28,7 @@ class BatteryStateReceiver : BroadcastReceiver(){
     private var batteryUsed = 0
     private var temperature: Int = 0
     private var batteryTmp: Int = 0
+    private var isNotified = false
 
     companion object {
         const val RECEIVER_NOTIF_CHANNEL_ID = "BatteryAlarmChannel"
@@ -59,7 +62,14 @@ class BatteryStateReceiver : BroadcastReceiver(){
                 batteryUsed = 0
             }
 
-            if (newLevel > batteryTmp) {
+            if (newLevel > iAppConfigRepository.getBatteryLevelThreshold().first &&
+                newLevel < iAppConfigRepository.getBatteryLevelThreshold().second) {
+                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancel(2)
+                isNotified = false
+            }
+
+            if (newLevel != batteryTmp) {
                 checkBatteryLevelAlarm(context, newLevel)
                 batteryTmp = newLevel
             }
@@ -72,7 +82,7 @@ class BatteryStateReceiver : BroadcastReceiver(){
     }
 
     private fun checkBatteryLevelAlarm(context: Context, level: Int) {
-        if (iAppConfigRepository.getBatteryLevelAlarmStatus()) {
+        if (iAppConfigRepository.getBatteryLevelAlarmStatus() && !isNotified) {
             if (level <= iAppConfigRepository.getBatteryLevelThreshold().first) {
                 val message = buildString {
                     append("$level% - ${context.getString(R.string.batteryLevelMinReached)}")
@@ -82,6 +92,7 @@ class BatteryStateReceiver : BroadcastReceiver(){
                     message,
                     2
                 )
+                if (iAppConfigRepository.getOneTimeAlarmStatus()) { isNotified = true }
             } else if (level >= iAppConfigRepository.getBatteryLevelThreshold().second) {
                 val message = buildString {
                     append("$level% - ${context.getString(R.string.batteryLevelMaxReached)}")
@@ -91,6 +102,7 @@ class BatteryStateReceiver : BroadcastReceiver(){
                     message,
                     2
                 )
+                if (iAppConfigRepository.getOneTimeAlarmStatus()) { isNotified = true }
             }
         }
     }

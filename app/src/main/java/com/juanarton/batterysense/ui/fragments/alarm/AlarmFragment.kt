@@ -36,6 +36,7 @@ class AlarmFragment : Fragment() {
         alarmViewModel.getBatteryLevelAlarmStatus()
         alarmViewModel.getBatteryTemperatureThreshold()
         alarmViewModel.getBatteryTemperatureAlarmStatus()
+        alarmViewModel.getOneTimeAlarmStatus()
 
         binding?.apply {
             with (alarmViewModel) {
@@ -58,6 +59,10 @@ class AlarmFragment : Fragment() {
                     tvMaxTemperature.text = it.toString()
                 }
 
+                oneTimeAlarmStatus.observe(viewLifecycleOwner) {
+                    oneTimeAlarmSwitch.isChecked = it
+                }
+
                 batteryLevelAlarmSwitch.setOnCheckedChangeListener { _, isChecked ->
                     setBatteryLevelAlarmStatus(isChecked) { isSuccess ->
                         if (!isSuccess) {
@@ -69,7 +74,15 @@ class AlarmFragment : Fragment() {
                 temperatureAlarmSwitch.setOnCheckedChangeListener { _, isChecked ->
                     setBatteryTemperatureAlarmStatus(isChecked) { isSuccess ->
                         if (!isSuccess) {
-                            getBatteryLevelThreshold()
+                            getBatteryTemperatureThreshold()
+                        }
+                    }
+                }
+
+                oneTimeAlarmSwitch.setOnCheckedChangeListener { _, isChecked ->
+                    setOneTimeAlarmStatus(isChecked) {isSuccess ->
+                        if (!isSuccess) {
+                            getOneTimeAlarmStatus()
                         }
                     }
                 }

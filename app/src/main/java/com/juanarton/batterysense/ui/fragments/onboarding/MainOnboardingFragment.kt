@@ -32,4 +32,9 @@ class MainOnboardingFragment : Fragment() {
             dotsIndicator.attachTo(vpOnboarding)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

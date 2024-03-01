@@ -1,5 +1,6 @@
 package com.juanarton.core.data.domain.batteryInfo.usecase
 
+import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
@@ -46,4 +47,10 @@ class AppConfigInteractor @Inject constructor(
 
     override fun getBatteryTemperatureAlarmStatus(): Boolean =
         iAppConfigRepository.getBatteryTemperatureAlarmStatus()
+
+    override fun setOneTimeAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) =
+        iAppConfigRepository.setOneTimeAlarmStatus(value, callback)
+
+    override fun getOneTimeAlarmStatus(): Boolean =
+        iAppConfigRepository.getOneTimeAlarmStatus()
 }

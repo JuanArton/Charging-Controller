@@ -42,7 +42,7 @@
     <string name="serviceNotificationTitle">3C - Battery Monitor</string>
     <string name="batteryLevelAlarmNotifTitle">3C - Battery Monitor</string>
     <string name="batteryLevelMaxReached">Maximum battery level reached, please disconnect charger!</string>
-    <string name="batteryLevelMinReached">Minimum battery level reached, please disconnect charger!</string>
+    <string name="batteryLevelMinReached">Minimum battery level reached, please connect charger!</string>
     <string name="batteryTemperatureReached">Battery temperature reached, please disconnect charger or stop using device to cool down!</string>
     <string name="notificationPermissionDenied">Please grant notification permission to show notification battery monitoring</string>
     <string name="alarm">Alarm</string>
@@ -80,4 +80,6 @@
     <string name="unit">Unit</string>
     <string name="finish">Finish</string>
     <string name="remove_charging_message">Please disconnect charger before calibrating!</string>
+    <string name="one_time_notification">One-Time Notification</string>
+    <string name="one_time_notif_desc">Set app to show notification only once when the specified threshold reached.</string>
 </resources>

@@ -83,4 +83,11 @@ class AppConfigRepository @Inject constructor(
     override fun getBatteryTemperatureAlarmStatus(): Boolean {
         return lAppConfigDataSource.getBatteryTemperatureAlarmStatus(context)
     }
+
+    override fun setOneTimeAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) {
+        callback(lAppConfigDataSource.setOneTimeAlarmStatus(value, context))
+    }
+
+    override fun getOneTimeAlarmStatus(): Boolean =
+        lAppConfigDataSource.getOneTimeAlarmStatus(context)
 }

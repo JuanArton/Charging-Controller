@@ -1,5 +1,6 @@
 package com.juanarton.core.data.domain.batteryInfo.usecase
 
+import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import kotlinx.coroutines.flow.Flow
@@ -34,4 +35,8 @@ interface AppConfigUseCase {
     fun setBatteryTemperatureAlarmStatus(value: Boolean, callback: (Boolean) -> Unit)
 
     fun getBatteryTemperatureAlarmStatus(): Boolean
+
+    fun setOneTimeAlarmStatus(value: Boolean, callback: (Boolean) -> Unit)
+
+    fun getOneTimeAlarmStatus(): Boolean
 }

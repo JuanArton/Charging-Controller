@@ -35,6 +35,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/tvBatteryLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -56,15 +57,52 @@
                 android:id="@+id/tvLevelAlarmDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/batteryLevelAlarmSwitch"
+                android:layout_below="@+id/tvBatteryLevel"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
-                android:textSize="13sp"
-                android:text="@string/level_alarm_desc"/>
+                android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
+                android:text="@string/level_alarm_desc"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvOneTimeNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
+                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_marginTop="30dp"
+                android:text="@string/one_time_notification"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/oneTimeAlarmSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tvOneTimeNotification"
+                android:layout_alignBottom="@+id/tvOneTimeDesc"
+                android:layout_alignParentEnd="true"
+                android:scaleX="0.8"
+                android:scaleY="0.8" />
+
+            <TextView
+                android:id="@+id/tvOneTimeDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvOneTimeNotification"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_toStartOf="@+id/oneTimeAlarmSwitch"
+                android:text="@string/one_time_notif_desc"
+                android:textSize="13sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_below="@id/tvOneTimeDesc"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/tvMinBatteryLevel"
@@ -75,7 +113,7 @@
                 android:id="@+id/tvMinBatteryLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_below="@id/tvOneTimeDesc"
                 android:layout_marginTop="10dp"
                 android:layout_alignParentStart="true"
                 android:text="20"
@@ -85,7 +123,7 @@
                 android:id="@+id/tvMAH"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_below="@id/tvOneTimeDesc"
                 android:layout_marginTop="10dp"
                 android:layout_alignParentEnd="true"
                 android:text="%"
@@ -95,7 +133,7 @@
                 android:id="@+id/tvMaxBatteryLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvLevelAlarmDesc"
+                android:layout_below="@id/tvOneTimeDesc"
                 android:layout_marginTop="10dp"
                 android:layout_toStartOf="@+id/tvMAH"
                 android:layout_marginEnd="5dp"
@@ -128,6 +166,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/tvTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -142,17 +181,20 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/tvTempAlarmDesc"
                 android:scaleX="0.8"
-                android:scaleY="0.8"/>
+                android:scaleY="0.8" />
 
             <TextView
                 android:id="@+id/tvTempAlarmDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/temperatureAlarmSwitch"
+                android:layout_below="@+id/tvTemperature"
+                android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
-                android:textSize="13sp"
-                android:text="@string/temperature_alarm_desc"/>
+                android:layout_toStartOf="@+id/temperatureAlarmSwitch"
+                android:text="@string/temperature_alarm_desc"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tvDegree"

@@ -23,6 +23,9 @@ class AlarmViewModel @Inject constructor(
     private val _batteryTempAlarmStatus: MutableLiveData<Boolean> = MutableLiveData()
     val batteryTemperatureAlarmStatus = _batteryTempAlarmStatus
 
+    private val _oneTimeAlarmStatus: MutableLiveData<Boolean> = MutableLiveData()
+    val oneTimeAlarmStatus = _oneTimeAlarmStatus
+
     fun getBatteryLevelThreshold() {
         _batteryLevelThreshold.value = appConfigUseCase.getBatteryLevelThreshold()
     }
@@ -51,5 +54,13 @@ class AlarmViewModel @Inject constructor(
 
     fun setBatteryTemperatureAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) {
         appConfigUseCase.setBatteryTemperatureAlarmStatus(value, callback)
+    }
+
+    fun getOneTimeAlarmStatus() {
+        _oneTimeAlarmStatus.value = appConfigUseCase.getOneTimeAlarmStatus()
+    }
+
+    fun setOneTimeAlarmStatus(value: Boolean, callback: (Boolean) -> Unit) {
+        appConfigUseCase.setOneTimeAlarmStatus(value, callback)
     }
 }
