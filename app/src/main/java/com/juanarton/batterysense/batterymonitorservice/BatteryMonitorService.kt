@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.Entry
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.broadcastreceiver.BatteryStateReceiver
 import com.juanarton.batterysense.broadcastreceiver.PowerStateReceiver
+import com.juanarton.batterysense.ui.activity.main.MainActivity
 import com.juanarton.batterysense.utils.BatteryDataHolder.addAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.addDeepSleepTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.addLastChargeLevel
@@ -197,6 +198,11 @@ class BatteryMonitorService : Service() {
     }
 
     private fun createNotification(): Notification {
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "3C Battery Monitor"
             val description = "Battery Monitor Service Channel"
@@ -212,6 +218,8 @@ class BatteryMonitorService : Service() {
             .setContentTitle(getString(R.string.serviceNotificationTitle))
             .setShowWhen(false)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
 
         return builder.build()
     }
