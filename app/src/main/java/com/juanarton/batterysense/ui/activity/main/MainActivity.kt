@@ -3,6 +3,7 @@ package com.juanarton.batterysense.ui.activity.main
 import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -37,7 +39,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import nl.joery.animatedbottombar.AnimatedBottomBar
 
 
 @AndroidEntryPoint
@@ -104,22 +105,29 @@ class MainActivity : AppCompatActivity() {
 
             binding?.apply {
                 val holder = R.id.fragmentHolder
-                bottomNavigationBar.setOnTabSelectListener(object: AnimatedBottomBar.OnTabSelectListener{
-                    override fun onTabSelected(
-                        lastIndex: Int,
-                        lastTab: AnimatedBottomBar.Tab?,
-                        newIndex: Int,
-                        newTab: AnimatedBottomBar.Tab
-                    ) {
-                        when(newIndex){
-                            0 -> fragmentBuilder(DashboardFragment(), holder, "Dashboard")
-                            1 -> fragmentBuilder(QuickSettingFragment(), holder, "QuickSetting")
-                            2 -> fragmentBuilder(AlarmFragment(), holder, "Alarm")
-                            3 -> fragmentBuilder(HistoryFragment(), holder, "History")
-                        }
-                    }
 
-                })
+                bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+                    Log.d("test", menuItem.itemId.toString())
+                    when (menuItem.itemId) {
+                        R.id.dashboard -> {
+                            fragmentBuilder(DashboardFragment(), holder, "Dashboard")
+                            true
+                        }
+                        R.id.quickSetting -> {
+                            fragmentBuilder(QuickSettingFragment(), holder, "QuickSetting")
+                            true
+                        }
+                        R.id.alarm -> {
+                            fragmentBuilder(AlarmFragment(), holder, "Alarm")
+                            true
+                        }
+                        R.id.history -> {
+                            fragmentBuilder(HistoryFragment(), holder, "History")
+                            true
+                        }
+                        else -> false
+                    }
+                }
             }
         }
     }
@@ -147,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFullScreen() {
-        val root = findViewById<ConstraintLayout>(R.id.root)
+        val root = findViewById<CoordinatorLayout>(R.id.root)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)

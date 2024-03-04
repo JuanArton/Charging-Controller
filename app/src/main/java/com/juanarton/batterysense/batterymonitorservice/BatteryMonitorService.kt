@@ -204,7 +204,7 @@ class BatteryMonitorService : Service() {
             PendingIntent.FLAG_IMMUTABLE)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "3C Battery Monitor"
+            val name = "BatterySense Monitor"
             val description = "Battery Monitor Service Channel"
             val channel = NotificationChannel(SERVICE_NOTIF_CHANNEL_ID, name, NotificationManager.IMPORTANCE_MIN)
             channel.description = description

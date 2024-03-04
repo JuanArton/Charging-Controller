@@ -70,6 +70,6 @@ dependencies {
 
     implementation("com.tbuonomo:dotsindicator:5.0")
 
-    implementation("com.tbuonomo:dotsindicator:5.0")
+    implementation("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
 
 }

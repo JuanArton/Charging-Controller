@@ -59,6 +59,8 @@ class QuickSettingFragment : Fragment() {
                         registerListener()
                         firstRun = false
                     }
+                    test.setHead("test")
+                    test.setContent("test")
                 }
             }
 

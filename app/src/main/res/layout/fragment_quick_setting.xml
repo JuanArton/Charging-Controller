@@ -162,14 +162,17 @@
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:strokeWidth="0dp"
             app:cardBackgroundColor="?attr/cardBackgroundColor"
-            app:contentPadding="20dp"
             app:cardCornerRadius="20dp"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout1">
+            app:contentPadding="20dp"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout1"
+            app:strokeWidth="0dp"
+            tools:layout_editor_absoluteX="20dp">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -181,8 +184,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_toStartOf="@+id/chargingLimitSwitch"
                     android:text="@string/charging_limit"
-                    android:textStyle="bold"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/chargingLimitSwitch"
@@ -191,7 +194,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:scaleX="0.8"
-                    android:scaleY="0.8"/>
+                    android:scaleY="0.8" />
 
                 <TextView
                     android:id="@+id/tvChargingLimitDesc"
@@ -201,18 +204,18 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="10dp"
-                    android:textSize="13sp"
-                    android:text="@string/charging_limit_desc" />
+                    android:text="@string/charging_limit_desc"
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tvPercent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvChargingLimitDesc"
-                    android:layout_marginTop="10dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="12sp"
-                    android:text="%" />
+                    android:layout_marginTop="10dp"
+                    android:text="%"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tvMaxCapacity"
@@ -220,8 +223,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvChargingLimitDesc"
                     android:layout_marginTop="10dp"
-                    android:layout_toStartOf="@+id/tvPercent"
                     android:layout_marginEnd="2dp"
+                    android:layout_toStartOf="@+id/tvPercent"
                     android:text="@string/maxCapacityValue"
                     android:textSize="12sp" />
 
@@ -229,12 +232,24 @@
                     android:id="@+id/sliderChargingLimit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/tvMaxCapacity"
+                    android:stepSize="1"
                     android:valueFrom="50"
                     android:valueTo="100"
-                    android:stepSize="1"
-                    app:trackHeight="5dp"
-                    android:layout_below="@id/tvMaxCapacity"/>
+                    app:trackHeight="5dp" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <com.juanarton.core.customview.CustomMaterialCardView
+            android:id="@+id/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginTop="20dp"
+            app:cardElevation="0dp"
+            app:iconSrc="@drawable/baseline_image_24"
+            app:titleText="Tst"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
