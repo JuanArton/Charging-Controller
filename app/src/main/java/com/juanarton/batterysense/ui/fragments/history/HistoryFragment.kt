@@ -36,9 +36,8 @@ class HistoryFragment : Fragment() {
         val rvAdapter = ChargingHistoryAdapter(requireContext())
         binding?.rvHistory?.adapter = rvAdapter
 
-        historyViewModel.chargingHistory.observe(viewLifecycleOwner) {
-            rvAdapter.setData(it)
-            rvAdapter.notifyDataSetChanged()
+        historyViewModel.getChargingHistory().observe(viewLifecycleOwner) {
+            rvAdapter.submitData(lifecycle, it)
         }
     }
 

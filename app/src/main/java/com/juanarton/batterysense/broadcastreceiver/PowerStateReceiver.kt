@@ -30,7 +30,7 @@ class PowerStateReceiver: BroadcastReceiver() {
                 CoroutineScope(Dispatchers.IO).launch {
                     resetBatteryData(context)
                     val batteryLevel = getBatteryLevel(context)
-                    iBatteryMonitoringRepository.insertLastUnpPlugged(
+                    iBatteryMonitoringRepository.insertLastUnplugged(
                         getCurrentTimeMillis(),
                         batteryLevel
                     )

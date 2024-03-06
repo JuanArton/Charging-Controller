@@ -1,15 +1,22 @@
 package com.juanarton.batterysense.ui.fragments.quicksetting
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.slider.Slider
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentQuickSettingBinding
+import com.juanarton.batterysense.ui.activity.main.MainActivity
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,16 +30,31 @@ class QuickSettingFragment : Fragment() {
     private var firstRun = true
 
     private lateinit var isRooted: Shell
+
+    private val command = "ls /data/adb/modules | grep 3C"
+    private val result = Shell.cmd(command).exec()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         isRooted = Shell.getShell()
+        Log.d("test", result.out.toString())
         return if (isRooted.status == 1) {
-            _binding = FragmentQuickSettingBinding.inflate(inflater, container, false)
-            binding?.root
-        } else {
+            if (result.out.isNotEmpty()) {
+                if (result.out[0] == "3C") {
+                    _binding = FragmentQuickSettingBinding.inflate(inflater, container, false)
+                    binding?.root
+                } else {
+                    inflater.inflate(R.layout.module_not_installed, container, false)
+                }
+            }
+            else {
+                inflater.inflate(R.layout.module_not_installed, container, false)
+            }
+        }
+        else {
             inflater.inflate(R.layout.root_denied_view, container, false)
         }
     }
@@ -40,41 +62,47 @@ class QuickSettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (isRooted.status == 1) {
-            qsViewModel.config.observe(viewLifecycleOwner) { config ->
-                binding?.apply {
-                    chargingSwitch.isChecked = config.chargingSwitch
+        val settings = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, 0)
 
-                    sliderChargingCurrent.value = config.current
-                    tvCurrentValue.text = config.current.toInt().toString()
+        if (result.out.isNotEmpty()) {
+            if (isRooted.status == 1 && result.out[0] == "3C") {
+                if (settings.getBoolean("qs_first_launch", true)) {
+                    showDialog(requireContext(), settings)
+                }
 
-                    chargingLimitSwitch.isChecked = config.limitSwitch
-                    sliderChargingLimit.value = config.maxCapacity
-                    tvMaxCapacity.text = config.maxCapacity.toInt().toString()
+                qsViewModel.config.observe(viewLifecycleOwner) { config ->
+                    binding?.apply {
+                        chargingSwitch.isChecked = config.chargingSwitch
 
-                    tvCSDescription.visibility =
-                        if (config.chargingLimitTriggered) View.VISIBLE else View.INVISIBLE
+                        sliderChargingCurrent.value = config.current
+                        tvCurrentValue.text = config.current.toInt().toString()
 
-                    if (firstRun) {
-                        registerListener()
-                        firstRun = false
+                        chargingLimitSwitch.isChecked = config.limitSwitch
+                        sliderChargingLimit.value = config.maxCapacity
+                        tvMaxCapacity.text = config.maxCapacity.toInt().toString()
+
+                        tvCSDescription.visibility =
+                            if (config.chargingLimitTriggered) View.VISIBLE else View.INVISIBLE
+
+                        if (firstRun) {
+                            registerListener()
+                            firstRun = false
+                        }
                     }
-                    test.setHead("test")
-                    test.setContent("test")
                 }
-            }
 
-            val reapplyConfigListener: (Result) -> Unit = { result ->
-                if (!result.success) {
-                    qsViewModel.getConfig()
-                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                val reapplyConfigListener: (Result) -> Unit = { result ->
+                    if (!result.success) {
+                        qsViewModel.getConfig()
+                        Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-            qsViewModel.setChargingSwitchStatus().observe(viewLifecycleOwner, reapplyConfigListener)
-            qsViewModel.setTargetCurrent().observe(viewLifecycleOwner, reapplyConfigListener)
-            qsViewModel.setChargingLimitStatus().observe(viewLifecycleOwner, reapplyConfigListener)
-            qsViewModel.setMaximumCapacity().observe(viewLifecycleOwner, reapplyConfigListener)
+                qsViewModel.setChargingSwitchStatus().observe(viewLifecycleOwner, reapplyConfigListener)
+                qsViewModel.setTargetCurrent().observe(viewLifecycleOwner, reapplyConfigListener)
+                qsViewModel.setChargingLimitStatus().observe(viewLifecycleOwner, reapplyConfigListener)
+                qsViewModel.setMaximumCapacity().observe(viewLifecycleOwner, reapplyConfigListener)
+            }
         }
     }
 
@@ -108,6 +136,28 @@ class QuickSettingFragment : Fragment() {
                 }
             })
         }
+    }
+
+    private fun showDialog(context: Context, settings:SharedPreferences) {
+        val dialogView: View = LayoutInflater.from(context).inflate(R.layout.custom_dialog_box, null)
+
+        val dialogMessage = dialogView.findViewById<TextView>(R.id.dialog_message)
+        dialogMessage.text = getString(R.string.qs_dialog_message)
+
+        val okButton = dialogView.findViewById<Button>(R.id.dialog_ok_button)
+
+        val alertDialogBuilder = AlertDialog.Builder(context)
+        alertDialogBuilder.setView(dialogView)
+        alertDialogBuilder.setCancelable(false)
+
+        val alertDialog = alertDialogBuilder.create()
+
+        okButton.setOnClickListener {
+            alertDialog.dismiss()
+            settings.edit().putBoolean("qs_first_launch", false).apply()
+        }
+
+        alertDialog.show()
     }
 
     override fun onDestroy() {

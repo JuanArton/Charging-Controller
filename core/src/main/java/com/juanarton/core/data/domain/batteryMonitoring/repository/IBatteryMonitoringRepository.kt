@@ -1,6 +1,7 @@
 package com.juanarton.core.data.domain.batteryMonitoring.repository
 
 import android.content.Context
+import androidx.paging.PagingData
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
@@ -56,9 +57,9 @@ interface IBatteryMonitoringRepository {
 
     fun getLastUnplugged(): Pair<Long, Int>
 
-    fun insertLastUnpPlugged(lastUnplugged: Long, lastUnpluggedLevel: Int)
+    fun insertLastUnplugged(lastUnplugged: Long, lastUnpluggedLevel: Int)
 
-    fun getChargingHistory(): Flow<List<ChargingHistory>>
+    fun getChargingHistory(): Flow<PagingData<ChargingHistory>>
 
     fun insertChargingHistory(chargingHistory: ChargingHistory)
 

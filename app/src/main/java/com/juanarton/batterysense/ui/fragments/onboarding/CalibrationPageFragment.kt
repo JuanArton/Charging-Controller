@@ -116,7 +116,7 @@ class CalibrationPageFragment : Fragment() {
                         settings.edit().putBoolean("first_launch", false).apply()
                         calibrationViewModel.insertInitialValue(requireContext())
                         calibrationViewModel.insertUnit(unit)
-                        capacity?.let { it1 -> calibrationViewModel.insertCapacty(it1) }
+                        capacity?.let { it1 -> calibrationViewModel.insertCapacity(it1) }
 
                         val fragmentManager = requireActivity().supportFragmentManager
                         val fragment = fragmentManager.findFragmentByTag("Onboarding")

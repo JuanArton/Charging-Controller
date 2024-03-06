@@ -3,15 +3,16 @@ package com.juanarton.batterysense.ui.activity.main
 import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -29,6 +30,7 @@ import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService.Co
 import com.juanarton.batterysense.batterymonitorservice.ServiceState
 import com.juanarton.batterysense.batterymonitorservice.getServiceState
 import com.juanarton.batterysense.databinding.ActivityMainBinding
+import com.juanarton.batterysense.ui.activity.about.AboutActivity
 import com.juanarton.batterysense.ui.fragments.alarm.AlarmFragment
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardFragment
 import com.juanarton.batterysense.ui.fragments.history.HistoryFragment
@@ -68,6 +70,9 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
+        setSupportActionBar(binding?.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         setFullScreen()
 
         val settings = getSharedPreferences(PREFS_NAME, 0)
@@ -104,10 +109,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             binding?.apply {
+                val typedValue = TypedValue()
+                this@MainActivity.theme.resolveAttribute(android.R.attr.textColor, typedValue, true)
+                toolbar.overflowIcon?.setTint(typedValue.data)
+
                 val holder = R.id.fragmentHolder
 
                 bottomNavigationBar.setOnItemSelectedListener { menuItem ->
-                    Log.d("test", menuItem.itemId.toString())
                     when (menuItem.itemId) {
                         R.id.dashboard -> {
                             fragmentBuilder(DashboardFragment(), holder, "Dashboard")
@@ -183,6 +191,21 @@ class MainActivity : AppCompatActivity() {
                 }
                 WindowInsetsCompat.CONSUMED
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.about_page -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

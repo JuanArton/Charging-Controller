@@ -14,8 +14,8 @@ android {
         applicationId = "com.juanarton.batterysense"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +25,13 @@ android {
     }
     buildTypes {
         release {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -55,8 +62,6 @@ dependencies {
 
     implementation("com.airbnb.android:lottie:6.0.0")
 
-    implementation("nl.joery.animatedbottombar:library:1.1.0")
-
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
@@ -70,6 +75,5 @@ dependencies {
 
     implementation("com.tbuonomo:dotsindicator:5.0")
 
-    implementation("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
-
+    implementation("at.blogc:expandabletextview:1.0.5")
 }

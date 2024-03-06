@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/logo"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/app_logo" />
         </androidx.cardview.widget.CardView>

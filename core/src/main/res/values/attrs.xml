@@ -1,7 +1,11 @@
 <resources>
     <declare-styleable name="CustomMaterialCardView">
         <attr name="iconSrc" format="reference"/>
+        <attr name="iconDescription" format="string"/>
+        <attr name="iconRotation" format="string"/>
         <attr name="titleText" format="string"/>
         <attr name="contentText" format="string"/>
+        <attr name="contentHint" format="float"/>
+        <attr name="contentUnit" format="string"/>
     </declare-styleable>
 </resources>

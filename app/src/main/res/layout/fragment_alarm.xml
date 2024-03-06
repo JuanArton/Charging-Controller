@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,224 +10,229 @@
     android:paddingBottom="20dp"
     tools:context=".ui.fragments.alarm.AlarmFragment">
 
-    <TextView
-        android:id="@+id/tvAlarm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/alarm"
-        android:textSize="28sp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvBatteryLevelSlider"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="?attr/cardBackgroundColor"
-        app:contentPadding="20dp"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintTop_toBottomOf="@id/tvAlarm">
-        <RelativeLayout
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvAlarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm"
+            android:textSize="28sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvBatteryLevelSlider"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="?attr/cardBackgroundColor"
+            app:contentPadding="20dp"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintTop_toBottomOf="@id/tvAlarm">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tvBatteryLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
-                android:text="@string/battery_level"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvBatteryLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
+                    android:text="@string/battery_level"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/batteryLevelAlarmSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:scaleX="0.8"
-                android:scaleY="0.8"/>
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/batteryLevelAlarmSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"/>
 
-            <TextView
-                android:id="@+id/tvLevelAlarmDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvBatteryLevel"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
-                android:text="@string/level_alarm_desc"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvLevelAlarmDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvBatteryLevel"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
+                    android:text="@string/level_alarm_desc"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/tvOneTimeNotification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
-                android:layout_below="@id/tvLevelAlarmDesc"
-                android:layout_marginTop="30dp"
-                android:text="@string/one_time_notification"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvOneTimeNotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
+                    android:layout_below="@id/tvLevelAlarmDesc"
+                    android:layout_marginTop="30dp"
+                    android:text="@string/one_time_notification"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/oneTimeAlarmSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/tvOneTimeNotification"
-                android:layout_alignBottom="@+id/tvOneTimeDesc"
-                android:layout_alignParentEnd="true"
-                android:scaleX="0.8"
-                android:scaleY="0.8" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/oneTimeAlarmSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tvOneTimeNotification"
+                    android:layout_alignBottom="@+id/tvOneTimeDesc"
+                    android:layout_alignParentEnd="true"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8" />
 
-            <TextView
-                android:id="@+id/tvOneTimeDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvOneTimeNotification"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_toStartOf="@+id/oneTimeAlarmSwitch"
-                android:text="@string/one_time_notif_desc"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvOneTimeDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvOneTimeNotification"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toStartOf="@+id/oneTimeAlarmSwitch"
+                    android:text="@string/one_time_notif_desc"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvOneTimeDesc"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@id/tvMinBatteryLevel"
-                android:text="%"
-                android:textSize="12sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvOneTimeDesc"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@id/tvMinBatteryLevel"
+                    android:text="%"
+                    android:textSize="12sp"/>
 
-            <TextView
-                android:id="@+id/tvMinBatteryLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvOneTimeDesc"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentStart="true"
-                android:text="20"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tvMinBatteryLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvOneTimeDesc"
+                    android:layout_marginTop="10dp"
+                    android:layout_alignParentStart="true"
+                    android:text="20"
+                    android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/tvMAH"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvOneTimeDesc"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentEnd="true"
-                android:text="%"
-                android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/tvMAH"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvOneTimeDesc"
+                    android:layout_marginTop="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:text="%"
+                    android:textSize="12sp"/>
 
-            <TextView
-                android:id="@+id/tvMaxBatteryLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvOneTimeDesc"
-                android:layout_marginTop="10dp"
-                android:layout_toStartOf="@+id/tvMAH"
-                android:layout_marginEnd="5dp"
-                android:text="80"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tvMaxBatteryLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvOneTimeDesc"
+                    android:layout_marginTop="10dp"
+                    android:layout_toStartOf="@+id/tvMAH"
+                    android:layout_marginEnd="5dp"
+                    android:text="80"
+                    android:textSize="12sp" />
 
-            <com.google.android.material.slider.RangeSlider
-                android:id="@+id/rsBatteryLevelThreshold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvMaxBatteryLevel"
-                android:valueFrom="0"
-                android:valueTo="100"
-                android:stepSize="1"
-                app:trackHeight="5dp"/>
-        </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/rsBatteryLevelThreshold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvMaxBatteryLevel"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    android:stepSize="1"
+                    app:trackHeight="5dp"/>
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="?attr/cardBackgroundColor"
-        app:contentPadding="20dp"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintTop_toBottomOf="@id/cvBatteryLevelSlider">
-        <RelativeLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="?attr/cardBackgroundColor"
+            app:contentPadding="20dp"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintTop_toBottomOf="@id/cvBatteryLevelSlider">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tvTemperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/temperatureAlarmSwitch"
-                android:text="@string/temperature"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvTemperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/temperatureAlarmSwitch"
+                    android:text="@string/temperature"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/temperatureAlarmSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignBottom="@+id/tvTempAlarmDesc"
-                android:scaleX="0.8"
-                android:scaleY="0.8" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/temperatureAlarmSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBottom="@+id/tvTempAlarmDesc"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8" />
 
-            <TextView
-                android:id="@+id/tvTempAlarmDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvTemperature"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
-                android:layout_toStartOf="@+id/temperatureAlarmSwitch"
-                android:text="@string/temperature_alarm_desc"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvTempAlarmDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTemperature"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_toStartOf="@+id/temperatureAlarmSwitch"
+                    android:text="@string/temperature_alarm_desc"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/tvDegree"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvTempAlarmDesc"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_alignParentEnd="true"
-                android:textSize="12sp"
-                android:text="@string/degree_symbol" />
+                <TextView
+                    android:id="@+id/tvDegree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvTempAlarmDesc"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_alignParentEnd="true"
+                    android:textSize="12sp"
+                    android:text="@string/degree_symbol" />
 
 
-            <TextView
-                android:id="@+id/tvMaxTemperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvTempAlarmDesc"
-                android:layout_marginTop="10dp"
-                android:layout_toStartOf="@+id/tvDegree"
-                android:text="38"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tvMaxTemperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvTempAlarmDesc"
+                    android:layout_marginTop="10dp"
+                    android:layout_toStartOf="@+id/tvDegree"
+                    android:text="38"
+                    android:textSize="12sp" />
 
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderMaxTemperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvMaxTemperature"
-                android:valueFrom="0"
-                android:valueTo="50"
-                android:stepSize="1"
-                app:trackHeight="5dp"/>
-        </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderMaxTemperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvMaxTemperature"
+                    android:valueFrom="0"
+                    android:valueTo="50"
+                    android:stepSize="1"
+                    app:trackHeight="5dp"/>
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

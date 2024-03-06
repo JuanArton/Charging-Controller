@@ -94,27 +94,27 @@ class DashboardFragment : Fragment() {
                 when (group.checkedChipId) {
                     batteryHistoryPanel.chipChargingCurrent.id -> {
                         showCurrent()
-                        batteryInfoPanel.tvChartInfoTitle1.text = temperatureTitle
-                        batteryInfoPanel.tvChartInfoTitle2.text = powerTitle
+                        batteryInfoPanel.cvChartInfo1.titleText = temperatureTitle
+                        batteryInfoPanel.cvChartInfo2.titleText = powerTitle
 
-                        batteryInfoPanel.ivChartInfo1.setImageResource(R.drawable.temperature)
-                        batteryInfoPanel.ivChartInfo2.setImageResource(R.drawable.power)
+                        batteryInfoPanel.cvChartInfo1.iconResource = R.drawable.temperature
+                        batteryInfoPanel.cvChartInfo2.iconResource = R.drawable.power
                     }
                     batteryHistoryPanel.chipTemperature.id -> {
                         showTemperature()
-                        batteryInfoPanel.tvChartInfoTitle1.text = currentTitle
-                        batteryInfoPanel.tvChartInfoTitle2.text = powerTitle
+                        batteryInfoPanel.cvChartInfo1.titleText = currentTitle
+                        batteryInfoPanel.cvChartInfo2.titleText = powerTitle
 
-                        batteryInfoPanel.ivChartInfo1.setImageResource(R.drawable.charging_current)
-                        batteryInfoPanel.ivChartInfo2.setImageResource(R.drawable.power)
+                        batteryInfoPanel.cvChartInfo1.iconResource = R.drawable.charging_current
+                        batteryInfoPanel.cvChartInfo2.iconResource = R.drawable.power
                     }
                     batteryHistoryPanel.chipPower.id -> {
                         showPower()
-                        batteryInfoPanel.tvChartInfoTitle1.text = currentTitle
-                        batteryInfoPanel.tvChartInfoTitle2.text = temperatureTitle
+                        batteryInfoPanel.cvChartInfo1.titleText = currentTitle
+                        batteryInfoPanel.cvChartInfo2.titleText = temperatureTitle
 
-                        batteryInfoPanel.ivChartInfo1.setImageResource(R.drawable.charging_current)
-                        batteryInfoPanel.ivChartInfo2.setImageResource(R.drawable.temperature)
+                        batteryInfoPanel.cvChartInfo1.iconResource = R.drawable.charging_current
+                        batteryInfoPanel.cvChartInfo2.iconResource = R.drawable.temperature
                     }
                 }
             }
@@ -149,11 +149,11 @@ class DashboardFragment : Fragment() {
                     append("$batteryCapacity ${getString(R.string.mah)}")
                 }
 
-                batteryInfoPanel.tvBatteryStatus.text = Utils.mapBatteryStatus(it.status, requireContext())
+                batteryInfoPanel.cvStatus.contentText = Utils.mapBatteryStatus(it.status, requireContext())
 
-                batteryInfoPanel.tvBatteryVoltage.text = it.voltage.toString()
+                batteryInfoPanel.cvVoltage.contentText = it.voltage.toString()
 
-                batteryInfoPanel.tvChargingType.text = when {
+                batteryInfoPanel.cvChargingType.contentText = when {
                     it.acCharge -> getString(R.string.ac)
                     it.usbCharge -> getString(R.string.usb)
                     else -> getString(R.string.battery)
@@ -182,18 +182,18 @@ class DashboardFragment : Fragment() {
                     when {
                         currentGraph -> {
                             batteryHistoryPanel.tvChartValue.text = currentValue
-                            batteryInfoPanel.tvChartInfoValue1.text = temperatureValue
-                            batteryInfoPanel.tvChartInfoValue2.text = powerValue
+                            batteryInfoPanel.cvChartInfo1.contentText = temperatureValue
+                            batteryInfoPanel.cvChartInfo2.contentText = powerValue
                         }
                         temperatureGraph -> {
                             batteryHistoryPanel.tvChartValue.text = temperatureValue
-                            batteryInfoPanel.tvChartInfoValue1.text = currentValue
-                            batteryInfoPanel.tvChartInfoValue2.text = powerValue
+                            batteryInfoPanel.cvChartInfo1.contentText = currentValue
+                            batteryInfoPanel.cvChartInfo2.contentText = powerValue
                         }
                         powerGraph -> {
                             batteryHistoryPanel.tvChartValue.text = powerValue
-                            batteryInfoPanel.tvChartInfoValue1.text = currentValue
-                            batteryInfoPanel.tvChartInfoValue2.text = temperatureValue
+                            batteryInfoPanel.cvChartInfo1.contentText = currentValue
+                            batteryInfoPanel.cvChartInfo2.contentText = temperatureValue
                         }
                     }
 

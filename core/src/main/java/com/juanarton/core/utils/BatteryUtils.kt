@@ -1,5 +1,6 @@
 package com.juanarton.core.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -113,6 +114,7 @@ object BatteryUtils {
         return number.toString().length
     }
 
+    @SuppressLint("PrivateApi")
     fun getDesignedCapacity(context: Context): Double {
         var batteryCapacity = 0.0
         val powerProfileClass = "com.android.internal.os.PowerProfile"

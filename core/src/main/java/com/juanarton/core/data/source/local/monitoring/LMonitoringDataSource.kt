@@ -1,7 +1,11 @@
 package com.juanarton.core.data.source.local.monitoring
 
 import android.content.Context
+import android.util.Log
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
+import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import com.juanarton.core.data.source.local.monitoring.room.batteryHistory.BatteryHistoryDAO
 import com.juanarton.core.data.source.local.monitoring.room.batteryHistory.entity.BatteryHistoryEntity
 import com.juanarton.core.data.source.local.monitoring.room.chargingHistory.ChargingHistoryDAO
@@ -17,6 +21,7 @@ import com.juanarton.core.utils.BatteryUtils.getUSBCharge
 import com.juanarton.core.utils.BatteryUtils.getUptime
 import com.juanarton.core.utils.BatteryUtils.getVoltage
 import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
+import com.juanarton.core.utils.DomainUtils
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -173,8 +178,35 @@ class LMonitoringDataSource @Inject constructor(
         editor.apply()
     }
 
-    fun getChargingHistory(): List<ChargingHistoryEntity> =
-        chargingHistoryDAO.getChargingHistory()
+    fun getChargingHistory(): PagingSource<Int, ChargingHistory> {
+        return object : PagingSource<Int, ChargingHistory>(){
+            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ChargingHistory> {
+                val page = params.key ?: 0
+
+                return try {
+                    val chargingHistory = DomainUtils.mapChargingHistoryEntityToDomain(
+                        chargingHistoryDAO.getChargingHistory(params.loadSize, page * params.loadSize)
+                    )
+                    Log.d("test", chargingHistoryDAO.getChargingHistory(params.loadSize, page * params.loadSize).toString())
+
+                    LoadResult.Page(
+                        data = chargingHistory,
+                        prevKey = if (page == 0) null else page - 1,
+                        nextKey = if (chargingHistory.isEmpty()) null else page + 1
+                    )
+                } catch (e: Exception) {
+                    LoadResult.Error(e)
+                }
+            }
+
+            override fun getRefreshKey(state: PagingState<Int, ChargingHistory>): Int? {
+                return state.anchorPosition?.let { anchorPosition ->
+                    val anchorPage = state.closestPageToPosition(anchorPosition)
+                    anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+                }
+            }
+        }
+    }
 
     fun insertChargingHistory(chargingHistoryEntity: ChargingHistoryEntity) {
         chargingHistoryDAO.insertChargingHistory(chargingHistoryEntity)

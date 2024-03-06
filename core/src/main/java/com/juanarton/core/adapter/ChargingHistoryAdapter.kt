@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.juanarton.core.R
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
@@ -16,15 +18,18 @@ import kotlin.math.abs
 
 class ChargingHistoryAdapter (
     private val context: Context
-) : RecyclerView.Adapter<ChargingHistoryAdapter.ViewHolder>() {
+) : PagingDataAdapter<ChargingHistory, ChargingHistoryAdapter.ViewHolder>(HistoryComparator) {
 
-    private val chargingHistories: ArrayList<ChargingHistory> = arrayListOf()
-    fun setData(items: List<ChargingHistory>?) {
-        chargingHistories.apply {
-            clear()
-            items?.let { addAll(it) }
+    object HistoryComparator: DiffUtil.ItemCallback<ChargingHistory>() {
+        override fun areItemsTheSame(oldItem: ChargingHistory, newItem: ChargingHistory): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: ChargingHistory, newItem: ChargingHistory): Boolean {
+            return oldItem == newItem
         }
     }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -32,9 +37,11 @@ class ChargingHistoryAdapter (
         val view = LayoutInflater.from(parent.context).inflate(R.layout.charging_history_item_view, parent, false)
         return ViewHolder(view)
     }
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(chargingHistories[position])
-
-    override fun getItemCount(): Int = chargingHistories.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        getItem(position)?.let {
+            holder.bind(it)
+        }
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         private val binding = ChargingHistoryItemViewBinding.bind(itemView)

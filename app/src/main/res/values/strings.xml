@@ -9,7 +9,7 @@
     <string name="mah">mAh</string>
     <string name="idle_mode">Idle Mode</string>
     <string name="ma">mA</string>
-    <string name="trigerred_by_charging_limit">Trigerred by charging limit</string>
+    <string name="triggered_by_charging_limit">Triggered by charging limit</string>
     <string name="charging_limit">Charging Limit</string>
     <string name="maxCapacityValue">80</string>
     <string name="type">Type</string>
@@ -82,4 +82,14 @@
     <string name="remove_charging_message">Please disconnect charger before calibrating!</string>
     <string name="one_time_notification">One-Time Notification</string>
     <string name="one_time_notif_desc">Set app to show notification only once when the specified threshold reached.</string>
+    <string name="module_not_installed">Magisk module not installed! Please download and install the module from the link on About page.</string>
+    <string name="about">About</string>
+    <string name="made_by_juan_arton">Made with ❤️ by Juan Arton</string>
+    <string name="app_desc">Initially, I developed this application with the purpose of modifying on the fly the Magisk fast charging module by FCGreen, allowing easier adjustment of charging current. However, given my orientation of android modding is for the best possible battery life, i need an application to monitor battery usage. So, I made the decision to develop BatterySense further.</string>
+    <string name="see_me">See Me!</string>
+    <string name="download_magisk_module">Download Magisk Module</string>
+    <string name="repository">Repository</string>
+    <string name="qs_dialog_message">This feature is only tested on Qualcomm device (Redmi Note 9 Pro). This might/not work on your Qualcomm device.\n\nDO WITH YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANYTHING THAT HAPPENS TO YOUR DEVICE, SUCH AS DAMAGE, ETC.</string>
+    <string name="library_used">Library Used</string>
+    <string name="see_more_button">See more button</string>
 </resources>

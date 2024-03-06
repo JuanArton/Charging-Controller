@@ -16,7 +16,7 @@ class CalibrationViewModel @Inject constructor(
 
     fun insertUnit(unit: String) = batteryMonitoringUseCase.insertCurrentUnit(unit)
 
-    fun insertCapacty(capacity: Int) {
+    fun insertCapacity(capacity: Int) {
         batteryMonitoringUseCase.insertCapacity(capacity)
     }
 

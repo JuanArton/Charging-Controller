@@ -1,6 +1,5 @@
 package com.juanarton.core.data.domain.batteryInfo.usecase
 
-import android.content.Context
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import kotlinx.coroutines.flow.Flow

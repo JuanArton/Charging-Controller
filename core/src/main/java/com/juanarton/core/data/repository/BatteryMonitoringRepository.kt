@@ -1,6 +1,9 @@
 package com.juanarton.core.data.repository
 
 import android.content.Context
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
@@ -9,7 +12,6 @@ import com.juanarton.core.data.source.local.monitoring.LMonitoringDataSource
 import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryDomainToEntity
 import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryEntityToDomain
 import com.juanarton.core.utils.DomainUtils.mapChargingHistoryDomainToEntity
-import com.juanarton.core.utils.DomainUtils.mapChargingHistoryEntityToDomain
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -126,18 +128,22 @@ class BatteryMonitoringRepository @Inject constructor(
     override fun getLastUnplugged(): Pair<Long, Int> =
         lMonitoringDataSource.getLastUnplugged()
 
-    override fun insertLastUnpPlugged(lastUnplugged: Long, lastUnluggedLevel: Int) {
-        lMonitoringDataSource.insertLastUnpPlugged(lastUnplugged, lastUnluggedLevel)
+    override fun insertLastUnplugged(lastUnplugged: Long, lastUnpluggedLevel: Int) {
+        lMonitoringDataSource.insertLastUnpPlugged(lastUnplugged, lastUnpluggedLevel)
     }
 
-    override fun getChargingHistory(): Flow<List<ChargingHistory>> =
-        flow {
-            emit(
-                mapChargingHistoryEntityToDomain(
-                    lMonitoringDataSource.getChargingHistory()
-                )
-            )
-        }.flowOn(Dispatchers.IO)
+    override fun getChargingHistory(): Flow<PagingData<ChargingHistory>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 4,
+                enablePlaceholders = false,
+                initialLoadSize = 4
+            ),
+            pagingSourceFactory = {
+                lMonitoringDataSource.getChargingHistory()
+            }
+        ).flow
+    }
 
     override fun insertChargingHistory(chargingHistory: ChargingHistory) {
         lMonitoringDataSource.insertChargingHistory(

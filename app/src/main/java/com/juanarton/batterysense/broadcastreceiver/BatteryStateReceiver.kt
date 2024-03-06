@@ -6,9 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
