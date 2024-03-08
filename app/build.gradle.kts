@@ -14,7 +14,7 @@ android {
         applicationId = "com.juanarton.batterysense"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
+        versionCode = 8
         versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -30,6 +30,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
         debug {
             isMinifyEnabled = false
