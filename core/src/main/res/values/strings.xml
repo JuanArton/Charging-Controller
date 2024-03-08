@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="charging">Charging</string>
+    <string name="discharging">Discharging</string>
+    <string name="unknown">Unknown</string>
+    <string name="not_charging">Not Charging</string>
+    <string name="full">Full</string>
+    <string name="degree_symbol">°C</string>
+    <string name="wattage">W</string>
+    <string name="volt_unit">V</string>
+    <string name="ma">mA</string>
+
+
+    <string name="temp">Temp</string>
+    <string name="volt">Volt</string>
+    <string name="time">Time</string>
+    <string name="power">Power</string>
+    <string name="no">No</string>
+    <string name="level">Level</string>
+    <string name="current">Current</string>
+    <string name="dummy_text">Dummy Text</string>
+
+    <string name="charged_for">Charged for</string>
+    <string name="discharged_for">Discharged for</string>
+
+    <string name="charging_started">Charging started</string>
+    <string name="charging_ended">Charging ended</string>
+
+    <string name="discharging_started">Discharging started</string>
+    <string name="discharging_ended">Discharging ended</string>
+    <string name="icon">icon</string>
+</resources>

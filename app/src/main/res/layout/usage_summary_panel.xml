@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tvUsageSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/usage_summary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/tvUsageSummary">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/cardBackgroundColor"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/ivScreenOn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
+                    android:contentDescription="@string/charging_temperature_icon"
+                    android:scaleType="center"
+                    android:scaleX="0.9"
+                    android:scaleY="0.9"
+                    android:src="@drawable/screen_on"
+                    app:tint="@color/blue" />
+
+                <TextView
+                    android:id="@+id/tvScreenOn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ivScreenOn"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/screen_on"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvScreenOnValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvScreenOn"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvScreenOnUsage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvScreenOnValue"
+                    android:layout_marginTop="5dp"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/cardBackgroundColor"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/ivScreenOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
+                    android:contentDescription="@string/charging_temperature_icon"
+                    android:scaleType="center"
+                    android:scaleX="0.9"
+                    android:scaleY="0.9"
+                    android:src="@drawable/screen_off"
+                    app:tint="@color/green" />
+
+                <TextView
+                    android:id="@+id/tvScreenOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ivScreenOff"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/screen_off"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvScreenOffValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvScreenOff"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="10dp"
+                    android:textColor="?attr/colorPrimary"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvScreenOffUsage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvScreenOffValue"
+                    android:layout_marginTop="5dp"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="?attr/cardBackgroundColor"
+            app:cardCornerRadius="25dp"
+            app:contentPadding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+            app:strokeWidth="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/ivRuntime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
+                    android:contentDescription="@string/charging_temperature_icon"
+                    android:scaleType="center"
+                    android:scaleX="0.9"
+                    android:scaleY="0.9"
+                    android:src="@drawable/runtime"
+                    app:tint="@color/yellow" />
+
+                <TextView
+                    android:id="@+id/tvTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ivRuntime"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/total"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvTotalTimeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvTotal"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="10dp"
+                    android:textColor="?attr/colorPrimary"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTotalUsage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvTotalTimeValue"
+                    android:layout_marginTop="5dp"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout3">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:outlineProvider="none"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:cardCornerRadius="25dp"
+                app:contentPadding="15dp"
+                app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvActiveDrainPerHr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:textSize="14sp"
+                        android:text="@string/active_drain_hour" />
+
+                    <TextView
+                        android:id="@+id/tvActiveDrainPerHrValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/tvActiveDrainPerHr"
+                        android:gravity="center_vertical"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:outlineProvider="none"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:cardCornerRadius="25dp"
+                app:contentPadding="15dp"
+                app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvAwake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:textSize="14sp"
+                        android:text="@string/awake" />
+
+                    <TextView
+                        android:id="@+id/tvAwakeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/tvAwake"
+                        android:gravity="center_vertical"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvAwakePercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvAwakeValue"
+                        android:layout_marginTop="5dp"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvAwakePerHrValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvAwakePercentage"
+                        android:layout_marginTop="5dp"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:outlineProvider="none"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:cardCornerRadius="25dp"
+                app:contentPadding="15dp"
+                app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvCycle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:textSize="14sp"
+                        android:text="@string/cycle_count" />
+
+                    <TextView
+                        android:id="@+id/tvCycleValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/tvCycle"
+                        android:gravity="center_vertical"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:outlineProvider="none"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:cardCornerRadius="25dp"
+                app:contentPadding="15dp"
+                app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvIdleDrainPerHr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:textSize="14sp"
+                        android:text="@string/idle_drain_hour" />
+
+                    <TextView
+                        android:id="@+id/tvIdleDrainPerHrValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/tvIdleDrainPerHr"
+                        android:gravity="center_vertical"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:outlineProvider="none"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:cardCornerRadius="25dp"
+                app:contentPadding="15dp"
+                app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvDeepSleep"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:textSize="14sp"
+                        android:text="@string/deep_sleep" />
+
+                    <TextView
+                        android:id="@+id/tvDeepSleepValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/tvDeepSleep"
+                        android:gravity="center_vertical"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDeepSleepPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvDeepSleepValue"
+                        android:layout_marginTop="5dp"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvDeepSleepPerHrValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvDeepSleepPercentage"
+                        android:layout_marginTop="5dp"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:outlineProvider="none"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:cardCornerRadius="25dp"
+                app:contentPadding="15dp"
+                app:layout_constraintTop_toBottomOf="@id/cvChargingSwitch"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvUptime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:textSize="14sp"
+                        android:text="@string/uptime" />
+
+                    <TextView
+                        android:id="@+id/tvUptimeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/tvUptime"
+                        android:gravity="center_vertical"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,27 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.ChargingCurrentController" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.BatterySense" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primaryVariant</item>
         <item name="android:textColor">@color/darkThemeText</item>
+        <item name="android:windowBackground">@color/darkSurface</item>
+        <item name="cardBackgroundColor">@color/darkCardBackground</item>
+        <item name="liftOnScrollColor">@color/darkSurface</item>
 
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background, animated icon, and animation
+        duration. -->
+        <item name="windowSplashScreenBackground">@color/white</item>
+
+        <item name="windowSplashScreenAnimationDuration">200</item>
+
+        <!-- Set the theme of the Activity that directly follows your splash
+        screen. This is required. -->
+        <item name="postSplashScreenTheme">@style/Theme.BatterySense</item>
     </style>
 </resources>

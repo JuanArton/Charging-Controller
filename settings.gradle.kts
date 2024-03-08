@@ -1,3 +1,4 @@
+@file:Suppress("UnstableApiUsage")
 pluginManagement {
     repositories {
         google()
@@ -13,9 +14,12 @@ dependencyResolutionManagement {
         maven {
             setUrl("https://jitpack.io")
         }
+        maven {
+            setUrl("https://jcenter.bintray.com")
+        }
     }
 }
 
-rootProject.name = "Charging Current Controller"
+rootProject.name = "Battery Sense"
 include(":app")
 include(":core")

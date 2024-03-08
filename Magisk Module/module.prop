@@ -1,0 +1,7 @@
+id=3C
+name=Charging Current Controller
+version=v1.0
+versionCode=1
+author=Antergos
+description=Magisk/KSU module to control phone chargin current
+#updateJson=https://raw.githubusercontent.com/Zackptg5/MMT-Extended/master/update.json
