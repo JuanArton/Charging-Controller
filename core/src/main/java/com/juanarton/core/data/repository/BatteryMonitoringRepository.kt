@@ -18,8 +18,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject.Inject
 
 class BatteryMonitoringRepository @Inject constructor(
@@ -38,13 +36,12 @@ class BatteryMonitoringRepository @Inject constructor(
         lMonitoringDataSource.insertDeepSleepInitialValue(deepSleepInitialVale)
     }
 
-    override fun getStartTime(): Date {
-        val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
-        return dateFormat.parse(lMonitoringDataSource.getStartTime())
+    override fun getStartTime(): Long {
+        return lMonitoringDataSource.getStartTime()
     }
 
-    override fun insertStartTime(startTime: Date) {
-        lMonitoringDataSource.insertStartTime(startTime.toString())
+    override fun insertStartTime(startTime: Long) {
+        lMonitoringDataSource.insertStartTime(startTime)
     }
 
     override fun getScreenOnTime(): Long =

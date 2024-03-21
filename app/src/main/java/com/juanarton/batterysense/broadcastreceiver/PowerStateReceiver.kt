@@ -5,8 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
-import com.juanarton.batterysense.utils.BatteryDataHolder.addAwakeTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.addDeepSleepTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.setAwakeTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.setDeepSleepTime
+import com.juanarton.batterysense.utils.ChargingDataHolder.setIsCharging
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.utils.BatteryUtils.getBatteryLevel
@@ -15,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,6 +50,7 @@ class PowerStateReceiver: BroadcastReceiver() {
                         )
                     )
                 }
+                setIsCharging(false)
             }
             Intent.ACTION_POWER_CONNECTED -> {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -74,6 +75,7 @@ class PowerStateReceiver: BroadcastReceiver() {
                         )
                     )
                 }
+                setIsCharging(true)
             }
         }
     }
@@ -81,7 +83,7 @@ class PowerStateReceiver: BroadcastReceiver() {
     private fun resetBatteryData(context: Context) {
         val currentDeepSleep = (SystemClock.elapsedRealtime() - SystemClock.uptimeMillis())/1000
         iBatteryMonitoringRepository.insertDeepSleepInitialValue(0)
-        iBatteryMonitoringRepository.insertStartTime(Date())
+        iBatteryMonitoringRepository.insertStartTime(getCurrentTimeMillis())
         iBatteryMonitoringRepository.insertScreenOnTime(0)
         iBatteryMonitoringRepository.insertScreenOffTime(0)
         iBatteryMonitoringRepository.insertCpuAwake(0)
@@ -92,8 +94,8 @@ class PowerStateReceiver: BroadcastReceiver() {
         iBatteryMonitoringRepository.insertScreenOffDrain(0)
         BatteryMonitorService.deepSleepInitialValue = currentDeepSleep
         BatteryMonitorService.deepSleepBuffer = 0
-        addDeepSleepTime(0)
-        addAwakeTime(0)
+        setDeepSleepTime(0)
+        setAwakeTime(0)
         BatteryMonitorService.screenOnBuffer = 0
         BatteryMonitorService.screenOffBuffer = 0
     }

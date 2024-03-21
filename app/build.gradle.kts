@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("com.google.firebase.crashlytics")
+    id("com.google.gms.google-services")
 }
 apply("../shared_dependencies.gradle")
 
@@ -14,7 +16,7 @@ android {
         applicationId = "com.juanarton.batterysense"
         minSdk = 24
         targetSdk = 34
-        versionCode = 8
+        versionCode = 15
         versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -79,4 +81,8 @@ dependencies {
     implementation("com.tbuonomo:dotsindicator:5.0")
 
     implementation("at.blogc:expandabletextview:1.0.5")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+
+    implementation("com.google.firebase:firebase-analytics")
 }

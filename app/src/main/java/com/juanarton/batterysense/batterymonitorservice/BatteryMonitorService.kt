@@ -1,5 +1,6 @@
 package com.juanarton.batterysense.batterymonitorservice
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
@@ -10,6 +11,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
@@ -20,15 +22,6 @@ import com.juanarton.batterysense.R
 import com.juanarton.batterysense.broadcastreceiver.BatteryStateReceiver
 import com.juanarton.batterysense.broadcastreceiver.PowerStateReceiver
 import com.juanarton.batterysense.ui.activity.main.MainActivity
-import com.juanarton.batterysense.utils.BatteryDataHolder.addAwakeTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.addDeepSleepTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.addLastChargeLevel
-import com.juanarton.batterysense.utils.BatteryDataHolder.addScreenOffDrain
-import com.juanarton.batterysense.utils.BatteryDataHolder.addScreenOffDrainPerHr
-import com.juanarton.batterysense.utils.BatteryDataHolder.addScreenOffTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.addScreenOnDrain
-import com.juanarton.batterysense.utils.BatteryDataHolder.addScreenOnDrainPerHr
-import com.juanarton.batterysense.utils.BatteryDataHolder.addScreenOnTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getDeepSleepTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrain
@@ -37,7 +30,22 @@ import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.setAwakeTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.setDeepSleepTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.setLastChargeLevel
+import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOffDrain
+import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOffDrainPerHr
+import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOffTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOnDrain
+import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOnDrainPerHr
+import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOnTime
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingPerHr
+import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
+import com.juanarton.batterysense.utils.ChargingDataHolder.setIsCharging
 import com.juanarton.batterysense.utils.ServiceUtil
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
@@ -51,7 +59,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -63,6 +70,7 @@ class BatteryMonitorService : Service() {
     lateinit var iAppConfigRepository: IAppConfigRepository
     @Inject
     lateinit var iBatteryMonitoringRepository: IBatteryMonitoringRepository
+    private var firstRun = true
 
     private lateinit var notificationManager:NotificationManager
     private lateinit var builder: NotificationCompat.Builder
@@ -127,25 +135,38 @@ class BatteryMonitorService : Service() {
     private fun monitorBattery() {
         CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
-                addScreenOnTime(iBatteryMonitoringRepository.getScreenOnTime())
-                addScreenOffTime(iBatteryMonitoringRepository.getScreenOffTime())
-                addScreenOnDrain(iBatteryMonitoringRepository.getScreenOnDrain())
-                addScreenOffDrain(iBatteryMonitoringRepository.getScreenOffDrain())
+                setScreenOnTime(iBatteryMonitoringRepository.getScreenOnTime())
+                setScreenOffTime(iBatteryMonitoringRepository.getScreenOffTime())
+                setScreenOnDrain(iBatteryMonitoringRepository.getScreenOnDrain())
+                setScreenOffDrain(iBatteryMonitoringRepository.getScreenOffDrain())
+
                 iBatteryMonitoringRepository.getBatteryInfo().collect {
+                    if (firstRun) {
+                        if (it.status != 1 && it.status != 3) {
+                            setIsCharging(true)
+                        }
+                        firstRun = false
+                    }
+
                     when (screenOn) {
                         true -> {
                             insertScreenOnTime()
-                            addScreenOnDrainPerHr(getScreenOnDrain() / (getScreenOnTime().toDouble()/3600))
-                            addScreenOffDrainPerHr(getScreenOffDrain() / (getScreenOffTime().toDouble()/3600))
+                            setScreenOnDrainPerHr(getScreenOnDrain() / (getScreenOnTime().toDouble()/3600))
+                            setScreenOffDrainPerHr(getScreenOffDrain() / (getScreenOffTime().toDouble()/3600))
                         }
                         false -> {
                             insertScreenOffTime()
                         }
                     }
-                    updateNotification(
-                        it, getScreenOnTime(), getScreenOffTime(), getScreenOnDrainPerHr(),
-                        getScreenOffDrainPerHr(), getScreenOnDrain(), getScreenOffDrain()
-                    )
+
+                    if (getIsCharging()) {
+                        resetStat()
+                        ChargingDataHolder.setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000)
+                        ChargingDataHolder.setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
+                    }
+
+                    updateNotification(it)
+
                     iBatteryMonitoringRepository.insertHistory(
                         BatteryHistory(
                             getCurrentTimeMillis(), it.level, it.currentNow, it.temperature,
@@ -162,6 +183,7 @@ class BatteryMonitorService : Service() {
         monitorBattery()
     }
 
+    @SuppressLint("ForegroundServiceType")
     private fun startService() {
         if (!isServiceStarted) {
             isServiceStarted = true
@@ -170,16 +192,29 @@ class BatteryMonitorService : Service() {
 
             deepSleepInitialValue =
                 (SystemClock.elapsedRealtime() - SystemClock.uptimeMillis()) / 1000
-            addDeepSleepTime(iBatteryMonitoringRepository.getDeepSleepInitialValue())
+            setDeepSleepTime(iBatteryMonitoringRepository.getDeepSleepInitialValue())
             deepSleepBuffer = iBatteryMonitoringRepository.getDeepSleepInitialValue()
             screenOnBuffer = iBatteryMonitoringRepository.getScreenOnTime()
             screenOffBuffer = iBatteryMonitoringRepository.getScreenOffTime()
-            addAwakeTime(iBatteryMonitoringRepository.getCpuAwake())
-            iBatteryMonitoringRepository.insertStartTime(Date())
-            addLastChargeLevel(iBatteryMonitoringRepository.getInitialBatteryLevel(applicationContext))
+            setAwakeTime(iBatteryMonitoringRepository.getCpuAwake())
+            iBatteryMonitoringRepository.insertStartTime(getCurrentTimeMillis())
+            setLastChargeLevel(iBatteryMonitoringRepository.getInitialBatteryLevel(applicationContext))
 
             setServiceState(this, ServiceState.STARTED)
-            startForeground(SERVICE_NOTIFICATION_ID, createNotification())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(
+                    SERVICE_NOTIFICATION_ID, createNotification(),
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                        } else {
+                            0
+                        }
+                    } else { 0 }
+                )
+            } else {
+                startForeground(SERVICE_NOTIFICATION_ID, createNotification())
+            }
 
             startMonitoring()
             startBatteryHistory()
@@ -224,14 +259,12 @@ class BatteryMonitorService : Service() {
         return builder.build()
     }
 
-    private fun updateNotification(
-        batteryInfo: BatteryInfo, screenOnTime: Long, screenOffTime: Long, screenOnDrainPerHr: Double,
-        screenOffDrainPerHr: Double, screenOnDrain:Int, screenOffDrain: Int
-    ) {
+    private fun updateNotification(batteryInfo: BatteryInfo) {
         val title = ServiceUtil.buildTitle(batteryInfo, applicationContext)
         val content = ServiceUtil.buildContent(
-            batteryInfo, getDeepSleepTime(), screenOnTime, screenOffTime, getAwakeTime(), screenOnDrainPerHr,
-            screenOffDrainPerHr, screenOnDrain, screenOffDrain
+            batteryInfo, getDeepSleepTime(), getScreenOnTime(), getScreenOffTime(), getAwakeTime(),
+            getScreenOnDrainPerHr(), getScreenOffDrainPerHr(), getScreenOnDrain(), getScreenOffDrain(),
+            getChargedLevel(), getChargingPerHr(), getChargingDuration(), getIsCharging()
         )
 
         builder.setContentTitle(title)
@@ -243,10 +276,23 @@ class BatteryMonitorService : Service() {
         notificationManager.notify(SERVICE_NOTIFICATION_ID, builder.build())
     }
 
+    private fun resetStat() {
+        setDeepSleepTime(0)
+        setScreenOffTime(0L)
+        setScreenOnDrainPerHr(0.0)
+        setScreenOffDrainPerHr(0.0)
+        setScreenOnDrain(0)
+        setScreenOffDrain(0)
+        setScreenOnTime(0)
+        setScreenOffTime(0)
+        setDeepSleepTime(0)
+        setAwakeTime(0)
+    }
+
     private fun insertScreenOnTime() {
         iBatteryMonitoringRepository.insertScreenOnTime(
             screenOnBuffer + ServiceUtil.calculateTimeInterval(
-                Date(), iBatteryMonitoringRepository.getStartTime()
+                getCurrentTimeMillis(), iBatteryMonitoringRepository.getStartTime()
             )
         )
     }
@@ -254,7 +300,7 @@ class BatteryMonitorService : Service() {
     private fun insertScreenOffTime() {
         iBatteryMonitoringRepository.insertScreenOffTime(
             screenOffBuffer + ServiceUtil.calculateTimeInterval(
-                Date(), iBatteryMonitoringRepository.getStartTime()
+                getCurrentTimeMillis(), iBatteryMonitoringRepository.getStartTime()
             )
         )
     }
@@ -275,9 +321,9 @@ class BatteryMonitorService : Service() {
     }
 
     private fun insertDeepSleepAndAwake() {
-        addDeepSleepTime(deepSleepBuffer + BatteryUtils.calculateDeepSleep(deepSleepInitialValue))
+        setDeepSleepTime(deepSleepBuffer + BatteryUtils.calculateDeepSleep(deepSleepInitialValue))
         iBatteryMonitoringRepository.insertDeepSleepInitialValue(getDeepSleepTime())
-        addAwakeTime(
+        setAwakeTime(
             iBatteryMonitoringRepository.getScreenOffTime() - getDeepSleepTime()
         )
         iBatteryMonitoringRepository.insertCpuAwake(getAwakeTime())
@@ -312,13 +358,13 @@ class BatteryMonitorService : Service() {
                     screenOn = true
                     insertScreenOffTime()
                     insertDeepSleepAndAwake()
-                    iBatteryMonitoringRepository.insertStartTime(Date())
+                    iBatteryMonitoringRepository.insertStartTime(getCurrentTimeMillis())
                     screenOnBuffer = iBatteryMonitoringRepository.getScreenOnTime()
                 }
                 Intent.ACTION_SCREEN_OFF -> {
                     screenOn = false
                     insertScreenOnTime()
-                    iBatteryMonitoringRepository.insertStartTime(Date())
+                    iBatteryMonitoringRepository.insertStartTime(getCurrentTimeMillis())
                     screenOffBuffer = iBatteryMonitoringRepository.getScreenOffTime()
                 }
             }

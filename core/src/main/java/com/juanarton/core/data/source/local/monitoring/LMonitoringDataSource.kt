@@ -67,11 +67,11 @@ class LMonitoringDataSource @Inject constructor(
         editor.apply()
     }
 
-    fun getStartTime(): String =
-        sharedPreferences.getString("startTime", null) ?: Date().toString()
+    fun getStartTime(): Long =
+        sharedPreferences.getLong("startTime", 0)
 
-    fun insertStartTime(startTime: String) {
-        editor.putString("startTime", startTime)
+    fun insertStartTime(startTime: Long) {
+        editor.putLong("startTime", startTime)
         editor.apply()
     }
 

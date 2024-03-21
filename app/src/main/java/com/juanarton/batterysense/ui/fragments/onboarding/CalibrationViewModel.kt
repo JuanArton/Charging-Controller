@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.juanarton.core.data.domain.batteryMonitoring.usecase.BatteryMonitoringUseCase
 import com.juanarton.core.utils.BatteryUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +25,7 @@ class CalibrationViewModel @Inject constructor(
         )
         batteryMonitoringUseCase.insertScreenOnTime(0)
         batteryMonitoringUseCase.insertScreenOffTime(0)
-        batteryMonitoringUseCase.insertStartTime(Date())
+        batteryMonitoringUseCase.insertStartTime(BatteryUtils.getCurrentTimeMillis())
 
         val batteryLevel = BatteryUtils.getBatteryLevel(context)
         batteryMonitoringUseCase.insertBatteryLevel(batteryLevel)

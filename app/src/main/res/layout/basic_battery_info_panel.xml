@@ -37,7 +37,7 @@
                     app:mwhCloseColor="?attr/colorPrimary"
                     app:mwhStartColor="?attr/colorPrimary"
                     app:mwhVelocity="1"
-                    app:mwhWaveHeight="15dp"
+                    app:mwhWaveHeight="25dp"
                     app:mwhWaves="PairWave" />
 
                 <LinearLayout

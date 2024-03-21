@@ -11,7 +11,7 @@ object BatteryDataHolder {
     private var cpuAwake = 0L
     private var deepSleep = 0L
 
-    fun addScreenOnTime(screenOnTime: Long) {
+    fun setScreenOnTime(screenOnTime: Long) {
         this.screenOnTime = screenOnTime
     }
 
@@ -19,7 +19,7 @@ object BatteryDataHolder {
         return screenOnTime
     }
 
-    fun addScreenOffTime(screenOffTime: Long) {
+    fun setScreenOffTime(screenOffTime: Long) {
         this.screenOffTime = screenOffTime
     }
 
@@ -27,7 +27,7 @@ object BatteryDataHolder {
         return screenOffTime
     }
 
-    fun addScreenOnDrainPerHr(screenOnDrainPerHr: Double) {
+    fun setScreenOnDrainPerHr(screenOnDrainPerHr: Double) {
         this.screenOnDrainPerHr = screenOnDrainPerHr
     }
 
@@ -35,7 +35,7 @@ object BatteryDataHolder {
         return screenOnDrainPerHr
     }
 
-    fun addScreenOffDrainPerHr(screenOffDrainPerHr: Double) {
+    fun setScreenOffDrainPerHr(screenOffDrainPerHr: Double) {
         this.screenOffDrainPerHr = screenOffDrainPerHr
     }
 
@@ -43,7 +43,7 @@ object BatteryDataHolder {
         return screenOffDrainPerHr
     }
 
-    fun addScreenOnDrain(screenOnDrain: Int) {
+    fun setScreenOnDrain(screenOnDrain: Int) {
         this.screenOnDrain = screenOnDrain
     }
 
@@ -51,7 +51,7 @@ object BatteryDataHolder {
         return screenOnDrain
     }
 
-    fun addScreenOffDrain(screenOffDrain: Int) {
+    fun setScreenOffDrain(screenOffDrain: Int) {
         this.screenOffDrain = screenOffDrain
     }
 
@@ -59,7 +59,7 @@ object BatteryDataHolder {
         return screenOffDrain
     }
 
-    fun addLastChargeLevel(lastChargeLevel: Int) {
+    fun setLastChargeLevel(lastChargeLevel: Int) {
         this.lastChargeLevel = lastChargeLevel
     }
 
@@ -67,7 +67,7 @@ object BatteryDataHolder {
         return lastChargeLevel
     }
 
-    fun addAwakeTime(awake: Long) {
+    fun setAwakeTime(awake: Long) {
         this.cpuAwake = awake
     }
 
@@ -75,7 +75,7 @@ object BatteryDataHolder {
         return cpuAwake
     }
 
-    fun addDeepSleepTime(deepSleep: Long) {
+    fun setDeepSleepTime(deepSleep: Long) {
         this.deepSleep = deepSleep
     }
 

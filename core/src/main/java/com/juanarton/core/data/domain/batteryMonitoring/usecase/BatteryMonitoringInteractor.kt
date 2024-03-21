@@ -22,10 +22,10 @@ class BatteryMonitoringInteractor @Inject constructor(
     override fun insertDeepSleepInitialValue(deepSleepInitialVale: Long) =
         iBatteryMonitoringRepository.insertDeepSleepInitialValue(deepSleepInitialVale)
 
-    override fun getStartTime(): Date =
+    override fun getStartTime(): Long =
         iBatteryMonitoringRepository.getStartTime()
 
-    override fun insertStartTime(startTime: Date) =
+    override fun insertStartTime(startTime: Long) =
         iBatteryMonitoringRepository.insertStartTime(startTime)
 
     override fun getScreenOnTime(): Long =

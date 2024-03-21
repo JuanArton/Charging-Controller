@@ -14,9 +14,9 @@ interface BatteryMonitoringUseCase {
 
     fun insertDeepSleepInitialValue(deepSleepInitialVale: Long)
 
-    fun getStartTime(): Date
+    fun getStartTime(): Long
 
-    fun insertStartTime(startTime: Date)
+    fun insertStartTime(startTime: Long)
 
     fun getScreenOnTime(): Long
 
