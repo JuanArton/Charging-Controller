@@ -1,4 +1,4 @@
-package com.juanarton.batterysense.ui.fragments.dashboard
+package com.juanarton.batterysense.ui.fragments.charging
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,10 +13,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(
+class ChargingViewModel @Inject constructor(
     private var batteryMonitoringUseCase: BatteryMonitoringUseCase
 ) : ViewModel() {
-
     init {
         startBatteryMonitoring()
     }

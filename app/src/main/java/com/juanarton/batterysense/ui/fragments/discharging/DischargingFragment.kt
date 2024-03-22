@@ -1,6 +1,5 @@
-package com.juanarton.batterysense.ui.fragments.dashboard
+package com.juanarton.batterysense.ui.fragments.discharging
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -19,7 +18,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.batterysense.R
-import com.juanarton.batterysense.databinding.FragmentDashboardBinding
+import com.juanarton.batterysense.databinding.FragmentDischargingBinding
 import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getDeepSleepTime
@@ -30,12 +29,12 @@ import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.currentData
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.currentLineDataSet
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.powerData
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.powerLineDataSet
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureData
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureLineDataSet
+import com.juanarton.batterysense.utils.BatteryHistoryHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
+import com.juanarton.batterysense.utils.FragmentUtil.changeWaveHeight
+import com.juanarton.batterysense.utils.FragmentUtil.maxChecker
+import com.juanarton.batterysense.utils.FragmentUtil.minChecker
+import com.juanarton.batterysense.utils.FragmentUtil.rescaleNumber
 import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
@@ -43,21 +42,20 @@ import com.juanarton.batterysense.utils.Utils.formatDeepSleepAwake
 import com.juanarton.batterysense.utils.Utils.formatSpeed
 import com.juanarton.batterysense.utils.Utils.formatUsagePerHour
 import com.juanarton.batterysense.utils.Utils.formatUsagePercentage
-import com.juanarton.core.utils.Utils
 import com.juanarton.core.utils.Utils.formatTime
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
 
 @AndroidEntryPoint
-class DashboardFragment : Fragment() {
+class DischargingFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentDischargingBinding? = null
     private val binding get() = _binding
 
     private var firstRun = true
 
-    private val dashboardViewModel: DashboardViewModel by viewModels()
+    private val dischargingViewModel: DischargingViewModel by viewModels()
 
     private var currentGraph = true
     private var temperatureGraph = false
@@ -68,15 +66,14 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentDischargingBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
-    @SuppressLint("PrivateApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val batteryCapacity = dashboardViewModel.getCapacity()
+        val batteryCapacity = dischargingViewModel.getCapacity()
 
         showCurrent()
 
@@ -126,12 +123,12 @@ class DashboardFragment : Fragment() {
             }
         }
 
-        dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
+        dischargingViewModel.batteryInfo.observe(viewLifecycleOwner) {
             updateUsageData()
             if (firstRun) {
-                dashboardViewModel.currentMin = abs(it.currentNow)
-                dashboardViewModel.tempMin = abs(it.temperature)
-                dashboardViewModel.powerMin = abs((it.power * 100).toInt())
+                dischargingViewModel.currentMin = abs(it.currentNow)
+                dischargingViewModel.tempMin = abs(it.temperature)
+                dischargingViewModel.powerMin = abs((it.power * 100).toInt())
                 firstRun = false
             }
 
@@ -149,15 +146,9 @@ class DashboardFragment : Fragment() {
                     append("$batteryCapacity ${getString(R.string.mah)}")
                 }
 
-                batteryInfoPanel.cvStatus.contentText = Utils.mapBatteryStatus(it.status, requireContext())
 
                 batteryInfoPanel.cvVoltage.contentText = it.voltage.toString()
 
-                batteryInfoPanel.cvChargingType.contentText = when {
-                    it.acCharge -> getString(R.string.ac)
-                    it.usbCharge -> getString(R.string.usb)
-                    else -> getString(R.string.battery)
-                }
 
                 val powerValue = buildString {
                     append(String.format("%.1f", it.power))
@@ -174,8 +165,8 @@ class DashboardFragment : Fragment() {
                     append(temperatureUnit)
                 }
 
-                with(dashboardViewModel) {
-                    currentData.notifyDataChanged()
+                with(dischargingViewModel) {
+                    BatteryHistoryHolder.currentData.notifyDataChanged()
                     batteryHistoryPanel.chargingCurrentChart.notifyDataSetChanged()
                     batteryHistoryPanel.chargingCurrentChart.invalidate()
 
@@ -224,6 +215,15 @@ class DashboardFragment : Fragment() {
                     usageSummaryPanel.tvCycleValue.text = it.cycleCount
                     updateUsageData()
                 }
+            }
+
+            if (getIsCharging()) {
+                dischargingViewModel.stopBatteryMonitoring()
+                binding?.batteryHistoryPanel?.tvChartValue?.text = getString(com.juanarton.core.R.string.charging)
+                binding?.batteryHistoryPanel?.tvChartMax?.text = "-"
+                binding?.batteryHistoryPanel?.tvChartMin?.text = "-"
+            } else {
+                dischargingViewModel.startBatteryMonitoring()
             }
         }
     }
@@ -288,8 +288,8 @@ class DashboardFragment : Fragment() {
 
     private fun showCurrent() {
         showChart(
-            currentLineDataSet,
-            currentData,
+            BatteryHistoryHolder.currentLineDataSet,
+            BatteryHistoryHolder.currentData,
             R.drawable.chart_gradient
         )
         currentGraph = true
@@ -299,8 +299,8 @@ class DashboardFragment : Fragment() {
 
     private fun showTemperature() {
         showChart(
-            temperatureLineDataSet,
-            temperatureData,
+            BatteryHistoryHolder.temperatureLineDataSet,
+            BatteryHistoryHolder.temperatureData,
             R.drawable.chart_gradient
         )
         currentGraph = false
@@ -310,8 +310,8 @@ class DashboardFragment : Fragment() {
 
     private fun showPower() {
         showChart(
-            powerLineDataSet,
-            powerData,
+            BatteryHistoryHolder.powerLineDataSet,
+            BatteryHistoryHolder.powerData,
             R.drawable.chart_gradient
         )
         currentGraph = false
@@ -374,41 +374,22 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private fun minChecker(oldValue: Int, newValue: Int): Int {
-        return if (newValue < oldValue ) newValue else oldValue
-    }
 
-    private fun maxChecker(oldValue: Int, newValue: Int): Int {
-        return if (newValue > oldValue ) newValue else oldValue
-    }
-
-    private fun rescaleNumber(input: Int): Int {
-        return (input.toDouble() / 100.0 * 246.0).toInt()
-    }
-
-    private fun changeWaveHeight(view: View, heightInDp: Int) {
-        val density = view.resources.displayMetrics.density
-        val heightInPixels = (heightInDp * density).toInt()
-
-        val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-        layoutParams.height = heightInPixels
-        view.layoutParams = layoutParams
-    }
 
     override fun onPause() {
         super.onPause()
-        dashboardViewModel.stopBatteryMonitoring()
+        dischargingViewModel.stopBatteryMonitoring()
     }
 
     override fun onStop() {
         super.onStop()
-        dashboardViewModel.stopBatteryMonitoring()
+        dischargingViewModel.stopBatteryMonitoring()
     }
 
     override fun onResume() {
         super.onResume()
         if (!firstRun) {
-            dashboardViewModel.startBatteryMonitoring()
+            dischargingViewModel.startBatteryMonitoring()
         }
     }
 

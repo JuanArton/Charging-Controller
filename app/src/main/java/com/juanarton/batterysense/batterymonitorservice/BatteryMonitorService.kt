@@ -40,12 +40,15 @@ import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOnDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.setScreenOnTime
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
-import com.juanarton.batterysense.utils.ChargingDataHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingPerHr
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
+import com.juanarton.batterysense.utils.ChargingDataHolder.setChargedLevel
+import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingDuration
+import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingPerHr
 import com.juanarton.batterysense.utils.ChargingDataHolder.setIsCharging
+import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import com.juanarton.batterysense.utils.ServiceUtil
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
@@ -160,10 +163,10 @@ class BatteryMonitorService : Service() {
                     }
 
                     if (getIsCharging()) {
-                        resetStat()
-                        ChargingDataHolder.setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000)
-                        ChargingDataHolder.setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
-                    }
+                        resetBatteryStat()
+                        setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000)
+                        setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
+                    } else { resetChargingStat() }
 
                     updateNotification(it)
 
@@ -276,7 +279,7 @@ class BatteryMonitorService : Service() {
         notificationManager.notify(SERVICE_NOTIFICATION_ID, builder.build())
     }
 
-    private fun resetStat() {
+    private fun resetBatteryStat() {
         setDeepSleepTime(0)
         setScreenOffTime(0L)
         setScreenOnDrainPerHr(0.0)
@@ -287,6 +290,12 @@ class BatteryMonitorService : Service() {
         setScreenOffTime(0)
         setDeepSleepTime(0)
         setAwakeTime(0)
+    }
+
+    private fun resetChargingStat() {
+        setChargedLevel(0)
+        setChargingPerHr(0.0)
+        setChargingDuration(0)
     }
 
     private fun insertScreenOnTime() {
@@ -309,11 +318,21 @@ class BatteryMonitorService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 iBatteryMonitoringRepository.getBatteryInfo().collect {
-                    BatteryHistoryHolder.addData(
-                        Entry(60F, abs(it.currentNow.toFloat())),
-                        Entry(60F, abs(it.temperature.toFloat())),
-                        Entry(60F, abs(it.power))
-                    )
+
+                    if (getIsCharging()) {
+                        ChargingHistoryHolder.addData(
+                            Entry(60F, abs(it.currentNow.toFloat())),
+                            Entry(60F, abs(it.temperature.toFloat())),
+                            Entry(60F, abs(it.power))
+                        )
+                    }
+                    else {
+                        BatteryHistoryHolder.addData(
+                            Entry(60F, abs(it.currentNow.toFloat())),
+                            Entry(60F, abs(it.temperature.toFloat())),
+                            Entry(60F, abs(it.power))
+                        )
+                    }
                 }
                 delay(1 * 1000)
             }

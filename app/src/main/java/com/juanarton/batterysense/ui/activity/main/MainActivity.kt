@@ -1,10 +1,13 @@
 package com.juanarton.batterysense.ui.activity.main
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
@@ -32,19 +35,29 @@ import com.juanarton.batterysense.batterymonitorservice.getServiceState
 import com.juanarton.batterysense.databinding.ActivityMainBinding
 import com.juanarton.batterysense.ui.activity.about.AboutActivity
 import com.juanarton.batterysense.ui.fragments.alarm.AlarmFragment
-import com.juanarton.batterysense.ui.fragments.dashboard.DashboardFragment
+import com.juanarton.batterysense.ui.fragments.charging.ChargingFragment
+import com.juanarton.batterysense.ui.fragments.discharging.DischargingFragment
 import com.juanarton.batterysense.ui.fragments.history.HistoryFragment
 import com.juanarton.batterysense.ui.fragments.onboarding.MainOnboardingFragment
 import com.juanarton.batterysense.ui.fragments.quicksetting.QuickSettingFragment
+import com.juanarton.batterysense.utils.BatteryDataHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder
+import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
+import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
+import com.juanarton.core.utils.BatteryUtils
+import com.juanarton.core.utils.BatteryUtils.getChargingStatus
+import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private var firstRun = true
 
     companion object {
         init {
@@ -98,7 +111,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            fragmentBuilder(DashboardFragment(), R.id.fragmentHolder, "Dashboard")
+            registerStickyReceiver(this)
+
+            val isCharging = getChargingStatus()
+            if (isCharging != 1 && isCharging != 3) {
+                fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging")
+                binding?.bottomNavigationBar?.selectedItemId = R.id.charging
+            }
+            else {
+                fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging")
+                binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
+            }
+
+            val powerConnectedIntentFilter = IntentFilter()
+            powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+            powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
+            registerReceiver(MainPowerStateReceiver(), powerConnectedIntentFilter)
 
             if(!isRegistered) {
                 val intentFilter = IntentFilter()
@@ -117,8 +145,12 @@ class MainActivity : AppCompatActivity() {
 
                 bottomNavigationBar.setOnItemSelectedListener { menuItem ->
                     when (menuItem.itemId) {
-                        R.id.dashboard -> {
-                            fragmentBuilder(DashboardFragment(), holder, "Dashboard")
+                        R.id.charging -> {
+                            fragmentBuilder(ChargingFragment(), holder, "Charging")
+                            true
+                        }
+                        R.id.discharging -> {
+                            fragmentBuilder(DischargingFragment(), holder, "Discharging")
                             true
                         }
                         R.id.quickSetting -> {
@@ -212,5 +244,21 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        unregisterReceiver(MainPowerStateReceiver())
+    }
+
+    inner class MainPowerStateReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when(intent.action) {
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging")
+                    binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
+                }
+                Intent.ACTION_POWER_CONNECTED -> {
+                    fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging")
+                    binding?.bottomNavigationBar?.selectedItemId = R.id.charging
+                }
+            }
+        }
     }
 }

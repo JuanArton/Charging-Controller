@@ -92,4 +92,7 @@
     <string name="qs_dialog_message">This feature is only tested on Qualcomm device (Redmi Note 9 Pro). This might/not work on your Qualcomm device.\n\nDO WITH YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANYTHING THAT HAPPENS TO YOUR DEVICE, SUCH AS DAMAGE, ETC.</string>
     <string name="library_used">Library Used</string>
     <string name="see_more_button">See more button</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="battery_info">Battery Info</string>
 </resources>
