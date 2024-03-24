@@ -31,14 +31,23 @@
                 <com.scwang.wave.MultiWaveHeader
                     android:id="@+id/waveAnimation"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
                     android:scaleY="-1"
+                    android:alpha="0.5"
                     app:mwhCloseColor="?attr/colorPrimary"
                     app:mwhStartColor="?attr/colorPrimary"
                     app:mwhVelocity="1"
                     app:mwhWaveHeight="25dp"
                     app:mwhWaves="PairWave" />
+
+                <org.firezenk.bubbleemitter.BubbleEmitterView
+                    android:id="@+id/bubbleEmitter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@+id/waveAnimation"
+                    android:layout_marginBottom="0dp"
+                    android:alpha="0.1" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -56,6 +65,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/text"
                         android:textSize="27sp"
+                        android:textColor="?attr/colorPrimary"
                         android:textStyle="bold" />
 
                     <TextView
@@ -88,28 +98,28 @@
                 app:titleText="@string/voltage"/>
 
             <com.juanarton.core.customview.CustomMaterialCardView
-                android:id="@+id/cvChartInfo1"
+                android:id="@+id/cvUptime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
-                android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginStart="5dp"
+                app:iconSrc="@drawable/runtime"
+                app:contentMarginTop="10dp"
                 app:cardElevation="0dp"
-                app:iconDescription="@string/charging_temperature_icon"
-                app:iconSrc="@drawable/temperature"
-                app:titleText="@string/temperature"/>
+                app:titleText="@string/uptime"/>
 
             <com.juanarton.core.customview.CustomMaterialCardView
-                android:id="@+id/cvChartInfo2"
-                android:layout_width="match_parent"
+                android:id="@+id/cvCycleCount"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
-                android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginStart="5dp"
+                app:iconSrc="@drawable/baseline_loop_24"
+                app:contentMarginTop="10dp"
                 app:cardElevation="0dp"
-                app:iconDescription="@string/battery_power_icon"
-                app:iconSrc="@drawable/power"
-                app:titleText="@string/power"/>
+                app:titleText="@string/cycle_count"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -118,13 +128,33 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:layout_marginTop="20dp"
-        android:gravity="center_horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
+        app:layout_constraintTop_toBottomOf="@id/linearLayout1">
 
+        <com.juanarton.core.customview.CustomMaterialCardView
+            android:id="@+id/cvChartInfo1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            app:cardElevation="0dp"
+            app:iconDescription="@string/charging_temperature_icon"
+            app:iconSrc="@drawable/temperature"
+            app:titleText="@string/temperature"/>
 
+        <com.juanarton.core.customview.CustomMaterialCardView
+            android:id="@+id/cvChartInfo2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            app:cardElevation="0dp"
+            app:iconDescription="@string/battery_power_icon"
+            app:iconSrc="@drawable/power"
+            app:titleText="@string/power"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

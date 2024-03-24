@@ -9,26 +9,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:paddingBottom="20dp">
-
-        <TextView
-            android:id="@+id/tvQuickSetting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/discharging"
-            android:textSize="28sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             layout="@layout/discharging_battery_info_panel"
             android:id="@+id/battery_info_panel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            app:layout_constraintTop_toBottomOf="@id/tvQuickSetting"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/tvBatteryHistory"
@@ -56,5 +46,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             app:layout_constraintTop_toBottomOf="@id/battery_history_panel"/>
+
+        <include
+            layout="@layout/discharging_speed_panel"
+            android:id="@+id/dischargingSpeedPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@id/usageSummaryPanel"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

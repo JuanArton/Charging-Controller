@@ -9,26 +9,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="-20dp"
+        android:layout_marginTop="60dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingBottom="20dp">
-        <TextView
-            android:id="@+id/tvQuickSetting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/quick_setting"
-            android:textSize="28sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
             android:weightSum="2"
-            app:layout_constraintTop_toBottomOf="@+id/tvQuickSetting"
+            app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="20dp">
 
             <com.google.android.material.card.MaterialCardView
@@ -42,8 +33,7 @@
                 app:strokeWidth="0dp"
                 app:cardBackgroundColor="?attr/cardBackgroundColor"
                 app:contentPadding="20dp"
-                app:cardCornerRadius="20dp"
-                app:layout_constraintTop_toBottomOf="@id/tvQuickSetting">
+                app:cardCornerRadius="20dp">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">

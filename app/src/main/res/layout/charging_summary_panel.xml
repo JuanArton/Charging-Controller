@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="2"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.juanarton.core.customview.CustomMaterialCardView
+            android:id="@+id/cvChargedLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginEnd="5dp"
+            app:contentTextColor="?attr/colorPrimary"
+            app:contentMarginTop="10dp"
+            app:cardElevation="0dp"
+            app:titleText="@string/charged_for"/>
+
+        <com.juanarton.core.customview.CustomMaterialCardView
+            android:id="@+id/cvChargingDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
+            app:contentTextColor="?attr/colorPrimary"
+            app:contentMarginTop="10dp"
+            app:cardElevation="0dp"
+            app:titleText="@string/charging_duration"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.juanarton.core.customview.CustomMaterialCardView
+            android:id="@+id/cvChargingPerHr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginStart="5dp"
+            app:contentTextColor="?attr/colorPrimary"
+            app:contentMarginTop="10dp"
+            app:cardElevation="0dp"
+            app:titleText="@string/charging_speed"/>
+
+        <com.juanarton.core.customview.CustomMaterialCardView
+            android:id="@+id/cvUptimeCharging"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            app:contentTextColor="?attr/colorPrimary"
+            app:contentMarginTop="10dp"
+            app:cardElevation="0dp"
+            app:titleText="@string/uptime"/>
+    </LinearLayout>
+
+
+</LinearLayout>

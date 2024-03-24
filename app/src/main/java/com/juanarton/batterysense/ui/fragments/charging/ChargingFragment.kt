@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,16 +21,27 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentChargingBinding
 import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
-import com.juanarton.batterysense.utils.BatteryDataHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingPerHr
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
-import com.juanarton.batterysense.utils.FragmentUtil.changeWaveHeight
+import com.juanarton.batterysense.utils.FragmentUtil.changeViewHeight
+import com.juanarton.batterysense.utils.FragmentUtil.isEmitting
 import com.juanarton.batterysense.utils.FragmentUtil.maxChecker
 import com.juanarton.batterysense.utils.FragmentUtil.minChecker
 import com.juanarton.batterysense.utils.FragmentUtil.rescaleNumber
+import com.juanarton.batterysense.utils.Utils.formatUsagePerHour
 import com.juanarton.core.utils.Utils
+import com.juanarton.core.utils.Utils.formatTime
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlin.random.Random
+
 
 @AndroidEntryPoint
 class ChargingFragment : Fragment() {
@@ -68,6 +80,9 @@ class ChargingFragment : Fragment() {
         val currentUnit = getString(R.string.ma)
         val wattageUnit = getString(R.string.wattage)
 
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+
         binding?.apply {
             batteryHistoryPanel.cgGraphSelector.check(R.id.chipChargingCurrent)
             batteryHistoryPanel.cgGraphSelector.setOnCheckedStateChangeListener { group, _ ->
@@ -104,10 +119,12 @@ class ChargingFragment : Fragment() {
             batteryHistoryPanel.tvFullHistory.setOnClickListener {
                 startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
             }
+
+            emitBubbles(typedValue)
         }
 
         chargingViewModel.batteryInfo.observe(viewLifecycleOwner) {
-            updateUsageData()
+            updateChargingData()
             if (firstRun) {
                 chargingViewModel.currentMin = abs(it.currentNow)
                 chargingViewModel.tempMin = abs(it.temperature)
@@ -116,7 +133,8 @@ class ChargingFragment : Fragment() {
             }
 
             binding?.apply {
-                changeWaveHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
+                changeViewHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
+                changeViewHeight(batteryInfoPanel.bubbleEmitter, rescaleNumber(it.level))
 
                 batteryInfoPanel.tvBatteryPercentage.text = buildString {
                     append(it.level)
@@ -200,11 +218,7 @@ class ChargingFragment : Fragment() {
                         }
                     }
 
-                    /*Update charging summary here
-                    usageSummaryPanel.tvUptimeValue.text =
-                        com.juanarton.core.utils.Utils.formatTime(it.uptime)
-                    usageSummaryPanel.tvCycleValue.text = it.cycleCount
-                    updateUsageData()*/
+                    chargingSummaryPanel.cvUptimeCharging.contentText = formatTime(it.uptime)
                 }
             }
 
@@ -219,10 +233,9 @@ class ChargingFragment : Fragment() {
         }
     }
 
-    private fun setUpLineChart(lineDataSet: LineDataSet, lineData: LineData, fillGradient: Drawable?) {
-        val typedValue = TypedValue()
-        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
-
+    private fun setUpLineChart(
+        lineDataSet: LineDataSet, lineData: LineData, fillGradient: Drawable?, typedValue: TypedValue
+    ) {
         lineDataSet.apply {
             setDrawValues(false)
             setDrawCircles(false)
@@ -270,11 +283,38 @@ class ChargingFragment : Fragment() {
         }
     }
 
+    private fun emitBubbles(typedValue: TypedValue) {
+        CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                if (isEmitting) {
+                    val size = Random.nextInt(50, 100)
+                    binding?.batteryInfoPanel?.bubbleEmitter?.emitBubble(size)
+                    binding?.batteryInfoPanel?.bubbleEmitter?.setColors(
+                        typedValue.data,
+                        typedValue.data,
+                        typedValue.data
+                    )
+                }
+                delay(Random.nextLong(100, 500))
+            }
+        }
+    }
+
+    private fun updateChargingData() {
+        binding?.apply {
+            chargingSummaryPanel.cvChargedLevel.contentText = "${getChargedLevel()}%"
+            chargingSummaryPanel.cvChargingPerHr.contentText = formatUsagePerHour(getChargingPerHr())
+            chargingSummaryPanel.cvChargingDuration.contentText = formatTime(getChargingDuration())
+        }
+    }
+
     private fun showChart(lineDataSet: LineDataSet, lineData: LineData, gradientDrawable: Int) {
         val typedValue = TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
 
-        setUpLineChart(lineDataSet, lineData, ContextCompat.getDrawable(requireContext(), gradientDrawable))
+        setUpLineChart(
+            lineDataSet, lineData, ContextCompat.getDrawable(requireContext(), gradientDrawable), typedValue
+        )
     }
 
     private fun showCurrent() {
@@ -308,27 +348,6 @@ class ChargingFragment : Fragment() {
         currentGraph = false
         temperatureGraph = false
         powerGraph = true
-    }
-
-    private fun updateUsageData() {
-        val screenOffDrainPerHrTmp = if (BatteryDataHolder.getScreenOffDrainPerHr()
-                .isNaN()
-        ) 0.0 else BatteryDataHolder.getScreenOffDrainPerHr()
-        val screenOnDrainPerHrTmp = if (BatteryDataHolder.getScreenOnDrainPerHr()
-                .isNaN()
-        ) 0.0 else BatteryDataHolder.getScreenOnDrainPerHr()
-        val deepSleepPercentage =
-            com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage(
-                BatteryDataHolder.getDeepSleepTime().toDouble(),
-                BatteryDataHolder.getScreenOffTime().toDouble()
-            )
-        val cpuAwakePercentage =
-            com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage(
-                deepSleepPercentage
-            )
-        binding?.apply {
-            /*logic to update charging summary here*/
-        }
     }
 
     private fun setMinMaxText(tv: TextView, value: Int) {

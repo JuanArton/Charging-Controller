@@ -68,7 +68,5 @@ dependencies {
     implementation("net.zetetic:android-database-sqlcipher:4.5.4@aar")
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
-
     implementation("com.google.firebase:firebase-analytics")
 }

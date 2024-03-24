@@ -33,6 +33,7 @@
             android:textSize="14sp" />
 
         <LinearLayout
+            android:id="@+id/contentLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/titleText"
@@ -58,5 +59,14 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/extraText"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:textSize="13sp"
+            android:layout_below="@id/contentLayout" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

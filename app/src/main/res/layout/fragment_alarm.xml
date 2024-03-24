@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="-20dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingBottom="20dp"
@@ -12,27 +11,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tvAlarm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/alarm"
-            android:textSize="28sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvBatteryLevelSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:strokeWidth="0dp"
             app:cardBackgroundColor="?attr/cardBackgroundColor"
             app:contentPadding="20dp"
-            app:cardCornerRadius="20dp"
-            app:layout_constraintTop_toBottomOf="@id/tvAlarm">
+            app:cardCornerRadius="20dp">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -47,15 +38,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/batteryLevelAlarmSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:scaleX="0.8"
-                    android:scaleY="0.8"/>
-
                 <TextView
                     android:id="@+id/tvLevelAlarmDesc"
                     android:layout_width="wrap_content"
@@ -67,6 +49,16 @@
                     android:layout_toStartOf="@+id/batteryLevelAlarmSwitch"
                     android:text="@string/level_alarm_desc"
                     android:textSize="13sp" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/batteryLevelAlarmSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBottom="@+id/tvLevelAlarmDesc"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"/>
 
                 <TextView
                     android:id="@+id/tvOneTimeNotification"
@@ -178,16 +170,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/temperatureAlarmSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignBottom="@+id/tvTempAlarmDesc"
-                    android:scaleX="0.8"
-                    android:scaleY="0.8" />
-
                 <TextView
                     android:id="@+id/tvTempAlarmDesc"
                     android:layout_width="wrap_content"
@@ -198,6 +180,16 @@
                     android:layout_toStartOf="@+id/temperatureAlarmSwitch"
                     android:text="@string/temperature_alarm_desc"
                     android:textSize="13sp" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/temperatureAlarmSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBottom="@+id/tvTempAlarmDesc"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8" />
 
                 <TextView
                     android:id="@+id/tvDegree"
@@ -232,7 +224,6 @@
                     app:trackHeight="5dp"/>
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>

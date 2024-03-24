@@ -21,15 +21,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"
-        tools:targetApi="31">
-
-        <meta-data android:name="google_analytics_adid_collection_enabled"
-            android:value="false" />
+        tools:targetApi="34">
+        <activity
+            android:name=".ui.activity.setting.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BatterySense" />
 
         <activity
             android:name=".ui.activity.about.AboutActivity"
             android:exported="false"
-            android:theme="@style/Theme.BatterySense"/>
+            android:theme="@style/Theme.BatterySense" />
         <activity
             android:name=".ui.activity.batteryhistory.BatteryHistoryActivity"
             android:exported="false"
@@ -45,8 +46,8 @@
 
         <activity
             android:name=".ui.activity.main.MainActivity"
-            android:exported="true"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
             android:theme="@style/Theme.BatterySense"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

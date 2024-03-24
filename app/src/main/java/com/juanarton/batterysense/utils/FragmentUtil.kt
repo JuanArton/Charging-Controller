@@ -4,6 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 
 object FragmentUtil {
+    var isEmitting: Boolean = false
+
     fun minChecker(oldValue: Int, newValue: Int): Int {
         return if (newValue < oldValue ) newValue else oldValue
     }
@@ -16,7 +18,7 @@ object FragmentUtil {
         return (input.toDouble() / 100.0 * 246.0).toInt()
     }
 
-    fun changeWaveHeight(view: View, heightInDp: Int) {
+    fun changeViewHeight(view: View, heightInDp: Int) {
         val density = view.resources.displayMetrics.density
         val heightInPixels = (heightInDp * density).toInt()
 

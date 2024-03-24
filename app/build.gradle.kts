@@ -61,6 +61,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.preference:preference:1.2.0")
+    implementation("androidx.activity:activity:1.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -82,7 +84,7 @@ dependencies {
 
     implementation("at.blogc:expandabletextview:1.0.5")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
-
     implementation("com.google.firebase:firebase-analytics")
+
+    implementation("com.github.FireZenk:BubbleEmitter:-SNAPSHOT")
 }

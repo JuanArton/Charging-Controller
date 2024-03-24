@@ -34,11 +34,20 @@
                     android:layout_height="0dp"
                     android:layout_alignParentBottom="true"
                     android:scaleY="-1"
+                    android:alpha="0.5"
                     app:mwhCloseColor="?attr/colorPrimary"
                     app:mwhStartColor="?attr/colorPrimary"
                     app:mwhVelocity="1"
                     app:mwhWaveHeight="25dp"
                     app:mwhWaves="PairWave" />
+
+                <org.firezenk.bubbleemitter.BubbleEmitterView
+                    android:id="@+id/bubbleEmitter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@+id/waveAnimation"
+                    android:layout_marginBottom="0dp"
+                    android:alpha="0.1" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -56,6 +65,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/text"
                         android:textSize="27sp"
+                        android:textColor="?attr/colorPrimary"
                         android:textStyle="bold" />
 
                     <TextView

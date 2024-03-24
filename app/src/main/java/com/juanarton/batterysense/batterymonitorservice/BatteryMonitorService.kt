@@ -49,6 +49,7 @@ import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingDuration
 import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingPerHr
 import com.juanarton.batterysense.utils.ChargingDataHolder.setIsCharging
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
+import com.juanarton.batterysense.utils.FragmentUtil.isEmitting
 import com.juanarton.batterysense.utils.ServiceUtil
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
@@ -73,7 +74,6 @@ class BatteryMonitorService : Service() {
     lateinit var iAppConfigRepository: IAppConfigRepository
     @Inject
     lateinit var iBatteryMonitoringRepository: IBatteryMonitoringRepository
-    private var firstRun = true
 
     private lateinit var notificationManager:NotificationManager
     private lateinit var builder: NotificationCompat.Builder
@@ -144,11 +144,12 @@ class BatteryMonitorService : Service() {
                 setScreenOffDrain(iBatteryMonitoringRepository.getScreenOffDrain())
 
                 iBatteryMonitoringRepository.getBatteryInfo().collect {
-                    if (firstRun) {
-                        if (it.status != 1 && it.status != 3) {
-                            setIsCharging(true)
-                        }
-                        firstRun = false
+                    if (it.status != 1 && it.status != 3) {
+                        setIsCharging(true)
+                        isEmitting = true
+                    } else {
+                        setIsCharging(false)
+                        isEmitting = false
                     }
 
                     when (screenOn) {
@@ -156,19 +157,19 @@ class BatteryMonitorService : Service() {
                             insertScreenOnTime()
                             setScreenOnDrainPerHr(getScreenOnDrain() / (getScreenOnTime().toDouble()/3600))
                             setScreenOffDrainPerHr(getScreenOffDrain() / (getScreenOffTime().toDouble()/3600))
+
+                            if (getIsCharging()) {
+                                resetBatteryStat()
+                                setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000)
+                                setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
+                            } else { resetChargingStat() }
+
+                            updateNotification(it)
                         }
                         false -> {
                             insertScreenOffTime()
                         }
                     }
-
-                    if (getIsCharging()) {
-                        resetBatteryStat()
-                        setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000)
-                        setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
-                    } else { resetChargingStat() }
-
-                    updateNotification(it)
 
                     iBatteryMonitoringRepository.insertHistory(
                         BatteryHistory(

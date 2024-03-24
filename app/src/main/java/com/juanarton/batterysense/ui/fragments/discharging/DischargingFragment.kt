@@ -22,7 +22,6 @@ import com.juanarton.batterysense.databinding.FragmentDischargingBinding
 import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getDeepSleepTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.getLastChargeLevel
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffTime
@@ -31,7 +30,8 @@ import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
-import com.juanarton.batterysense.utils.FragmentUtil.changeWaveHeight
+import com.juanarton.batterysense.utils.FragmentUtil
+import com.juanarton.batterysense.utils.FragmentUtil.changeViewHeight
 import com.juanarton.batterysense.utils.FragmentUtil.maxChecker
 import com.juanarton.batterysense.utils.FragmentUtil.minChecker
 import com.juanarton.batterysense.utils.FragmentUtil.rescaleNumber
@@ -39,12 +39,15 @@ import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.batterysense.utils.Utils.formatDeepSleepAwake
-import com.juanarton.batterysense.utils.Utils.formatSpeed
 import com.juanarton.batterysense.utils.Utils.formatUsagePerHour
-import com.juanarton.batterysense.utils.Utils.formatUsagePercentage
 import com.juanarton.core.utils.Utils.formatTime
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlin.random.Random
 
 
 @AndroidEntryPoint
@@ -85,6 +88,9 @@ class DischargingFragment : Fragment() {
         val currentUnit = getString(R.string.ma)
         val wattageUnit = getString(R.string.wattage)
 
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+
         binding?.apply {
             batteryHistoryPanel.cgGraphSelector.check(R.id.chipChargingCurrent)
             batteryHistoryPanel.cgGraphSelector.setOnCheckedStateChangeListener { group, _ ->
@@ -121,10 +127,12 @@ class DischargingFragment : Fragment() {
             batteryHistoryPanel.tvFullHistory.setOnClickListener {
                 startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
             }
+
+            emitBubbles(typedValue)
         }
 
         dischargingViewModel.batteryInfo.observe(viewLifecycleOwner) {
-            updateUsageData()
+            updateDischargingData()
             if (firstRun) {
                 dischargingViewModel.currentMin = abs(it.currentNow)
                 dischargingViewModel.tempMin = abs(it.temperature)
@@ -133,7 +141,8 @@ class DischargingFragment : Fragment() {
             }
 
             binding?.apply {
-                changeWaveHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
+                changeViewHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
+                changeViewHeight(batteryInfoPanel.bubbleEmitter, rescaleNumber(it.level))
 
                 batteryInfoPanel.tvBatteryPercentage.text = buildString {
                     append(it.level)
@@ -211,9 +220,9 @@ class DischargingFragment : Fragment() {
                         }
                     }
 
-                    usageSummaryPanel.tvUptimeValue.text = formatTime(it.uptime)
-                    usageSummaryPanel.tvCycleValue.text = it.cycleCount
-                    updateUsageData()
+                    batteryInfoPanel.cvUptime.contentText = formatTime(it.uptime)
+                    batteryInfoPanel.cvCycleCount.contentText = it.cycleCount
+                    updateDischargingData()
                 }
             }
 
@@ -279,6 +288,23 @@ class DischargingFragment : Fragment() {
         }
     }
 
+    private fun emitBubbles(typedValue: TypedValue) {
+        CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                if (FragmentUtil.isEmitting) {
+                    val size = Random.nextInt(50, 100)
+                    binding?.batteryInfoPanel?.bubbleEmitter?.emitBubble(size)
+                    binding?.batteryInfoPanel?.bubbleEmitter?.setColors(
+                        typedValue.data,
+                        typedValue.data,
+                        typedValue.data
+                    )
+                }
+                delay(Random.nextLong(100, 500))
+            }
+        }
+    }
+
     private fun showChart(lineDataSet: LineDataSet, lineData: LineData, gradientDrawable: Int) {
         val typedValue = TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
@@ -319,7 +345,7 @@ class DischargingFragment : Fragment() {
         powerGraph = true
     }
 
-    private fun updateUsageData() {
+    private fun updateDischargingData() {
         val screenOffDrainPerHrTmp = if (getScreenOffDrainPerHr().isNaN()) 0.0 else getScreenOffDrainPerHr()
         val screenOnDrainPerHrTmp = if (getScreenOnDrainPerHr().isNaN()) 0.0 else getScreenOnDrainPerHr()
         val deepSleepPercentage =
@@ -334,22 +360,20 @@ class DischargingFragment : Fragment() {
             usageSummaryPanel.tvScreenOnValue.text = formatTime(getScreenOnTime())
             usageSummaryPanel.tvScreenOffValue.text = formatTime(getScreenOffTime())
             usageSummaryPanel.tvTotalTimeValue.text = formatTime(getScreenOffTime() + getScreenOnTime())
-            usageSummaryPanel.tvScreenOnUsage.text = formatUsagePercentage(getScreenOnDrain(), getLastChargeLevel())
-            usageSummaryPanel.tvScreenOffUsage.text = formatUsagePercentage(getScreenOffDrain(), getLastChargeLevel())
-            usageSummaryPanel.tvTotalUsage.text = formatUsagePercentage(
-                getScreenOffDrain() + getScreenOnDrain(),
-                getLastChargeLevel()
-            )
-            usageSummaryPanel.tvActiveDrainPerHrValue.text = formatUsagePerHour(screenOnDrainPerHrTmp)
-            usageSummaryPanel.tvIdleDrainPerHrValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
-            usageSummaryPanel.tvAwakeValue.text = formatTime(getAwakeTime())
-            usageSummaryPanel.tvDeepSleepValue.text = formatTime(getDeepSleepTime())
-            usageSummaryPanel.tvAwakePercentage.text = formatDeepSleepAwake(cpuAwakePercentage)
-            usageSummaryPanel.tvDeepSleepPercentage.text = formatDeepSleepAwake(deepSleepPercentage)
-            usageSummaryPanel.tvAwakePerHrValue.text = formatSpeed(
+            usageSummaryPanel.cvScreenOn.contentText = "${getScreenOnDrain()}%"
+            usageSummaryPanel.cvScreenOff.contentText = "${getScreenOffDrain()}%"
+            usageSummaryPanel.cvAwake.contentText = formatTime(getAwakeTime())
+            usageSummaryPanel.cvDeepSleep.contentText = formatTime(getDeepSleepTime())
+            usageSummaryPanel.cvAwake.extraText = formatDeepSleepAwake(cpuAwakePercentage)
+            usageSummaryPanel.cvDeepSleep.extraText = formatDeepSleepAwake(deepSleepPercentage)
+
+
+            dischargingSpeedPanel.cvActiveDrain.contentText = formatUsagePerHour(screenOnDrainPerHrTmp)
+            dischargingSpeedPanel.cvIdleDrain.contentText = formatUsagePerHour(screenOffDrainPerHrTmp)
+            dischargingSpeedPanel.cvAwakeSpeed.contentText = formatUsagePerHour(
                 calculateDeepSleepAwakeSpeed(cpuAwakePercentage, screenOffDrainPerHrTmp)
             )
-            usageSummaryPanel.tvDeepSleepPerHrValue.text = formatSpeed(
+            dischargingSpeedPanel.cvDeepSleepSpeed.contentText = formatUsagePerHour(
                 calculateDeepSleepAwakeSpeed(deepSleepPercentage, screenOffDrainPerHrTmp)
             )
         }

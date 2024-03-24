@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
@@ -25,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.fondesa.kpermissions.allDenied
 import com.fondesa.kpermissions.coroutines.sendSuspend
 import com.fondesa.kpermissions.extension.permissionsBuilder
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.juanarton.batterysense.BuildConfig
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.Action
@@ -34,17 +34,14 @@ import com.juanarton.batterysense.batterymonitorservice.ServiceState
 import com.juanarton.batterysense.batterymonitorservice.getServiceState
 import com.juanarton.batterysense.databinding.ActivityMainBinding
 import com.juanarton.batterysense.ui.activity.about.AboutActivity
+import com.juanarton.batterysense.ui.activity.setting.SettingsActivity
 import com.juanarton.batterysense.ui.fragments.alarm.AlarmFragment
 import com.juanarton.batterysense.ui.fragments.charging.ChargingFragment
 import com.juanarton.batterysense.ui.fragments.discharging.DischargingFragment
 import com.juanarton.batterysense.ui.fragments.history.HistoryFragment
 import com.juanarton.batterysense.ui.fragments.onboarding.MainOnboardingFragment
 import com.juanarton.batterysense.ui.fragments.quicksetting.QuickSettingFragment
-import com.juanarton.batterysense.utils.BatteryDataHolder
-import com.juanarton.batterysense.utils.ChargingDataHolder
-import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
-import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
-import com.juanarton.core.utils.BatteryUtils
+import com.juanarton.batterysense.utils.FragmentUtil.isEmitting
 import com.juanarton.core.utils.BatteryUtils.getChargingStatus
 import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import com.topjohnwu.superuser.Shell
@@ -52,13 +49,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private var firstRun = true
-
+    private val mainPowerStateReceiver = MainPowerStateReceiver()
+    private lateinit var currentFragment: String
+    private var isForeground = true
+    private lateinit var powerStateIntent: Intent
+    private var isPowerStateRegistered = false
     companion object {
         init {
             Shell.enableVerboseLogging = BuildConfig.DEBUG
@@ -68,7 +67,6 @@ class MainActivity : AppCompatActivity() {
                     .setTimeout(10)
             )
         }
-
         const val PREFS_NAME = "FirstLaunchState"
     }
 
@@ -95,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
         if (settings.getBoolean("first_launch", true)) {
             binding?.bottomNavigationBar?.visibility = View.GONE
-            fragmentBuilder(MainOnboardingFragment(), R.id.root, "Onboarding")
+            fragmentBuilder(MainOnboardingFragment(), R.id.root, "Onboarding", "")
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -115,18 +113,17 @@ class MainActivity : AppCompatActivity() {
 
             val isCharging = getChargingStatus()
             if (isCharging != 1 && isCharging != 3) {
-                fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging")
+                val title = getString(com.juanarton.core.R.string.charging)
+                fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging", title)
                 binding?.bottomNavigationBar?.selectedItemId = R.id.charging
             }
             else {
-                fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging")
+                val title = getString(com.juanarton.core.R.string.discharging)
+                fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging", title)
                 binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
             }
 
-            val powerConnectedIntentFilter = IntentFilter()
-            powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
-            powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
-            registerReceiver(MainPowerStateReceiver(), powerConnectedIntentFilter)
+            registerReceiver()
 
             if(!isRegistered) {
                 val intentFilter = IntentFilter()
@@ -146,23 +143,28 @@ class MainActivity : AppCompatActivity() {
                 bottomNavigationBar.setOnItemSelectedListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.charging -> {
-                            fragmentBuilder(ChargingFragment(), holder, "Charging")
+                            val title = getString(com.juanarton.core.R.string.charging)
+                            fragmentBuilder(ChargingFragment(), holder, "Charging", title)
                             true
                         }
                         R.id.discharging -> {
-                            fragmentBuilder(DischargingFragment(), holder, "Discharging")
+                            val title = getString(com.juanarton.core.R.string.discharging)
+                            fragmentBuilder(DischargingFragment(), holder, "Discharging", title)
                             true
                         }
                         R.id.quickSetting -> {
-                            fragmentBuilder(QuickSettingFragment(), holder, "QuickSetting")
+                            val title = getString(R.string.quick_setting)
+                            fragmentBuilder(QuickSettingFragment(), holder, "QuickSetting", title)
                             true
                         }
                         R.id.alarm -> {
-                            fragmentBuilder(AlarmFragment(), holder, "Alarm")
+                            val title = getString(R.string.alarm)
+                            fragmentBuilder(AlarmFragment(), holder, "Alarm", title)
                             true
                         }
                         R.id.history -> {
-                            fragmentBuilder(HistoryFragment(), holder, "History")
+                            val title = getString(R.string.history)
+                            fragmentBuilder(HistoryFragment(), holder, "History", title)
                             true
                         }
                         else -> false
@@ -172,12 +174,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fragmentBuilder(fragment: Fragment, holder: Int, tag: String){
+    private fun fragmentBuilder(fragment: Fragment, holder: Int, tag: String, title: String){
+        currentFragment = tag
         supportFragmentManager
             .beginTransaction()
             .replace(holder, fragment, tag)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
+
+
+        binding?.tvTitle?.text = title
     }
 
     private fun actionOnService(action: Action) {
@@ -226,6 +232,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun registerReceiver() {
+        val powerConnectedIntentFilter = IntentFilter()
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
+        registerReceiver(mainPowerStateReceiver, powerConnectedIntentFilter)
+        isPowerStateRegistered = true
+    }
+
+    private fun checkPowerStateIntent() {
+        if (::powerStateIntent.isInitialized) {
+            when(powerStateIntent.action) {
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    if (isForeground) {
+                        val title = getString(com.juanarton.core.R.string.discharging)
+                        fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging", title)
+                        binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
+                        isEmitting = false
+                        unhiddenBottomNavigation()
+                    }
+                }
+                Intent.ACTION_POWER_CONNECTED -> {
+                    if (isForeground) {
+                        val title = getString(com.juanarton.core.R.string.charging)
+                        fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging", title)
+                        binding?.bottomNavigationBar?.selectedItemId = R.id.charging
+                        isEmitting = true
+                        unhiddenBottomNavigation()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun unhiddenBottomNavigation() {
+        val layoutParams = binding?.bottomNavigationBar?.layoutParams as CoordinatorLayout.LayoutParams
+        val bottomViewNavigationBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
+        bottomViewNavigationBehavior.slideUp(binding!!.bottomNavigationBar)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
@@ -233,6 +278,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.settings_page -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
             R.id.about_page -> {
                 startActivity(Intent(this, AboutActivity::class.java))
                 true
@@ -244,21 +293,26 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        unregisterReceiver(MainPowerStateReceiver())
+        if (isPowerStateRegistered) {
+            unregisterReceiver(mainPowerStateReceiver)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isForeground = true
+        checkPowerStateIntent()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isForeground = false
     }
 
     inner class MainPowerStateReceiver: BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            when(intent.action) {
-                Intent.ACTION_POWER_DISCONNECTED -> {
-                    fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging")
-                    binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
-                }
-                Intent.ACTION_POWER_CONNECTED -> {
-                    fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging")
-                    binding?.bottomNavigationBar?.selectedItemId = R.id.charging
-                }
-            }
+            powerStateIntent = intent
+            checkPowerStateIntent()
         }
     }
 }

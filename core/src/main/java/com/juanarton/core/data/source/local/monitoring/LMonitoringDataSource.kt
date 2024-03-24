@@ -187,8 +187,8 @@ class LMonitoringDataSource @Inject constructor(
                     val chargingHistory = DomainUtils.mapChargingHistoryEntityToDomain(
                         chargingHistoryDAO.getChargingHistory(params.loadSize, page * params.loadSize)
                     )
-                    Log.d("test", chargingHistoryDAO.getChargingHistory(params.loadSize, page * params.loadSize).toString())
 
+                    Log.d("test", "work")
                     LoadResult.Page(
                         data = chargingHistory,
                         prevKey = if (page == 0) null else page - 1,
