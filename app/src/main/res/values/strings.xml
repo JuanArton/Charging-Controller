@@ -2,7 +2,6 @@
     <string name="app_name">BatterySense</string>
     <string name="status">Status</string>
     <string name="root_access_denied">Root access required</string>
-    <string name="dashboard">Dashboard</string>
     <string name="quick_setting">Quick Setting</string>
     <string name="charging_current">Charging Current</string>
     <string name="current_value">5000</string>
@@ -98,22 +97,12 @@
     <string name="charging_duration">Charging Duration</string>
     <string name="charging_summary">Charging Summary</string>
     <string name="discharging_speed">Discharging Speed</string>
-    <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="system">System</string>

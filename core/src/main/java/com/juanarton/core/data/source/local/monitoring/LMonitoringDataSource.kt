@@ -22,7 +22,6 @@ import com.juanarton.core.utils.BatteryUtils.getUptime
 import com.juanarton.core.utils.BatteryUtils.getVoltage
 import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import com.juanarton.core.utils.DomainUtils
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.abs

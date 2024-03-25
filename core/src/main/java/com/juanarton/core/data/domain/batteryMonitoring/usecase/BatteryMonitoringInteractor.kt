@@ -7,7 +7,6 @@ import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 import javax.inject.Inject
 
 class BatteryMonitoringInteractor @Inject constructor(

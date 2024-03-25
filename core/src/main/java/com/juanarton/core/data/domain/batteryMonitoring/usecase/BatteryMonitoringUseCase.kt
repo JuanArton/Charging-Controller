@@ -6,7 +6,6 @@ import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 interface BatteryMonitoringUseCase {
     fun getBatteryInfo(): Flow<BatteryInfo>

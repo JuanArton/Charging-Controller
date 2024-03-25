@@ -51,8 +51,8 @@
             app:layout_constraintTop_toBottomOf="@id/battery_info_panel" />
 
         <include
+            android:id="@+id/chargingSummaryPanel"
             layout="@layout/charging_summary_panel"
-            android:id="@+id/charging_summary_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"

@@ -1,15 +1,6 @@
 package com.juanarton.batterysense.utils
 
 object Utils {
-    fun formatUsagePercentage(value1: Int, value2: Int): String {
-        return buildString {
-            append(value1)
-            append("% of ")
-            append(value2)
-            append("%")
-        }
-    }
-
     fun formatUsagePerHour(value1: Double): String {
         return buildString {
             append(String.format("%.1f", value1))
@@ -36,13 +27,5 @@ object Utils {
 
     fun calculateDeepSleepAwakeSpeed(value: Double, screenOffTime: Double): Double {
         return screenOffTime * (value / 100)
-    }
-
-    fun formatSpeed(value1: Double): String {
-        return buildString {
-            append("speed ")
-            append(String.format("%.1f", value1))
-            append("%/h")
-        }
     }
 }

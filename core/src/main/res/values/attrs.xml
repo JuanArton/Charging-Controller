@@ -12,7 +12,7 @@
         <attr name="extraText" format="string"/>
     </declare-styleable>
 
-    <declare-styleable name="CardViewWithSwitch">
+    <declare-styleable name="SwitchWithDescription">
         <attr name="cwTitle" format="string"/>
         <attr name="cwContent" format="string"/>
     </declare-styleable>

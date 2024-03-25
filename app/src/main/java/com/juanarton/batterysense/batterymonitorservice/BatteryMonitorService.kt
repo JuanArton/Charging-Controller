@@ -144,12 +144,12 @@ class BatteryMonitorService : Service() {
                 setScreenOffDrain(iBatteryMonitoringRepository.getScreenOffDrain())
 
                 iBatteryMonitoringRepository.getBatteryInfo().collect {
-                    if (it.status != 1 && it.status != 3) {
+                    isEmitting = if (it.status != 1 && it.status != 3) {
                         setIsCharging(true)
-                        isEmitting = true
+                        true
                     } else {
                         setIsCharging(false)
-                        isEmitting = false
+                        false
                     }
 
                     when (screenOn) {

@@ -24,7 +24,7 @@ class SwitchWithDescription @JvmOverloads constructor(
         content = findViewById(R.id.contentText)
         switch = findViewById(R.id.cwSwitch)
 
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CardViewWithSwitch)
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SwitchWithDescription)
 
         val titleText = typedArray.getString(R.styleable.CustomMaterialCardView_titleText)
 
