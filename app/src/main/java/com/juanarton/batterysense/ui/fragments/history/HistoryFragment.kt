@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Visibility
 import com.juanarton.batterysense.databinding.FragmentHistoryBinding
 import com.juanarton.core.adapter.ChargingHistoryAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +39,13 @@ class HistoryFragment : Fragment() {
 
         historyViewModel.getChargingHistory().observe(viewLifecycleOwner) {
             rvAdapter.submitData(lifecycle, it)
+            rvAdapter.addLoadStateListener { loadState ->
+                if (loadState.append.endOfPaginationReached) {
+                    if (rvAdapter.itemCount > 0) {
+                        binding?.tvNoData?.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 

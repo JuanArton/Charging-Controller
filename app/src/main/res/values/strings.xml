@@ -97,12 +97,6 @@
     <string name="charging_duration">Charging Duration</string>
     <string name="charging_summary">Charging Summary</string>
     <string name="discharging_speed">Discharging Speed</string>
-
-    <!-- Preference Titles -->
-
-    <!-- Messages Preferences -->
-
-    <!-- Sync Preferences -->
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="system">System</string>
@@ -110,4 +104,13 @@
     <string name="theme">Theme</string>
     <string name="change_app_theme">Change app theme</string>
     <string name="settings">Settings</string>
+    <string name="root_granted_module_installed">Root granted, module installed</string>
+    <string name="root_denied_module_installed">Root denied, module installed</string>
+    <string name="root_granted_module_not_installed">Root granted, module not installed</string>
+    <string name="root_denied">Root denied</string>
+    <string name="not_rooted">Your device not rooted? this feature need root</string>
+    <string name="ok">Ok</string>
+    <string name="root_module_check_message">Setting changes will have no effect</string>
+    <string name="empty_charging_history_data">Empty charging history data</string>
+    <string name="title_activity_history_compose">HistoryActivityCompose</string>
 </resources>

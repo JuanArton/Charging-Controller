@@ -242,12 +242,13 @@ class BatteryMonitorService : Service() {
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent,
             PendingIntent.FLAG_IMMUTABLE)
 
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "BatterySense Monitor"
             val description = "Battery Monitor Service Channel"
             val channel = NotificationChannel(SERVICE_NOTIF_CHANNEL_ID, name, NotificationManager.IMPORTANCE_MIN)
             channel.description = description
-            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
 

@@ -1,50 +1,51 @@
 package com.juanarton.batterysense.ui.activity.batteryhistory
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.juanarton.batterysense.R
-import com.juanarton.batterysense.databinding.ActivityBatteryHistoryBinding
-import com.juanarton.core.adapter.BatteryHistoryAdapter
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import com.juanarton.batterysense.ui.theme.BatterySenseTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class BatteryHistoryActivity : AppCompatActivity() {
+class BatteryHistoryActivity : ComponentActivity() {
 
-    private var _binding: ActivityBatteryHistoryBinding? = null
-    private val binding get() = _binding
-
-    private val batteryHistoryViewModel: BatteryHistoryViewModel by viewModels()
-
+     private val batteryHistoryViewModel: BatteryHistoryViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        _binding = ActivityBatteryHistoryBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        binding?.rvHistory?.layoutManager = LinearLayoutManager(this)
-        val rvAdapter = BatteryHistoryAdapter(this)
-        binding?.rvHistory?.adapter = rvAdapter
-
-        batteryHistoryViewModel.getBatteryHistory()
-
-        batteryHistoryViewModel.batteryHistory.observe(this) {
-            rvAdapter.setData(it)
-            rvAdapter.notifyDataSetChanged()
+        setContent {
+            BatterySenseTheme {
+                HistoryContent(batteryHistoryViewModel)
+            }
         }
     }
+}
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistoryContent(batteryHistoryViewModel: BatteryHistoryViewModel) {
+    batteryHistoryViewModel.getBatteryHistory()
+    val histories = batteryHistoryViewModel.batteryHistory.observeAsState().value
+
+    if (!histories.isNullOrEmpty()) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Battery History") },
+                )
+            },
+            content = { paddingValues ->
+                HistoryList(historyList = histories, LocalContext.current, paddingValues)
+            },
+        )
     }
 }

@@ -11,12 +11,14 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="Theme.BatterySense" parent="Base.Theme.BatterySense" />
+
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation
         duration. -->
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-        <item name="windowSplashScreenAnimationDuration">200</item>
+        <item name="windowSplashScreenBackground">?attr/colorSurfaceBright</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="windowSplashScreenAnimationDuration">2000</item>
 
         <!-- Set the theme of the Activity that directly follows your splash
         screen. This is required. -->

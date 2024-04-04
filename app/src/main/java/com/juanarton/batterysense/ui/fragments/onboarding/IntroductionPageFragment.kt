@@ -57,6 +57,7 @@ class IntroductionPageFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 while (isActive) {
+                    delay(1 * 1000)
                     val currentValue = buildString {
                         append(
                             abs(
@@ -72,8 +73,6 @@ class IntroductionPageFragment : Fragment() {
                     BatteryHistoryHolder.currentData.notifyDataChanged()
                     binding?.chargingCurrentChart?.notifyDataSetChanged()
                     binding?.chargingCurrentChart?.invalidate()
-
-                    delay(1 * 1000)
                 }
             }
         }

@@ -36,7 +36,7 @@ class ChargingViewModel @Inject constructor(
     fun startBatteryMonitoring() {
         if (!isMonitoring) {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-            scheduledExecutorService?.scheduleAtFixedRate(
+            scheduledExecutorService?.scheduleWithFixedDelay(
                 {
                     viewModelScope.launch {
                         batteryMonitoringUseCase.getBatteryInfo().collect {

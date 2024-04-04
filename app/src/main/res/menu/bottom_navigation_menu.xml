@@ -11,11 +11,6 @@
         android:title="@string/discharging"/>
 
     <item
-        android:id="@+id/quickSetting"
-        android:icon="@drawable/sharp_admin_panel_settings_24"
-        android:title="@string/quick_setting"/>
-
-    <item
         android:id="@+id/alarm"
         android:icon="@drawable/alarm_add"
         android:title="@string/battery_alarm"/>
@@ -24,4 +19,9 @@
         android:id="@+id/history"
         android:icon="@drawable/baseline_history_24"
         android:title="@string/history"/>
+
+    <item
+        android:id="@+id/quickSetting"
+        android:icon="@drawable/sharp_admin_panel_settings_24"
+        android:title="@string/quick_setting"/>
 </menu>

@@ -19,8 +19,8 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation
         duration. -->
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenBackground">@color/brightSurface</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
         <item name="windowSplashScreenAnimationDuration">200</item>
 
         <!-- Set the theme of the Activity that directly follows your splash

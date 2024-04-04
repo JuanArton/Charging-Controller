@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
 
         if (settings.getBoolean("first_launch", true)) {
             binding?.bottomNavigationBar?.visibility = View.GONE
+            supportActionBar?.hide()
             fragmentBuilder(MainOnboardingFragment(), R.id.root, "Onboarding", "")
         } else {
             CoroutineScope(Dispatchers.IO).launch {
