@@ -109,8 +109,11 @@
     <string name="root_granted_module_not_installed">Root granted, module not installed</string>
     <string name="root_denied">Root denied</string>
     <string name="not_rooted">Your device not rooted? this feature need root</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="root_module_check_message">Setting changes will have no effect</string>
     <string name="empty_charging_history_data">Empty charging history data</string>
     <string name="title_activity_history_compose">HistoryActivityCompose</string>
+    <string name="autostart">Autostart</string>
+    <string name="autostart_dialog_message">Autostart is disabled. Please enable the autostart for BatterySense so the app can runs well. Press OK to open settings </string>
+    <string name="warning">Warning</string>
 </resources>

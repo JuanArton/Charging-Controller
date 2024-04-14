@@ -191,6 +191,9 @@ class QuickSettingFragment : Fragment() {
         val dialogMessage = dialogView.findViewById<TextView>(R.id.dialog_message)
         dialogMessage.text = getString(R.string.qs_dialog_message)
 
+        val dialogTitle = dialogView.findViewById<TextView>(R.id.dialog_title)
+        dialogTitle.text = getString(R.string.warning)
+
         val okButton = dialogView.findViewById<Button>(R.id.dialog_ok_button)
 
         val alertDialogBuilder = AlertDialog.Builder(context)

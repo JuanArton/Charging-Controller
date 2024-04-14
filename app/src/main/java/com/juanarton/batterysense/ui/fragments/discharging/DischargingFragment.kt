@@ -1,8 +1,11 @@
 package com.juanarton.batterysense.ui.fragments.discharging
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.BatteryManager
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +43,8 @@ import com.juanarton.batterysense.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.batterysense.utils.Utils.formatDeepSleepAwake
 import com.juanarton.batterysense.utils.Utils.formatUsagePerHour
+import com.juanarton.core.utils.BatteryUtils.getDesignedCapacity
+import com.juanarton.core.utils.BatteryUtils.getVoltage
 import com.juanarton.core.utils.Utils.formatTime
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -90,6 +95,17 @@ class DischargingFragment : Fragment() {
 
         val typedValue = TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+
+        val batteryManager = context?.getSystemService(Context.BATTERY_SERVICE)
+                as BatteryManager
+
+        val currentCapacity = batteryManager.getIntProperty(
+            BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER).toDouble()
+
+        Log.d("test current capacity", currentCapacity.toString())
+
+        val residu = currentCapacity + ((getVoltage()/100) * getDesignedCapacity(requireContext()))
+        Log.d("test residu", residu.toString())
 
         binding?.apply {
             batteryHistoryPanel.cgGraphSelector.check(R.id.chipChargingCurrent)

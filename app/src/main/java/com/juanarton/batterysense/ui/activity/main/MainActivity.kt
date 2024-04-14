@@ -2,6 +2,7 @@ package com.juanarton.batterysense.ui.activity.main
 
 import android.Manifest
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -9,11 +10,15 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -49,6 +54,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import xyz.kumaraswamy.autostart.Autostart
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -132,6 +139,12 @@ class MainActivity : AppCompatActivity() {
                 intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
 
                 isRegistered = true
+            }
+
+            Log.d("test", Autostart.getSafeState(this).toString())
+            if (!Autostart.getSafeState(this)) {
+                showAutostartDialog()
+
             }
 
             binding?.apply {
@@ -270,6 +283,34 @@ class MainActivity : AppCompatActivity() {
         val layoutParams = binding?.bottomNavigationBar?.layoutParams as CoordinatorLayout.LayoutParams
         val bottomViewNavigationBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
         bottomViewNavigationBehavior.slideUp(binding!!.bottomNavigationBar)
+    }
+
+    private fun showAutostartDialog() {
+        val dialogView: View = LayoutInflater.from(this).inflate(R.layout.custom_dialog_box, null)
+
+        val dialogMessage = dialogView.findViewById<TextView>(R.id.dialog_message)
+        dialogMessage.text = getString(R.string.autostart_dialog_message)
+
+        val okButton = dialogView.findViewById<Button>(R.id.dialog_ok_button)
+
+        val autostartDialogBuilder = AlertDialog.Builder(this)
+        autostartDialogBuilder.setView(dialogView)
+        autostartDialogBuilder.setCancelable(true)
+
+        val autostartDialog = autostartDialogBuilder.create()
+
+        okButton.setOnClickListener {
+            autostartDialog.dismiss()
+            startActivity(
+                Intent().setComponent(
+                ComponentName(
+                    "com.miui.securitycenter",
+                    "com.miui.permcenter.autostart.AutoStartManagementActivity"
+                )
+            ))
+        }
+
+        autostartDialog.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
