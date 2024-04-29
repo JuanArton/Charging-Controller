@@ -170,4 +170,8 @@ class BatteryMonitoringRepository @Inject constructor(
             lMonitoringDataSource.deleteChargingHistory()
         }
     }
+
+    override fun getUsageData(): List<BatteryHistory> {
+        return mapBatteryHistoryEntityToDomain(lMonitoringDataSource.getUsageData())
+    }
 }

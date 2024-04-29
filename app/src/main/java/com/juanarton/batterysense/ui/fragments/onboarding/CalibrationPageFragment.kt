@@ -1,5 +1,6 @@
 package com.juanarton.batterysense.ui.fragments.onboarding
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -7,12 +8,18 @@ import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.UnderlineSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
@@ -41,6 +48,8 @@ class CalibrationPageFragment : Fragment() {
 
     private var unit: String = "μA"
 
+    private var capacity: Int? = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,28 +71,14 @@ class CalibrationPageFragment : Fragment() {
                 append("${getString(R.string.android_version)} : ${Build.VERSION.RELEASE}")
             }
 
-            var capacity: Int? = 0
-
-            val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-                override fun afterTextChanged(s: Editable?) {
-                    capacity = s.toString().toInt()
-                }
-            }
-
-            etCapacity.addTextChangedListener(textWatcher)
-
             btCalibrate.setOnClickListener {
                 if (!isPlugged(requireContext())) {
                     if (btCalibrate.text == getString(R.string.calibrate)) {
                         btCalibrate.disable()
 
-                        etCapacity.setText(buildString{
-                            append("${getDesignedCapacity(requireContext()).toInt()}")
-                        })
+                        capacity = getDesignedCapacity(requireContext()).toInt()
+
+                        tvCapacityValue.text = capacity.toString()
 
                         CoroutineScope(Dispatchers.IO).launch {
                             repeat(5) {
@@ -105,6 +100,14 @@ class CalibrationPageFragment : Fragment() {
                                 tvUnit.text = buildString {
                                     append("${getString(R.string.unit)} : ")
                                     append(unit)
+                                }
+
+                                val wrongCapacityText = SpannableString(getString(R.string.wrong_capacity))
+                                wrongCapacityText.setSpan(UnderlineSpan(), 0, wrongCapacityText.length, 0)
+                                tvWrongCapacity.visibility = View.VISIBLE
+                                tvWrongCapacity.text = wrongCapacityText
+                                tvWrongCapacity.setOnClickListener {
+                                    showCapacitytDialog()
                                 }
 
                                 btCalibrate.enable()
@@ -171,6 +174,36 @@ class CalibrationPageFragment : Fragment() {
         isPlugged = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB
         isPlugged = isPlugged || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
         return isPlugged
+    }
+
+    private fun showCapacitytDialog() {
+        val dialogView: View = LayoutInflater.from(requireContext()).inflate(R.layout.calibration_dialog_box, null)
+
+        val capacityEditText = dialogView.findViewById<EditText>(R.id.et_capacity)
+
+        val okButton = dialogView.findViewById<Button>(R.id.dialog_ok_button)
+        val cancelButton = dialogView.findViewById<Button>(R.id.dialog_cancel_button)
+
+        val autostartDialogBuilder = AlertDialog.Builder(requireContext())
+        autostartDialogBuilder.setView(dialogView)
+        autostartDialogBuilder.setCancelable(true)
+
+        val autostartDialog = autostartDialogBuilder.create()
+
+        okButton.setOnClickListener {
+             if (capacityEditText.text.toString().isNotEmpty()) {
+                 capacity = capacityEditText.text.toString().toInt()
+                 binding?.tvCapacityValue?.text = capacity.toString()
+            }
+
+            autostartDialog.dismiss()
+        }
+
+        cancelButton.setOnClickListener {
+            autostartDialog.dismiss()
+        }
+
+        autostartDialog.show()
     }
 
     override fun onDestroy() {

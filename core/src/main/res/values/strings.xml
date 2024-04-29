@@ -29,4 +29,6 @@
     <string name="discharging_started">Discharging started</string>
     <string name="discharging_ended">Discharging ended</string>
     <string name="icon">icon</string>
+    <string name="only_android_14_plus">Only android 14+</string>
+    <string name="not_available">Not available</string>
 </resources>

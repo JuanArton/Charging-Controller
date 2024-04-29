@@ -58,21 +58,23 @@ class IntroductionPageFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 while (isActive) {
                     delay(1 * 1000)
-                    val currentValue = buildString {
-                        append(
-                            abs(
-                                BatteryHistoryHolder
-                                    .batteryCurrent[BatteryHistoryHolder.batteryCurrent.lastIndex].y.toInt()
+                    if (BatteryHistoryHolder.batteryCurrent.isNotEmpty()){
+                        val currentValue = buildString {
+                            append(
+                                abs(
+                                    BatteryHistoryHolder
+                                        .batteryCurrent[BatteryHistoryHolder.batteryCurrent.lastIndex].y.toInt()
+                                )
                             )
-                        )
-                        append(getString(R.string.ma))
+                            append(getString(R.string.ma))
+                        }
+
+                        binding?.tvChartValue?.text = currentValue
+
+                        BatteryHistoryHolder.currentData.notifyDataChanged()
+                        binding?.chargingCurrentChart?.notifyDataSetChanged()
+                        binding?.chargingCurrentChart?.invalidate()
                     }
-
-                    binding?.tvChartValue?.text = currentValue
-
-                    BatteryHistoryHolder.currentData.notifyDataChanged()
-                    binding?.chargingCurrentChart?.notifyDataSetChanged()
-                    binding?.chargingCurrentChart?.invalidate()
                 }
             }
         }

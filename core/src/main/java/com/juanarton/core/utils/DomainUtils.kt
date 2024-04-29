@@ -14,6 +14,7 @@ object DomainUtils {
             batteryHistory.temperature,
             batteryHistory.power,
             batteryHistory.voltage,
+            batteryHistory.isCharging
         )
     }
 
@@ -26,6 +27,7 @@ object DomainUtils {
                 it.temperature,
                 it.power,
                 it.voltage,
+                it.isCharging
             )
         }
     }

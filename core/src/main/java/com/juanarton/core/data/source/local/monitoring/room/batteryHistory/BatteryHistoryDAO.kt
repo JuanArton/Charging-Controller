@@ -23,4 +23,7 @@ interface BatteryHistoryDAO {
 
     @Delete
     fun deleteFirst(batteryHistoryEntity: BatteryHistoryEntity)
+
+    @Query("SELECT * FROM batteryHistory WHERE timestamp > (SELECT max(timestamp) FROM batteryHistory WHERE isCharging = 1) ORDER BY timestamp DESC")
+    fun getUsageData(): List<BatteryHistoryEntity>
 }

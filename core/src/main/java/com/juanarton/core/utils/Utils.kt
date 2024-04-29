@@ -32,9 +32,9 @@ object Utils {
         val remainingSeconds = seconds % 60
 
         return when {
-            hours > 0 -> String.format("%1dh %1dm %1ds", hours, minutes, remainingSeconds)
-            minutes > 0 -> String.format("%1dm %1ds", minutes, remainingSeconds)
-            else -> String.format("%1ds", remainingSeconds)
+            hours > 0 -> String.format(Locale.getDefault(), "%1dh %1dm %1ds", hours, minutes, remainingSeconds)
+            minutes > 0 -> String.format(Locale.getDefault(), "%1dm %1ds", minutes, remainingSeconds)
+            else -> String.format(Locale.getDefault(), "%1ds", remainingSeconds)
         }
     }
 

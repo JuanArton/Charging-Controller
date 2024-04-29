@@ -156,15 +156,15 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvPowerUsagePattern"
                     android:layout_alignParentStart="true"
-                    android:layout_alignBottom="@id/etCapacity"
+                    android:layout_alignBottom="@id/tvCapacityValue"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/capacity"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/etCapacity"
+                <TextView
+                    android:id="@+id/tvCapacityValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvPowerUsagePattern"
@@ -177,14 +177,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvPowerUsagePattern"
-                    android:layout_alignBottom="@id/etCapacity"
+                    android:layout_alignBottom="@id/tvCapacityValue"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="10dp"
-                    android:layout_toEndOf="@+id/etCapacity"
+                    android:layout_toEndOf="@+id/tvCapacityValue"
                     android:gravity="center_vertical"
                     android:text="@string/mah"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvWrongCapacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvCapacity"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="10dp"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:textColor="@color/blue"
+                    android:clickable="true"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>

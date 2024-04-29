@@ -44,7 +44,7 @@ class LMonitoringDataSource @Inject constructor(
 
         return BatteryInfo(
             getChargingStatus(), getACCharge(), getUSBCharge(), getLevel(), voltage,
-            current.toInt(), abs(power), getTemperature(), getUptime(), getCycleCount()
+            current.toInt(), abs(power), getTemperature(), getUptime(), getCycleCount(context)
         )
     }
 
@@ -187,7 +187,6 @@ class LMonitoringDataSource @Inject constructor(
                         chargingHistoryDAO.getChargingHistory(params.loadSize, page * params.loadSize)
                     )
 
-                    Log.d("test", "work")
                     LoadResult.Page(
                         data = chargingHistory,
                         prevKey = if (page == 0) null else page - 1,
@@ -232,4 +231,6 @@ class LMonitoringDataSource @Inject constructor(
         editor.putInt("capacity", capacity)
         editor.apply()
     }
+
+    fun getUsageData() : List<BatteryHistoryEntity> = batteryHistoryDao.getUsageData()
 }

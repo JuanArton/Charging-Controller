@@ -115,8 +115,6 @@ class LAppConfigDataSource {
         val command = "${PATH}/3c.sh setValue maxCapacity ${maxCapacity.toInt()}"
         val result = Shell.cmd(command).exec()
 
-        Log.d("test", maxCapacity.toInt().toString())
-
         val capacityValue = Utils.getValue("maxCapacity").out[0]
 
         return if (result.isSuccess) {

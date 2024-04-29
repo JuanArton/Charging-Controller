@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="?android:windowBackground">
+
+    <TextView
+        android:id="@+id/capacity_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/capacity_dialog"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:textSize="20sp" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_capacity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/correct_capacity"
+        android:inputType="number"
+        android:padding="16dp"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="end">
+
+        <Button
+            android:id="@+id/dialog_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textColor="?attr/colorPrimary"
+            android:background="@android:color/transparent"
+            android:layout_gravity="end"/>
+
+        <Button
+            android:id="@+id/dialog_ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:textColor="?attr/colorPrimary"
+            android:background="@android:color/transparent"
+            android:layout_gravity="end"
+            android:layout_marginStart="10dp"/>
+    </LinearLayout>
+</LinearLayout>

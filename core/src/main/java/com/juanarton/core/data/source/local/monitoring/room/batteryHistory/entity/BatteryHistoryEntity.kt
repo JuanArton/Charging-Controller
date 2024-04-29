@@ -24,4 +24,7 @@ data class BatteryHistoryEntity (
 
     @ColumnInfo(name = "voltage")
     val voltage: Float,
+
+    @ColumnInfo(name = "isCharging")
+    val isCharging: Boolean
 )

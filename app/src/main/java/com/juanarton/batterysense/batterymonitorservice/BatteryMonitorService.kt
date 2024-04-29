@@ -1,6 +1,5 @@
 package com.juanarton.batterysense.batterymonitorservice
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
@@ -100,7 +99,12 @@ class BatteryMonitorService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             when (intent.action) {
-                Action.START.name -> startService()
+                Action.START.name -> {
+                    if (!isRegistered) {
+                        registerReceiver()
+                    }
+                    startService()
+                }
                 Action.STOP.name -> stopService()
                 else -> Log.d("BatteryMonitorService", "No action in received intent")
             }
@@ -112,8 +116,16 @@ class BatteryMonitorService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent) {
         unregisterReceiver()
-        val restartServiceIntent = Intent(applicationContext, BatteryMonitorService::class.java).also {
-            it.setPackage(packageName)
+        val restartServiceIntent = Intent(applicationContext, BatteryMonitorService::class.java).also { intent ->
+            intent.setPackage(packageName)
+            intent.action = Action.START.name
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Log.d("BatteryMonitorService", "Starting the service in >=26 Mode")
+                startForegroundService(intent)
+                return
+            }
+            Log.d("BatteryMonitorService", "Starting the service in < 26 Mode")
+            startService(intent)
         }
 
         val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent,
@@ -121,8 +133,8 @@ class BatteryMonitorService : Service() {
         applicationContext.getSystemService(Context.ALARM_SERVICE)
         val alarmService: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
-        registerReceiver()
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -132,7 +144,9 @@ class BatteryMonitorService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        registerReceiver()
+        if (!isRegistered) {
+            registerReceiver()
+        }
     }
 
     private fun monitorBattery() {
@@ -174,10 +188,11 @@ class BatteryMonitorService : Service() {
                     iBatteryMonitoringRepository.insertHistory(
                         BatteryHistory(
                             getCurrentTimeMillis(), it.level, it.currentNow, it.temperature,
-                            it.power, it.voltage
+                            it.power, it.voltage, getIsCharging()
                         )
                     )
                 }
+
                 delay(delayDuration * 1000)
             }
         }
@@ -187,7 +202,6 @@ class BatteryMonitorService : Service() {
         monitorBattery()
     }
 
-    @SuppressLint("ForegroundServiceType")
     private fun startService() {
         if (!isServiceStarted) {
             isServiceStarted = true

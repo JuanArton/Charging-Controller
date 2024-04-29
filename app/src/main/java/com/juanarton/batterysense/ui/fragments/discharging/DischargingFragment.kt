@@ -102,11 +102,6 @@ class DischargingFragment : Fragment() {
         val currentCapacity = batteryManager.getIntProperty(
             BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER).toDouble()
 
-        Log.d("test current capacity", currentCapacity.toString())
-
-        val residu = currentCapacity + ((getVoltage()/100) * getDesignedCapacity(requireContext()))
-        Log.d("test residu", residu.toString())
-
         binding?.apply {
             batteryHistoryPanel.cgGraphSelector.check(R.id.chipChargingCurrent)
             batteryHistoryPanel.cgGraphSelector.setOnCheckedStateChangeListener { group, _ ->

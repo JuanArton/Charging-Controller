@@ -73,4 +73,6 @@ interface IBatteryMonitoringRepository {
     fun insertCapacity(capacity: Int)
 
     fun deleteChargingHistory()
+
+    fun getUsageData(): List<BatteryHistory>
 }

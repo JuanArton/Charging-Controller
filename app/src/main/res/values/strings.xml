@@ -116,4 +116,10 @@
     <string name="autostart">Autostart</string>
     <string name="autostart_dialog_message">Autostart is disabled. Please enable the autostart for BatterySense so the app can runs well. Press OK to open settings </string>
     <string name="warning">Warning</string>
+    <string name="wrong_capacity">Wrong capacity? Click here to correct in manually</string>
+    <string name="correct_capacity">Correct capacity in mAh</string>
+    <string name="capacity_dialog">Capacity</string>
+    <string name="cancel">Cancel</string>
+    <string name="developer_message">Developer Message :</string>
+    <string name="developer_message_value">App may not be updated for some time. Im looking for algorithm to predict battery health :)</string>
 </resources>

@@ -115,7 +115,6 @@ class QuickSettingFragment : Fragment() {
 
             chargingSwitch.setOnCheckedChangeListener { _, isChecked ->
                 val checkModule = checkModule()
-                Log.d("test", checkModule.toString())
                 if (checkModule.first) {
                     qsViewModel.setChargingSwitch(isChecked)
                 }
@@ -126,10 +125,8 @@ class QuickSettingFragment : Fragment() {
 
             chargingLimitSwitch.setOnCheckedChangeListener { _, isChecked ->
 
-                Log.d("test", "work")
                 val checkModule = checkModule()
 
-                Log.d("test", checkModule.toString())
                 if (checkModule.first) {
                     qsViewModel.setChargingLimitSwitch(isChecked)
                 }

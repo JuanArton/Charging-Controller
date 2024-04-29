@@ -147,6 +147,26 @@
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/repository"
                     android:src="@drawable/baseline_open_in_new_24" />
+
+                <TextView
+                    android:id="@+id/tv_dev_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvRepository"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/developer_message"
+                    android:textSize="11sp"/>
+
+                <TextView
+                    android:id="@+id/tv_dev_message_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvRepository"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/developer_message_value"
+                    android:layout_toEndOf="@+id/tv_dev_message"
+                    android:textSize="11sp"/>
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>

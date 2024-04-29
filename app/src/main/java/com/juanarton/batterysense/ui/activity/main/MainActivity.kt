@@ -141,7 +141,6 @@ class MainActivity : AppCompatActivity() {
                 isRegistered = true
             }
 
-            Log.d("test", Autostart.getSafeState(this).toString())
             if (!Autostart.getSafeState(this)) {
                 showAutostartDialog()
 

@@ -55,7 +55,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     testImplementation("junit:junit:4.13.2")
@@ -68,5 +68,5 @@ dependencies {
     implementation("net.zetetic:android-database-sqlcipher:4.5.4@aar")
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
 
-    implementation("com.google.firebase:firebase-analytics:21.6.1")
+    implementation("com.google.firebase:firebase-analytics:21.6.2")
 }
