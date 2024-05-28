@@ -29,7 +29,7 @@
             android:orientation="vertical"
             android:layout_weight="1">
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvActiveDrain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 app:cardElevation="0dp"
                 app:titleText="@string/active_drain_hour"/>
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvAwakeSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvIdleDrain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                 app:iconDescription="@string/charging_voltage_icon"
                 app:titleText="@string/idle_drain_hour"/>
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvDeepSleepSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

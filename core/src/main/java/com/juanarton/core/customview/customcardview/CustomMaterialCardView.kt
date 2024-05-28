@@ -1,4 +1,4 @@
-package com.juanarton.core.customview
+package com.juanarton.core.customview.customcardview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -22,7 +22,6 @@ class CustomMaterialCardView @JvmOverloads constructor(
     private val extra: TextView
 
     init {
-
         inflate(context, R.layout.custom_card_view, this)
         icon = findViewById(R.id.icon)
         title = findViewById(R.id.titleText)

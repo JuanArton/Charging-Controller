@@ -8,6 +8,7 @@
         <item name="android:windowBackground">@color/darkSurface</item>
         <item name="cardBackgroundColor">@color/darkCardBackground</item>
         <item name="liftOnScrollColor">@color/darkSurface</item>
+        <item name="android:fontFamily">sans-serif-light</item>
 
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowTranslucentStatus">true</item>

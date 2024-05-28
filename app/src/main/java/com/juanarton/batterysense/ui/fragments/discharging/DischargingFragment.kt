@@ -33,6 +33,7 @@ import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
+import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import com.juanarton.batterysense.utils.FragmentUtil
 import com.juanarton.batterysense.utils.FragmentUtil.changeViewHeight
 import com.juanarton.batterysense.utils.FragmentUtil.maxChecker
@@ -186,10 +187,16 @@ class DischargingFragment : Fragment() {
                 }
 
                 with(dischargingViewModel) {
+
                     BatteryHistoryHolder.currentData.notifyDataChanged()
                     batteryHistoryPanel.chargingCurrentChart.notifyDataSetChanged()
                     batteryHistoryPanel.chargingCurrentChart.invalidate()
 
+
+                    Log.d("test", ChargingHistoryHolder.batteryCurrent.toString())
+                    Log.d("test", ChargingHistoryHolder.currentLineDataSet.toString())
+                    Log.d("test", ChargingHistoryHolder.currentData.toString())
+                    Log.d("test", ChargingHistoryHolder.currentILineDataSet.toString())
                     when {
                         currentGraph -> {
                             batteryHistoryPanel.tvChartValue.text = currentValue

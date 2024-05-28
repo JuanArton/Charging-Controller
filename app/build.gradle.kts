@@ -16,8 +16,8 @@ android {
         applicationId = "com.juanarton.batterysense"
         minSdk = 24
         targetSdk = 34
-        versionCode = 22
-        versionName = "0.1"
+        versionCode = 24
+        versionName = "0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -40,9 +40,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            ndk {
-                debugSymbolLevel = "FULL"
-            }
         }
         debug {
             isMinifyEnabled = false
@@ -68,12 +65,12 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation("androidx.core:core-ktx:1.13.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -86,26 +83,30 @@ dependencies {
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
     implementation("com.github.fondesa:kpermissions-coroutines:3.4.0")
 
     //noinspection GradleDependency
     implementation("com.scwang.wave:MultiWaveHeader:1.0.0-andx")
 
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
 
     implementation("com.tbuonomo:dotsindicator:5.0")
 
     implementation("at.blogc:expandabletextview:1.0.5")
 
-    implementation("com.google.firebase:firebase-analytics:21.6.2")
+    implementation("com.google.firebase:firebase-analytics:22.0.0")
 
     implementation("com.github.FireZenk:BubbleEmitter:-SNAPSHOT")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.01"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation("com.github.XomaDev:MIUI-autostart:v1.3")
+
+    implementation("com.github.JuanArton:Android-ArcProgressBar:0.6")
+
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.activity:activity-compose:1.9.0")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
 }

@@ -83,7 +83,6 @@ class BatteryMonitorService : Service() {
     companion object {
         const val SERVICE_NOTIFICATION_ID = 1
         const val SERVICE_NOTIF_CHANNEL_ID = "BatteryMonitorChannel"
-        var isRegistered = false
         var delayDuration: Long = 5
         var deepSleepInitialValue: Long = 0
         var screenOnBuffer: Long = 0
@@ -100,9 +99,7 @@ class BatteryMonitorService : Service() {
         if (intent != null) {
             when (intent.action) {
                 Action.START.name -> {
-                    if (!isRegistered) {
-                        registerReceiver()
-                    }
+                    registerReceiver()
                     startService()
                 }
                 Action.STOP.name -> stopService()
@@ -116,6 +113,7 @@ class BatteryMonitorService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent) {
         unregisterReceiver()
+
         val restartServiceIntent = Intent(applicationContext, BatteryMonitorService::class.java).also { intent ->
             intent.setPackage(packageName)
             intent.action = Action.START.name
@@ -144,9 +142,7 @@ class BatteryMonitorService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        if (!isRegistered) {
-            registerReceiver()
-        }
+        registerReceiver()
     }
 
     private fun monitorBattery() {
@@ -205,8 +201,6 @@ class BatteryMonitorService : Service() {
     private fun startService() {
         if (!isServiceStarted) {
             isServiceStarted = true
-
-            isRegistered = true
 
             deepSleepInitialValue =
                 (SystemClock.elapsedRealtime() - SystemClock.uptimeMillis()) / 1000
@@ -365,25 +359,33 @@ class BatteryMonitorService : Service() {
     }
 
     private fun registerReceiver() {
-        val screenStateIntentFilter = IntentFilter()
-        screenStateIntentFilter.addAction(Intent.ACTION_SCREEN_ON)
-        screenStateIntentFilter.addAction(Intent.ACTION_SCREEN_OFF)
-        registerReceiver(screenStateReceiver, screenStateIntentFilter)
+        try {
+            val screenStateIntentFilter = IntentFilter()
+            screenStateIntentFilter.addAction(Intent.ACTION_SCREEN_ON)
+            screenStateIntentFilter.addAction(Intent.ACTION_SCREEN_OFF)
+            registerReceiver(screenStateReceiver, screenStateIntentFilter)
 
-        val powerConnectedIntentFilter = IntentFilter()
-        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
-        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
-        registerReceiver(powerStateReceiver, powerConnectedIntentFilter)
+            val powerConnectedIntentFilter = IntentFilter()
+            powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+            powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
+            registerReceiver(powerStateReceiver, powerConnectedIntentFilter)
 
-        val batteryStatIntentFilter = IntentFilter()
-        batteryStatIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED)
-        registerReceiver(batteryStateReceiver, batteryStatIntentFilter)
+            val batteryStatIntentFilter = IntentFilter()
+            batteryStatIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED)
+            registerReceiver(batteryStateReceiver, batteryStatIntentFilter)
+        } catch (e: Exception) {
+            Log.d("Receiver", "Already Registered")
+        }
     }
 
     private fun unregisterReceiver() {
-        unregisterReceiver(screenStateReceiver)
-        unregisterReceiver(powerStateReceiver)
-        unregisterReceiver(batteryStateReceiver)
+        try {
+            unregisterReceiver(screenStateReceiver)
+            unregisterReceiver(powerStateReceiver)
+            unregisterReceiver(batteryStateReceiver)
+        } catch (e:Exception) {
+            Log.d("Receiver", "Not Registered")
+        }
     }
 
     inner class ScreenStateReceiver : BroadcastReceiver() {

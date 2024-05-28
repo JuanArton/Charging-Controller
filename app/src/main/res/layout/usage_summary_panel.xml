@@ -194,7 +194,7 @@
             android:orientation="vertical"
             android:layout_weight="1">
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvScreenOn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
                 app:cardElevation="0dp"
                 app:titleText="@string/screen_on"/>
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvAwake"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -224,7 +224,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvScreenOff"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -235,7 +235,7 @@
                 app:cardElevation="0dp"
                 app:titleText="@string/screen_off"/>
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvDeepSleep"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

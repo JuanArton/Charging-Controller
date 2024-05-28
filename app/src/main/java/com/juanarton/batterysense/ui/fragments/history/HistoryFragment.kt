@@ -40,7 +40,7 @@ class HistoryFragment : Fragment() {
         historyViewModel.getChargingHistory().observe(viewLifecycleOwner) {
             rvAdapter.submitData(lifecycle, it)
             rvAdapter.addLoadStateListener { loadState ->
-                if (loadState.append.endOfPaginationReached) {
+                if (loadState.source.append.endOfPaginationReached) {
                     if (rvAdapter.itemCount > 0) {
                         binding?.tvNoData?.visibility = View.GONE
                     }

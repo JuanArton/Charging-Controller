@@ -11,15 +11,22 @@ object BatteryHistoryHolder {
     private val currentILineDataSet = mutableListOf<ILineDataSet>(currentLineDataSet)
     val currentData = LineData(currentILineDataSet)
 
-    private val batteryTemperature = mutableListOf<Entry>()
+    val batteryTemperature = mutableListOf<Entry>()
     val temperatureLineDataSet = LineDataSet(batteryTemperature, "battery temperature")
     private val temperatureILineDataSet = mutableListOf<ILineDataSet>(temperatureLineDataSet)
     val temperatureData = LineData(temperatureILineDataSet)
 
-    private val batteryPower = mutableListOf<Entry>()
+    val batteryPower = mutableListOf<Entry>()
     val powerLineDataSet = LineDataSet(batteryPower, "battery power")
     private val powerILineDataSet = mutableListOf<ILineDataSet>(powerLineDataSet)
     val powerData = LineData(powerILineDataSet)
+
+    var dischargingCurrentMin = 0
+    var dischargingCurrentMax = 0
+    var dischargingTempMin = 0
+    var dischargingTempMax = 0
+    var dischargingPowerMin = 0
+    var dischargingPowerMax = 0
 
     fun addData(current: Entry, temperature: Entry, power: Entry) {
         batteryCurrent.forEachIndexed { _, it ->

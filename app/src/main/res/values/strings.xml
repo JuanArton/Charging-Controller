@@ -122,4 +122,12 @@
     <string name="cancel">Cancel</string>
     <string name="developer_message">Developer Message :</string>
     <string name="developer_message_value">App may not be updated for some time. Im looking for algorithm to predict battery health :)</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="summary">Summary</string>
+    <string name="screen_on_icon_desc">Screen On Icon</string>
+    <string name="value">Value</string>
+    <string name="battery_used">Battery Used</string>
+    <string name="screen_off_icon_desc">Screen off icon</string>
+    <string name="battery_used_icon_desc">Battery used icon</string>
 </resources>

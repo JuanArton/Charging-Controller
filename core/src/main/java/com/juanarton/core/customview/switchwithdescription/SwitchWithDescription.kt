@@ -1,4 +1,4 @@
-package com.juanarton.core.customview
+package com.juanarton.core.customview.switchwithdescription
 
 import android.content.Context
 import android.util.AttributeSet

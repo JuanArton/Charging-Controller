@@ -6,9 +6,9 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 object ChargingHistoryHolder {
-    private val batteryCurrent = mutableListOf<Entry>()
+    val batteryCurrent = mutableListOf<Entry>()
     val currentLineDataSet = LineDataSet(batteryCurrent, "battery current")
-    private val currentILineDataSet = mutableListOf<ILineDataSet>(currentLineDataSet)
+    val currentILineDataSet = mutableListOf<ILineDataSet>(currentLineDataSet)
     val currentData = LineData(currentILineDataSet)
 
     private val batteryTemperature = mutableListOf<Entry>()
@@ -20,6 +20,13 @@ object ChargingHistoryHolder {
     val powerLineDataSet = LineDataSet(batteryPower, "battery power")
     private val powerILineDataSet = mutableListOf<ILineDataSet>(powerLineDataSet)
     val powerData = LineData(powerILineDataSet)
+
+    var chargingCurrentMin = 0
+    var chargingCurrentMax = 0
+    var chargingTempMin = 0
+    var chargingTempMax = 0
+    var chargingPowerMin = 0
+    var chargingPowerMax = 0
 
     fun addData(current: Entry, temperature: Entry, power: Entry) {
         batteryCurrent.forEachIndexed { _, it ->

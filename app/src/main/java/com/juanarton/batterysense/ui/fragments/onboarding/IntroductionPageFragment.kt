@@ -46,8 +46,6 @@ class IntroductionPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        actionOnService(Action.START)
-
         binding?.apply {
             showChart(
                 BatteryHistoryHolder.currentLineDataSet,
@@ -57,7 +55,6 @@ class IntroductionPageFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 while (isActive) {
-                    delay(1 * 1000)
                     if (BatteryHistoryHolder.batteryCurrent.isNotEmpty()){
                         val currentValue = buildString {
                             append(
@@ -75,6 +72,7 @@ class IntroductionPageFragment : Fragment() {
                         binding?.chargingCurrentChart?.notifyDataSetChanged()
                         binding?.chargingCurrentChart?.invalidate()
                     }
+                    delay(1 * 1000)
                 }
             }
         }
@@ -136,20 +134,6 @@ class IntroductionPageFragment : Fragment() {
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
 
         setUpLineChart(lineDataSet, lineData, ContextCompat.getDrawable(requireContext(), gradientDrawable))
-    }
-
-    private fun actionOnService(action: Action) {
-        if (getServiceState(requireContext()) == ServiceState.STOPPED && action == Action.STOP) return
-        Intent(requireContext(), BatteryMonitorService::class.java).also {
-            it.action = action.name
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.d("BatteryMonitorService", "Starting the service in >=26 Mode")
-                requireContext().startForegroundService(it)
-                return
-            }
-            Log.d("BatteryMonitorService", "Starting the service in < 26 Mode")
-            requireContext().startService(it)
-        }
     }
 
     override fun onDestroy() {

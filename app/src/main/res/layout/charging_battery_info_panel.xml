@@ -85,7 +85,7 @@
             android:orientation="vertical"
             android:weightSum="3">
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                 app:iconRotation="-90"
                 app:titleText="@string/status"/>
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvChargingType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                 app:iconSrc="@drawable/charging_type"
                 app:titleText="@string/type"/>
 
-            <com.juanarton.core.customview.CustomMaterialCardView
+            <com.juanarton.core.customview.customcardview.CustomMaterialCardView
                 android:id="@+id/cvVoltage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
 
-        <com.juanarton.core.customview.CustomMaterialCardView
+        <com.juanarton.core.customview.customcardview.CustomMaterialCardView
             android:id="@+id/cvChartInfo1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
             app:iconSrc="@drawable/temperature"
             app:titleText="@string/temperature"/>
 
-        <com.juanarton.core.customview.CustomMaterialCardView
+        <com.juanarton.core.customview.customcardview.CustomMaterialCardView
             android:id="@+id/cvChartInfo2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

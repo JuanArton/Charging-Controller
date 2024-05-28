@@ -118,12 +118,14 @@
                     <com.google.android.material.slider.Slider
                         android:id="@+id/sliderChargingCurrent"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="10dp"
                         android:layout_below="@+id/tvChargingCurrentDesc"
                         android:layout_marginTop="10dp"
                         android:stepSize="500"
                         android:valueFrom="500"
                         android:valueTo="6000"
+                        app:thumbHeight="25dp"
+                        app:thumbWidth="5dp"
                         app:trackHeight="5dp" />
 
                     <TextView
@@ -223,6 +225,8 @@
                     android:stepSize="1"
                     android:valueFrom="50"
                     android:valueTo="100"
+                    app:thumbHeight="25dp"
+                    app:thumbWidth="5dp"
                     app:trackHeight="5dp" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>

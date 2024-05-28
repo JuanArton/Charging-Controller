@@ -31,10 +31,10 @@ import com.fondesa.kpermissions.coroutines.sendSuspend
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.juanarton.batterysense.BuildConfig
+import com.juanarton.batterysense.ui.fragments.dashboard.DashboardFragment
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.Action
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
-import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService.Companion.isRegistered
 import com.juanarton.batterysense.batterymonitorservice.ServiceState
 import com.juanarton.batterysense.batterymonitorservice.getServiceState
 import com.juanarton.batterysense.databinding.ActivityMainBinding
@@ -43,7 +43,6 @@ import com.juanarton.batterysense.ui.activity.setting.SettingsActivity
 import com.juanarton.batterysense.ui.fragments.alarm.AlarmFragment
 import com.juanarton.batterysense.ui.fragments.charging.ChargingFragment
 import com.juanarton.batterysense.ui.fragments.discharging.DischargingFragment
-import com.juanarton.batterysense.ui.fragments.history.HistoryFragment
 import com.juanarton.batterysense.ui.fragments.onboarding.MainOnboardingFragment
 import com.juanarton.batterysense.ui.fragments.quicksetting.QuickSettingFragment
 import com.juanarton.batterysense.utils.FragmentUtil.isEmitting
@@ -60,11 +59,8 @@ import xyz.kumaraswamy.autostart.Autostart
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val mainPowerStateReceiver = MainPowerStateReceiver()
     private lateinit var currentFragment: String
     private var isForeground = true
-    private lateinit var powerStateIntent: Intent
-    private var isPowerStateRegistered = false
     companion object {
         init {
             Shell.enableVerboseLogging = BuildConfig.DEBUG
@@ -109,10 +105,12 @@ class MainActivity : AppCompatActivity() {
                         .build()
                         .sendSuspend()
                     if (result.allDenied()) {
-                        Toast.makeText(
-                            this@MainActivity, getString(R.string.notificationPermissionDenied),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@MainActivity, getString(R.string.notificationPermissionDenied),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }
@@ -131,19 +129,8 @@ class MainActivity : AppCompatActivity() {
                 binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
             }
 
-            registerReceiver()
-
-            if(!isRegistered) {
-                val intentFilter = IntentFilter()
-                intentFilter.addAction(Intent.ACTION_SCREEN_ON)
-                intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
-
-                isRegistered = true
-            }
-
             if (!Autostart.getSafeState(this)) {
                 showAutostartDialog()
-
             }
 
             binding?.apply {
@@ -177,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         R.id.history -> {
                             val title = getString(R.string.history)
-                            fragmentBuilder(HistoryFragment(), holder, "History", title)
+                            fragmentBuilder(DashboardFragment(), holder, "History", title)
                             true
                         }
                         else -> false
@@ -245,45 +232,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerReceiver() {
-        val powerConnectedIntentFilter = IntentFilter()
-        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
-        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
-        registerReceiver(mainPowerStateReceiver, powerConnectedIntentFilter)
-        isPowerStateRegistered = true
-    }
-
-    private fun checkPowerStateIntent() {
-        if (::powerStateIntent.isInitialized) {
-            when(powerStateIntent.action) {
-                Intent.ACTION_POWER_DISCONNECTED -> {
-                    if (isForeground) {
-                        val title = getString(com.juanarton.core.R.string.discharging)
-                        fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging", title)
-                        binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
-                        isEmitting = false
-                        unhiddenBottomNavigation()
-                    }
-                }
-                Intent.ACTION_POWER_CONNECTED -> {
-                    if (isForeground) {
-                        val title = getString(com.juanarton.core.R.string.charging)
-                        fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging", title)
-                        binding?.bottomNavigationBar?.selectedItemId = R.id.charging
-                        isEmitting = true
-                        unhiddenBottomNavigation()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun unhiddenBottomNavigation() {
-        val layoutParams = binding?.bottomNavigationBar?.layoutParams as CoordinatorLayout.LayoutParams
-        val bottomViewNavigationBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
-        bottomViewNavigationBehavior.slideUp(binding!!.bottomNavigationBar)
-    }
-
     private fun showAutostartDialog() {
         val dialogView: View = LayoutInflater.from(this).inflate(R.layout.custom_dialog_box, null)
 
@@ -334,26 +282,15 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        if (isPowerStateRegistered) {
-            unregisterReceiver(mainPowerStateReceiver)
-        }
     }
 
     override fun onResume() {
         super.onResume()
         isForeground = true
-        checkPowerStateIntent()
     }
 
     override fun onPause() {
         super.onPause()
         isForeground = false
-    }
-
-    inner class MainPowerStateReceiver: BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            powerStateIntent = intent
-            checkPowerStateIntent()
-        }
     }
 }

@@ -9,6 +9,7 @@
         <item name="android:windowBackground">@color/brightSurface</item>
         <item name="cardBackgroundColor">@color/brightCardBackground</item>
         <item name="liftOnScrollColor">@color/brightSurface</item>
+        <item name="android:fontFamily">sans-serif-light</item>
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentStatus">true</item>
