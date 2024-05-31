@@ -192,11 +192,6 @@ class DischargingFragment : Fragment() {
                     batteryHistoryPanel.chargingCurrentChart.notifyDataSetChanged()
                     batteryHistoryPanel.chargingCurrentChart.invalidate()
 
-
-                    Log.d("test", ChargingHistoryHolder.batteryCurrent.toString())
-                    Log.d("test", ChargingHistoryHolder.currentLineDataSet.toString())
-                    Log.d("test", ChargingHistoryHolder.currentData.toString())
-                    Log.d("test", ChargingHistoryHolder.currentILineDataSet.toString())
                     when {
                         currentGraph -> {
                             batteryHistoryPanel.tvChartValue.text = currentValue

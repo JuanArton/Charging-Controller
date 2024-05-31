@@ -2,12 +2,15 @@ package com.juanarton.batterysense.ui.fragments.history
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.AbsoluteSizeSpan
 import android.util.TypedValue
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.ColorUtils
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -15,19 +18,20 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.juanarton.batterysense.R
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
+
 
 object HistoryUtil {
     fun showHistoryChart(
-        lineDataSet: LineDataSet, lineData: LineData,
-        gradientDrawable: Int, context: Context, historyChart: LineChart?
+        lineDataSet: LineDataSet, lineData: LineData, context: Context, historyChart: LineChart?
     ) {
         val typedValue = TypedValue()
         context.theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
 
+        val drawable = createGradient(typedValue.data)
+
         setUpLineChart(
-            lineDataSet, lineData, ContextCompat.getDrawable(context, gradientDrawable),
+            lineDataSet, lineData, drawable,
             typedValue, historyChart
         )
     }
@@ -74,9 +78,35 @@ object HistoryUtil {
         }
     }
 
-    fun createStringValue(value: String, unit: String, context: Context): CharSequence {
-        val batteryCurrent = BatteryHistoryHolder.batteryCurrent
+    fun changeChartColor(
+        historyChart: LineChart?, lineDataSet: LineDataSet, newColor: Int
+    ) {
+        val fillGradient = createGradient(newColor)
+        lineDataSet.apply {
+            fillDrawable = fillGradient
+            color = newColor
+        }
 
+        historyChart?.apply {
+            xAxis.apply {
+                textColor = newColor
+            }
+        }
+    }
+
+    private fun createGradient(color: Int): Drawable {
+        return GradientDrawable().apply {
+            colors = intArrayOf(
+                ColorUtils.setAlphaComponent(color, 50),
+                ColorUtils.setAlphaComponent(color, 10)
+            )
+            orientation = GradientDrawable.Orientation.TOP_BOTTOM
+            gradientType = GradientDrawable.LINEAR_GRADIENT
+            shape = GradientDrawable.RECTANGLE
+        }
+    }
+
+    fun createStringValue(value: String, unit: String, context: Context): CharSequence {
         val currentValue = SpannableString(value)
         currentValue.setSpan(
             AbsoluteSizeSpan(convertToSp(context, 30)),

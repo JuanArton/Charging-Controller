@@ -1,18 +1,25 @@
 package com.juanarton.batterysense.ui.fragments.history
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentTempHistoryBinding
+import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
+import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
+
 
 class TempHistoryFragment : Fragment() {
 
@@ -21,6 +28,8 @@ class TempHistoryFragment : Fragment() {
 
     private var scheduledExecutorService: ScheduledExecutorService? = null
     private var isMonitoring = false
+
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,14 +44,24 @@ class TempHistoryFragment : Fragment() {
 
         startCurrentMonitoring()
 
-        val currentChart = binding?.tempHistoryChart?.historyChart
-        HistoryUtil.showHistoryChart(
-            BatteryHistoryHolder.temperatureLineDataSet,
-            BatteryHistoryHolder.temperatureData,
-            R.drawable.chart_gradient,
-            requireContext(),
-            currentChart
-        )
+        if (getIsCharging()) {
+            showChargingChart()
+        } else {
+            showDischargingChart()
+        }
+
+        setChartColor()
+
+        dashboardViewModel.powerStateEvent.observe(viewLifecycleOwner) {
+            binding?.apply {
+                if (it) {
+                    showChargingChart()
+                } else {
+                    showDischargingChart()
+                }
+                setChartColor()
+            }
+        }
     }
 
     private fun startCurrentMonitoring() {
@@ -52,23 +71,89 @@ class TempHistoryFragment : Fragment() {
                 {
                     lifecycleScope.launch {
                         binding?.apply {
-                            BatteryHistoryHolder.temperatureData.notifyDataChanged()
-                            tempHistoryChart.historyChart.notifyDataSetChanged()
-                            tempHistoryChart.historyChart.invalidate()
+                            if (getIsCharging()) {
+                                ChargingHistoryHolder.temperatureData.notifyDataChanged()
+                                tempHistoryChart.historyChart.notifyDataSetChanged()
+                                tempHistoryChart.historyChart.invalidate()
 
-                            val batteryTemperature = BatteryHistoryHolder.batteryTemperature
-                            tempHistoryChart.tvChartValue.text =
-                                HistoryUtil.createStringValue(
-                                    batteryTemperature[batteryTemperature.lastIndex].y.toInt().toString(),
-                                    getString(R.string.degree_symbol),
-                                    requireContext()
-                                )
+                                val batteryTemperature = ChargingHistoryHolder.batteryTemperature
+
+                                if (batteryTemperature.isNotEmpty()) {
+                                    tempHistoryChart.tvChartValue.text =
+                                        HistoryUtil.createStringValue(
+                                            batteryTemperature[batteryTemperature.lastIndex].y.toInt().toString(),
+                                            getString(R.string.degree_symbol),
+                                            requireContext()
+                                        )
+                                }
+                            } else {
+                                BatteryHistoryHolder.temperatureData.notifyDataChanged()
+                                tempHistoryChart.historyChart.notifyDataSetChanged()
+                                tempHistoryChart.historyChart.invalidate()
+
+                                val batteryTemperature = BatteryHistoryHolder.batteryTemperature
+
+                                if (batteryTemperature.isNotEmpty()) {
+                                    tempHistoryChart.tvChartValue.text =
+                                        HistoryUtil.createStringValue(
+                                            batteryTemperature[batteryTemperature.lastIndex].y.toInt().toString(),
+                                            getString(R.string.degree_symbol),
+                                            requireContext()
+                                        )
+                                }
+                            }
                         }
                     }
                 },
                 0, 1, TimeUnit.SECONDS
             )
             isMonitoring = true
+        }
+    }
+
+    private fun showChargingChart() {
+        HistoryUtil.showHistoryChart(
+            ChargingHistoryHolder.temperatureLineDataSet,
+            ChargingHistoryHolder.temperatureData,
+            requireContext(),
+            binding?.tempHistoryChart?.historyChart
+        )
+    }
+
+    private fun showDischargingChart() {
+        HistoryUtil.showHistoryChart(
+            BatteryHistoryHolder.temperatureLineDataSet,
+            BatteryHistoryHolder.temperatureData,
+            requireContext(),
+            binding?.tempHistoryChart?.historyChart
+        )
+    }
+
+    private fun setChartColor() {
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+
+        val typedValue1 = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.textColor, typedValue1, true)
+
+        val chargingColor = requireActivity().getColor(R.color.green)
+
+        binding?.apply {
+            if (getIsCharging()) {
+                HistoryUtil.changeChartColor(
+                    tempHistoryChart.historyChart,
+                    ChargingHistoryHolder.temperatureLineDataSet,
+                    chargingColor
+                )
+                tempHistoryChart.tvChartValue.setTextColor(chargingColor)
+            } else {
+                HistoryUtil.changeChartColor(
+                    tempHistoryChart.historyChart,
+                    BatteryHistoryHolder.temperatureLineDataSet,
+                    typedValue.data
+                )
+                tempHistoryChart.tvChartValue.setTextColor(typedValue1.data)
+            }
         }
     }
 

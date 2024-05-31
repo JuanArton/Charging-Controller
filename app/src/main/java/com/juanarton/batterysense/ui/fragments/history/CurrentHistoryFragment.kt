@@ -1,28 +1,29 @@
 package com.juanarton.batterysense.ui.fragments.history
 
-import android.content.Context
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE
-import android.text.TextUtils
-import android.text.style.AbsoluteSizeSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentCurrentHistoryBinding
+import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
+import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.changeChartColor
 import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.createStringValue
 import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.showHistoryChart
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
+import com.juanarton.batterysense.utils.ChargingHistoryHolder
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
-
+@AndroidEntryPoint
 class CurrentHistoryFragment : Fragment() {
 
     private var _binding: FragmentCurrentHistoryBinding? = null
@@ -30,6 +31,8 @@ class CurrentHistoryFragment : Fragment() {
 
     private var scheduledExecutorService: ScheduledExecutorService? = null
     private var isMonitoring = false
+
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,14 +47,24 @@ class CurrentHistoryFragment : Fragment() {
 
         startCurrentMonitoring()
 
-        val currentChart = binding?.currentHistoryChart?.historyChart
-        showHistoryChart(
-            BatteryHistoryHolder.currentLineDataSet,
-            BatteryHistoryHolder.currentData,
-            R.drawable.chart_gradient,
-            requireContext(),
-            currentChart
-        )
+        if (getIsCharging()) {
+            showChargingChart()
+        } else {
+            showDischargingChart()
+        }
+
+        setChartColor()
+
+        dashboardViewModel.powerStateEvent.observe(viewLifecycleOwner) {
+            binding?.apply {
+                if (it) {
+                    showChargingChart()
+                } else {
+                    showDischargingChart()
+                }
+                setChartColor()
+            }
+        }
     }
 
     private fun startCurrentMonitoring() {
@@ -61,18 +74,37 @@ class CurrentHistoryFragment : Fragment() {
                 {
                     lifecycleScope.launch {
                         binding?.apply {
-                            BatteryHistoryHolder.currentData.notifyDataChanged()
-                            currentHistoryChart.historyChart.notifyDataSetChanged()
-                            currentHistoryChart.historyChart.invalidate()
+                            if (getIsCharging()) {
+                                ChargingHistoryHolder.currentData.notifyDataChanged()
+                                currentHistoryChart.historyChart.notifyDataSetChanged()
+                                currentHistoryChart.historyChart.invalidate()
 
-                            val batteryCurrent = BatteryHistoryHolder.batteryCurrent
+                                val batteryCurrent = ChargingHistoryHolder.batteryCurrent
 
-                            currentHistoryChart.tvChartValue.text =
-                                createStringValue(
-                                    batteryCurrent[batteryCurrent.lastIndex].y.toInt().toString(),
-                                    getString(R.string.ma),
-                                    requireContext()
-                                )
+                                if (batteryCurrent.isNotEmpty()) {
+                                    currentHistoryChart.tvChartValue.text =
+                                        createStringValue(
+                                            batteryCurrent[batteryCurrent.lastIndex].y.toInt().toString(),
+                                            getString(R.string.ma),
+                                            requireContext()
+                                        )
+                                }
+                            } else {
+                                BatteryHistoryHolder.currentData.notifyDataChanged()
+                                currentHistoryChart.historyChart.notifyDataSetChanged()
+                                currentHistoryChart.historyChart.invalidate()
+
+                                val batteryCurrent = BatteryHistoryHolder.batteryCurrent
+
+                                if (batteryCurrent.isNotEmpty()) {
+                                    currentHistoryChart.tvChartValue.text =
+                                        createStringValue(
+                                            batteryCurrent[batteryCurrent.lastIndex].y.toInt().toString(),
+                                            getString(R.string.ma),
+                                            requireContext()
+                                        )
+                                }
+                            }
                         }
                     }
                 },
@@ -86,6 +118,52 @@ class CurrentHistoryFragment : Fragment() {
         scheduledExecutorService?.shutdown()
         scheduledExecutorService = null
         isMonitoring = false
+    }
+
+    private fun showChargingChart() {
+        showHistoryChart(
+            ChargingHistoryHolder.currentLineDataSet,
+            ChargingHistoryHolder.currentData,
+            requireContext(),
+            binding?.currentHistoryChart?.historyChart
+        )
+    }
+
+    private fun showDischargingChart() {
+        showHistoryChart(
+            BatteryHistoryHolder.currentLineDataSet,
+            BatteryHistoryHolder.currentData,
+            requireContext(),
+            binding?.currentHistoryChart?.historyChart
+        )
+    }
+
+    private fun setChartColor() {
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+
+        val typedValue1 = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.textColor, typedValue1, true)
+
+        val chargingColor = requireActivity().getColor(R.color.green)
+
+        binding?.apply {
+            if (getIsCharging()) {
+                changeChartColor(
+                    currentHistoryChart.historyChart,
+                    ChargingHistoryHolder.currentLineDataSet,
+                    chargingColor
+                )
+                currentHistoryChart.tvChartValue.setTextColor(chargingColor)
+            } else {
+                changeChartColor(
+                    currentHistoryChart.historyChart,
+                    BatteryHistoryHolder.currentLineDataSet,
+                    typedValue.data
+                )
+                currentHistoryChart.tvChartValue.setTextColor(typedValue1.data)
+            }
+        }
     }
 
     override fun onResume() {

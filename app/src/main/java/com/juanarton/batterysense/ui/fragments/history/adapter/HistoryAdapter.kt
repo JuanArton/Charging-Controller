@@ -11,8 +11,12 @@ class HistoryAdapter (fragmentActivity: FragmentActivity) : FragmentStateAdapter
     override fun getItemCount(): Int = 3
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> CurrentHistoryFragment()
-            1 -> TempHistoryFragment()
+            0 -> {
+                CurrentHistoryFragment()
+            }
+            1 -> {
+                TempHistoryFragment()
+            }
             else -> {
                 PowerHistoryFragment()
             }

@@ -1,20 +1,29 @@
 package com.juanarton.batterysense.ui.fragments.dashboard
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.juanarton.batterysense.R
+import com.juanarton.batterysense.broadcastreceiver.PowerStateReceiver
 import com.juanarton.batterysense.databinding.FragmentNewDashboardBinding
+import com.juanarton.batterysense.ui.fragments.history.HistoryUtil
 import com.juanarton.batterysense.ui.fragments.history.adapter.HistoryAdapter
-import com.juanarton.batterysense.ui.fragments.onboarding.adapter.OnboardingAdapter
 import com.juanarton.batterysense.utils.BatteryDataHolder.getLastChargeLevel
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
+import com.juanarton.batterysense.utils.BatteryHistoryHolder
+import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import com.juanarton.batterysense.utils.FragmentUtil
 import com.juanarton.batterysense.utils.FragmentUtil.changeViewHeight
 import com.juanarton.batterysense.utils.FragmentUtil.rescaleNumber
@@ -26,6 +35,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
+import kotlin.math.abs
 import kotlin.random.Random
 
 @AndroidEntryPoint
@@ -34,7 +45,9 @@ class DashboardFragment : Fragment() {
     private var _binding: FragmentNewDashboardBinding? = null
     private val binding get() =  _binding
 
-    private val dashboardViewModel: DashboardViewModel by viewModels()
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
+
+    private val dashboardReceiver = DashboardReceiver()
 
     private var bubbleJob: Job? = null
 
@@ -48,6 +61,11 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val powerConnectedIntentFilter = IntentFilter()
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
+        requireContext().registerReceiver(dashboardReceiver, powerConnectedIntentFilter)
 
         val batteryCapacity = dashboardViewModel.getCapacity()
 
@@ -64,6 +82,22 @@ class DashboardFragment : Fragment() {
 
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
             binding?.apply {
+
+                val decimalFormat = DecimalFormat("#.##")
+                val power = decimalFormat.format(it.power)
+
+                when (batteryHistoryPanel.vpHistoryChart.currentItem) {
+                    0 -> batteryInfoPanel.tvBatteryInfo.text = buildString {
+                        append("${it.temperature}${getString(R.string.degree_symbol)} · $power${getString(R.string.wattage)}")
+                    }
+                    1 -> batteryInfoPanel.tvBatteryInfo.text = buildString {
+                        append("${abs(it.currentNow)}${getString(R.string.ma)} · $power${getString(R.string.wattage)}")
+                    }
+                    2 -> batteryInfoPanel.tvBatteryInfo.text = buildString {
+                        append("${it.currentNow}${getString(R.string.ma)} · ${it.temperature}${getString(R.string.degree_symbol)}")
+                    }
+                }
+
                 changeViewHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
                 changeViewHeight(batteryInfoPanel.bubbleEmitter, rescaleNumber(it.level))
 
@@ -137,5 +171,19 @@ class DashboardFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        requireContext().unregisterReceiver(dashboardReceiver)
+    }
+
+    inner class DashboardReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when(intent.action) {
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    dashboardViewModel._powerStateEvent.value = false
+                }
+                Intent.ACTION_POWER_CONNECTED -> {
+                    dashboardViewModel._powerStateEvent.value = true
+                }
+            }
+        }
     }
 }

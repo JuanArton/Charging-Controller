@@ -27,6 +27,9 @@ class DashboardViewModel @Inject constructor(
     private var scheduledExecutorService: ScheduledExecutorService? = null
     private var isMonitoring = false
 
+    val _powerStateEvent =  MutableLiveData<Boolean>()
+    val powerStateEvent = _powerStateEvent
+
     fun startBatteryMonitoring() {
         if (!isMonitoring) {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
