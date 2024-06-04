@@ -12,7 +12,6 @@ import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentTempHistoryBinding
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
-import com.juanarton.batterysense.utils.ChargingDataHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import kotlinx.coroutines.launch
@@ -42,7 +41,7 @@ class TempHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCurrentMonitoring()
+        startTempMonitoring()
 
         if (getIsCharging()) {
             showChargingChart()
@@ -64,7 +63,7 @@ class TempHistoryFragment : Fragment() {
         }
     }
 
-    private fun startCurrentMonitoring() {
+    private fun startTempMonitoring() {
         if (!isMonitoring) {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
             scheduledExecutorService?.scheduleWithFixedDelay(
@@ -157,7 +156,7 @@ class TempHistoryFragment : Fragment() {
         }
     }
 
-    private fun stopCurrentMonitoring() {
+    private fun stopTempMonitoring() {
         scheduledExecutorService?.shutdown()
         scheduledExecutorService = null
         isMonitoring = false
@@ -165,17 +164,17 @@ class TempHistoryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        startCurrentMonitoring()
+        startTempMonitoring()
     }
 
     override fun onPause() {
         super.onPause()
-        stopCurrentMonitoring()
+        stopTempMonitoring()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        stopCurrentMonitoring()
+        stopTempMonitoring()
         _binding = null
     }
 }

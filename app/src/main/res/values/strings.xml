@@ -130,4 +130,16 @@
     <string name="battery_used">Battery Used</string>
     <string name="screen_off_icon_desc">Screen off icon</string>
     <string name="battery_used_icon_desc">Battery used icon</string>
+    <string name="average_usage">Average Usage</string>
+    <string name="speed">Speed</string>
+    <string name="active">Active</string>
+    <string name="idle">Idle</string>
+    <string name="statistic">Statistic</string>
+    <string name="usage">Usage</string>
+    <string name="awake_icon">Awake icon</string>
+    <string name="sleep_icon">Sleep Icon</string>
+    <string name="extra">Extra</string>
+    <string name="calculated_from_screen_off_time">Calculated from screen off time</string>
+    <string name="charging">Charging</string>
+    <string name="duration">Duration</string>
 </resources>

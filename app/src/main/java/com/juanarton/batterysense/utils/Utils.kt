@@ -21,7 +21,6 @@ object Utils {
     fun formatDeepSleepAwake(value: Double): String {
         return buildString {
             append("${String.format("%.1f", value)}% ")
-            append("of screen off time")
         }
     }
 

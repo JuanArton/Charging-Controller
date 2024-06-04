@@ -1,10 +1,7 @@
 package com.juanarton.batterysense.ui.fragments.onboarding
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -19,10 +16,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.batterysense.R
-import com.juanarton.batterysense.batterymonitorservice.Action
-import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
-import com.juanarton.batterysense.batterymonitorservice.ServiceState
-import com.juanarton.batterysense.batterymonitorservice.getServiceState
 import com.juanarton.batterysense.databinding.FragmentIntroductionPageBinding
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import kotlinx.coroutines.delay

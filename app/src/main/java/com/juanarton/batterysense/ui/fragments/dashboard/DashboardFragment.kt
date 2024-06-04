@@ -10,6 +10,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,14 +20,31 @@ import com.juanarton.batterysense.broadcastreceiver.PowerStateReceiver
 import com.juanarton.batterysense.databinding.FragmentNewDashboardBinding
 import com.juanarton.batterysense.ui.fragments.history.HistoryUtil
 import com.juanarton.batterysense.ui.fragments.history.adapter.HistoryAdapter
+import com.juanarton.batterysense.utils.BatteryDataHolder
+import com.juanarton.batterysense.utils.BatteryDataHolder.getAwakeTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.getDeepSleepTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getLastChargeLevel
+import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrain
+import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrain
+import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
+import com.juanarton.batterysense.utils.BatteryDataHolder.setDeepSleepTime
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingPerHr
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import com.juanarton.batterysense.utils.FragmentUtil
 import com.juanarton.batterysense.utils.FragmentUtil.changeViewHeight
 import com.juanarton.batterysense.utils.FragmentUtil.rescaleNumber
+import com.juanarton.batterysense.utils.Utils
+import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
+import com.juanarton.batterysense.utils.Utils.calculateDeepSleepAwakeSpeed
+import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
+import com.juanarton.batterysense.utils.Utils.formatDeepSleepAwake
+import com.juanarton.batterysense.utils.Utils.formatUsagePerHour
 import com.juanarton.core.utils.Utils.formatTime
 import com.juanarton.core.utils.Utils.mapBatteryStatus
 import dagger.hilt.android.AndroidEntryPoint
@@ -112,11 +130,54 @@ class DashboardFragment : Fragment() {
 
                 batteryInfoPanel.tvScreenOnValue.text = formatTime(getScreenOnTime())
                 batteryInfoPanel.tvScreenOffValue.text = formatTime(getScreenOffTime())
-                batteryInfoPanel.tvBatteryUsedValue.text = buildString { append("${getLastChargeLevel() - it.level}%") }
+
+                batteryStatisticPanel.tvScreenOnValueUsage.text = buildString {
+                    append("${getScreenOnDrain()}%")
+                }
+                batteryStatisticPanel.tvScreenOffValueUsage.text = buildString {
+                    append("${getScreenOffDrain()}%")
+                }
+
+                val screenOffDrainPerHrTmp = if (getScreenOffDrainPerHr().isNaN()) 0.0 else getScreenOffDrainPerHr()
+                val screenOnDrainPerHrTmp = if (getScreenOnDrainPerHr().isNaN()) 0.0 else getScreenOnDrainPerHr()
+                val deepSleepPercentage =
+                    calculateDeepSleepPercentage(
+                        getDeepSleepTime().toDouble(),
+                        getScreenOffTime().toDouble()
+                    )
+                val cpuAwakePercentage =
+                    calculateCpuAwakePercentage(
+                        deepSleepPercentage
+                    )
+
+                batteryExtraPanel.tvAwakeValue.text = formatDeepSleepAwake(cpuAwakePercentage)
+                batteryExtraPanel.tvSleepValue.text = formatDeepSleepAwake(deepSleepPercentage)
+
+                batteryExtraPanel.tvAwakeDuration.text = formatTime(getAwakeTime())
+                batteryExtraPanel.tvSleepDuration.text = formatTime(getDeepSleepTime())
+
+                batteryExtraPanel.tvAwakeValueSpeed.text = formatUsagePerHour(
+                    calculateDeepSleepAwakeSpeed(cpuAwakePercentage, screenOffDrainPerHrTmp)
+                )
+                batteryExtraPanel.tvSleepValueSpeed.text = formatUsagePerHour(
+                    calculateDeepSleepAwakeSpeed(deepSleepPercentage, screenOffDrainPerHrTmp)
+                )
 
                 if (it.status == 1 || it.status == 3 || it.status == 4) {
                     batteryInfoPanel.tvChargingType.visibility = View.GONE
                     stopEmittingBubbles()
+
+                    setBatteryAnimationColor(typedValue.data)
+
+                    batteryInfoPanel.tvBatteryUsedValue.text = buildString {
+                        append("${dashboardViewModel.lastUnplugged().second - it.level}%")
+                    }
+
+                    setActiveIdleVisibility(View.VISIBLE)
+                    setChargingSpeedVisibility(View.GONE)
+
+                    batteryStatisticPanel.tvActiveValue.text = formatUsagePerHour(screenOnDrainPerHrTmp)
+                    batteryStatisticPanel.tvIdleValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
                 } else {
                     batteryInfoPanel.tvChargingType.visibility = View.VISIBLE
                     batteryInfoPanel.tvChargingType.text = when {
@@ -124,6 +185,18 @@ class DashboardFragment : Fragment() {
                         it.usbCharge -> getString(R.string.usb)
                         else -> getString(R.string.battery)
                     }
+
+                    setBatteryAnimationColor(getColor(requireContext(), R.color.green))
+
+                    batteryInfoPanel.tvBatteryUsedValue.text = buildString {
+                        append("${getChargedLevel()}%")
+                    }
+
+                    setActiveIdleVisibility(View.GONE)
+                    setChargingSpeedVisibility(View.VISIBLE)
+
+                    batteryStatisticPanel.tvChargingValue.text = formatUsagePerHour(getChargingPerHr())
+                    batteryStatisticPanel.tvChargingDurationValue.text = formatTime(getChargingDuration())
                     startEmittingBubbles(typedValue)
                 }
             }
@@ -150,6 +223,30 @@ class DashboardFragment : Fragment() {
     private fun stopEmittingBubbles() {
         bubbleJob?.cancel()
         bubbleJob = null
+    }
+
+    private fun setActiveIdleVisibility(state: Int) {
+        binding?.batteryStatisticPanel?.apply {
+            ivActive.visibility = state
+            ivIdle.visibility = state
+            linearLayout4.visibility = state
+            linearLayout5.visibility = state
+        }
+    }
+
+    private fun setChargingSpeedVisibility(state: Int) {
+        binding?.batteryStatisticPanel?.apply {
+            ivCharging.visibility = state
+            linearLayout6.visibility = state
+            linearLayout7.visibility = state
+        }
+    }
+
+    private fun setBatteryAnimationColor(color: Int) {
+        binding?.batteryInfoPanel?.waveAnimation?.closeColor = color
+        binding?.batteryInfoPanel?.waveAnimation?.startColor = color
+
+        binding?.batteryInfoPanel?.bubbleEmitter?.setColors(color)
     }
 
     override fun onPause() {

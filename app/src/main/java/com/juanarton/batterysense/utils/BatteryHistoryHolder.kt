@@ -21,13 +21,6 @@ object BatteryHistoryHolder {
     private val powerILineDataSet = mutableListOf<ILineDataSet>(powerLineDataSet)
     val powerData = LineData(powerILineDataSet)
 
-    var dischargingCurrentMin = 0
-    var dischargingCurrentMax = 0
-    var dischargingTempMin = 0
-    var dischargingTempMax = 0
-    var dischargingPowerMin = 0
-    var dischargingPowerMax = 0
-
     fun addData(current: Entry, temperature: Entry, power: Entry) {
         batteryCurrent.forEachIndexed { _, it ->
             it.x -= 1

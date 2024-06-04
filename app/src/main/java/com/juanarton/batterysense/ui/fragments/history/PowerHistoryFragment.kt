@@ -40,7 +40,7 @@ class PowerHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCurrentMonitoring()
+        startPowerMonitoring()
 
         if (getIsCharging()) {
             showChargingChart()
@@ -62,7 +62,7 @@ class PowerHistoryFragment : Fragment() {
         }
     }
 
-    private fun startCurrentMonitoring() {
+    private fun startPowerMonitoring() {
         if (!isMonitoring) {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
             scheduledExecutorService?.scheduleWithFixedDelay(
@@ -109,7 +109,7 @@ class PowerHistoryFragment : Fragment() {
         }
     }
 
-    private fun stopCurrentMonitoring() {
+    private fun stopPowerMonitoring() {
         scheduledExecutorService?.shutdown()
         scheduledExecutorService = null
         isMonitoring = false
@@ -163,17 +163,17 @@ class PowerHistoryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        startCurrentMonitoring()
+        startPowerMonitoring()
     }
 
     override fun onPause() {
         super.onPause()
-        stopCurrentMonitoring()
+        stopPowerMonitoring()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        stopCurrentMonitoring()
+        stopPowerMonitoring()
         _binding = null
     }
 }
