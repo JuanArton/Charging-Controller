@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/charging"
-        android:icon="@drawable/baseline_battery_charging_full_24"
+        android:id="@+id/dashboard"
+        android:icon="@drawable/baseline_dashboard_24"
         android:title="@string/charging"/>
-
-    <item
-        android:id="@+id/discharging"
-        android:icon="@drawable/sharp_battery_change_24"
-        android:title="@string/discharging"/>
 
     <item
         android:id="@+id/alarm"

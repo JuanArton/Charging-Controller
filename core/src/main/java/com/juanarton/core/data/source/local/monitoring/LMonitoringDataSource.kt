@@ -1,7 +1,6 @@
 package com.juanarton.core.data.source.local.monitoring
 
 import android.content.Context
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo

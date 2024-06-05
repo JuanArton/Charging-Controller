@@ -1,11 +1,8 @@
 package com.juanarton.batterysense.ui.activity.main
 
 import android.Manifest
-import android.content.BroadcastReceiver
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -29,9 +26,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.fondesa.kpermissions.allDenied
 import com.fondesa.kpermissions.coroutines.sendSuspend
 import com.fondesa.kpermissions.extension.permissionsBuilder
-import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.juanarton.batterysense.BuildConfig
-import com.juanarton.batterysense.ui.fragments.dashboard.DashboardFragment
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.Action
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
@@ -41,12 +36,10 @@ import com.juanarton.batterysense.databinding.ActivityMainBinding
 import com.juanarton.batterysense.ui.activity.about.AboutActivity
 import com.juanarton.batterysense.ui.activity.setting.SettingsActivity
 import com.juanarton.batterysense.ui.fragments.alarm.AlarmFragment
-import com.juanarton.batterysense.ui.fragments.charging.ChargingFragment
-import com.juanarton.batterysense.ui.fragments.discharging.DischargingFragment
+import com.juanarton.batterysense.ui.fragments.dashboard.DashboardFragment
+import com.juanarton.batterysense.ui.fragments.history.HistoryFragment
 import com.juanarton.batterysense.ui.fragments.onboarding.MainOnboardingFragment
 import com.juanarton.batterysense.ui.fragments.quicksetting.QuickSettingFragment
-import com.juanarton.batterysense.utils.FragmentUtil.isEmitting
-import com.juanarton.core.utils.BatteryUtils.getChargingStatus
 import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
@@ -117,17 +110,7 @@ class MainActivity : AppCompatActivity() {
 
             registerStickyReceiver(this)
 
-            val isCharging = getChargingStatus()
-            if (isCharging != 1 && isCharging != 3) {
-                val title = getString(com.juanarton.core.R.string.charging)
-                fragmentBuilder(ChargingFragment(), R.id.fragmentHolder, "Charging", title)
-                binding?.bottomNavigationBar?.selectedItemId = R.id.charging
-            }
-            else {
-                val title = getString(com.juanarton.core.R.string.discharging)
-                fragmentBuilder(DischargingFragment(), R.id.fragmentHolder, "Discharging", title)
-                binding?.bottomNavigationBar?.selectedItemId = R.id.discharging
-            }
+            fragmentBuilder(DashboardFragment(), R.id.fragmentHolder, "Charging", getString(R.string.dashboard))
 
             if (!Autostart.getSafeState(this)) {
                 showAutostartDialog()
@@ -142,14 +125,9 @@ class MainActivity : AppCompatActivity() {
 
                 bottomNavigationBar.setOnItemSelectedListener { menuItem ->
                     when (menuItem.itemId) {
-                        R.id.charging -> {
-                            val title = getString(com.juanarton.core.R.string.charging)
-                            fragmentBuilder(ChargingFragment(), holder, "Charging", title)
-                            true
-                        }
-                        R.id.discharging -> {
-                            val title = getString(com.juanarton.core.R.string.discharging)
-                            fragmentBuilder(DischargingFragment(), holder, "Discharging", title)
+                        R.id.dashboard -> {
+                            val title = getString(R.string.dashboard)
+                            fragmentBuilder(DashboardFragment(), holder, "Dashboard", title)
                             true
                         }
                         R.id.quickSetting -> {
@@ -164,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         R.id.history -> {
                             val title = getString(R.string.history)
-                            fragmentBuilder(DashboardFragment(), holder, "History", title)
+                            fragmentBuilder(HistoryFragment(), holder, "History", title)
                             true
                         }
                         else -> false

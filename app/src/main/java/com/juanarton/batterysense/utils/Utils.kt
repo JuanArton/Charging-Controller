@@ -1,9 +1,13 @@
 package com.juanarton.batterysense.utils
 
+import java.util.Locale
+
 object Utils {
     fun formatUsagePerHour(value1: Double): String {
         return buildString {
-            append(String.format("%.1f", value1))
+            append(
+                String.format(Locale.getDefault(), "%.1f", value1)
+            )
             append("%/h")
         }
     }
@@ -20,7 +24,9 @@ object Utils {
 
     fun formatDeepSleepAwake(value: Double): String {
         return buildString {
-            append("${String.format("%.1f", value)}% ")
+            append(
+                "${String.format(Locale.getDefault(), "%.1f", value)}% "
+            )
         }
     }
 

@@ -1,5 +1,6 @@
 package com.juanarton.batterysense.ui.fragments.history
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentTempHistoryBinding
+import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
@@ -61,6 +63,10 @@ class TempHistoryFragment : Fragment() {
                 setChartColor()
             }
         }
+
+        binding?.tempHistoryChart?.historyClickableLayer?.setOnClickListener {
+            startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
+        }
     }
 
     private fun startTempMonitoring() {
@@ -84,6 +90,13 @@ class TempHistoryFragment : Fragment() {
                                             getString(R.string.degree_symbol),
                                             requireContext()
                                         )
+
+                                    tempHistoryChart.tvMinValue.text = buildString {
+                                        append("${batteryTemperature.minByOrNull { it.y }?.y?.toInt()} ${getString(R.string.degree_symbol)}")
+                                    }
+                                    tempHistoryChart.tvMaxValue.text = buildString {
+                                        append("${batteryTemperature.maxByOrNull { it.y }?.y?.toInt()} ${getString(R.string.degree_symbol)}")
+                                    }
                                 }
                             } else {
                                 BatteryHistoryHolder.temperatureData.notifyDataChanged()
@@ -99,6 +112,13 @@ class TempHistoryFragment : Fragment() {
                                             getString(R.string.degree_symbol),
                                             requireContext()
                                         )
+
+                                    tempHistoryChart.tvMinValue.text = buildString {
+                                        append("${batteryTemperature.minByOrNull { it.y }?.y?.toInt()} ${getString(R.string.degree_symbol)}")
+                                    }
+                                    tempHistoryChart.tvMaxValue.text = buildString {
+                                        append("${batteryTemperature.maxByOrNull { it.y }?.y?.toInt()} ${getString(R.string.degree_symbol)}")
+                                    }
                                 }
                             }
                         }
@@ -145,6 +165,8 @@ class TempHistoryFragment : Fragment() {
                     chargingColor
                 )
                 tempHistoryChart.tvChartValue.setTextColor(chargingColor)
+                tempHistoryChart.tvMinValue.setTextColor(chargingColor)
+                tempHistoryChart.tvMaxValue.setTextColor(chargingColor)
             } else {
                 HistoryUtil.changeChartColor(
                     tempHistoryChart.historyChart,
@@ -152,6 +174,8 @@ class TempHistoryFragment : Fragment() {
                     typedValue.data
                 )
                 tempHistoryChart.tvChartValue.setTextColor(typedValue1.data)
+                tempHistoryChart.tvMinValue.setTextColor(typedValue1.data)
+                tempHistoryChart.tvMaxValue.setTextColor(typedValue1.data)
             }
         }
     }

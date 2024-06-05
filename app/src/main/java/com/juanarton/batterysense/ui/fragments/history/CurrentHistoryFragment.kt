@@ -1,6 +1,8 @@
 package com.juanarton.batterysense.ui.fragments.history
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentCurrentHistoryBinding
+import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
 import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.changeChartColor
 import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.createStringValue
@@ -65,6 +68,10 @@ class CurrentHistoryFragment : Fragment() {
                 setChartColor()
             }
         }
+
+        binding?.currentHistoryChart?.historyClickableLayer?.setOnClickListener {
+            startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
+        }
     }
 
     private fun startCurrentMonitoring() {
@@ -88,6 +95,13 @@ class CurrentHistoryFragment : Fragment() {
                                             getString(R.string.ma),
                                             requireContext()
                                         )
+
+                                    currentHistoryChart.tvMinValue.text = buildString {
+                                        append("${batteryCurrent.minByOrNull { it.y }?.y?.toInt()} ${getString(R.string.ma)}")
+                                    }
+                                    currentHistoryChart.tvMaxValue.text = buildString {
+                                        append("${batteryCurrent.maxByOrNull { it.y }?.y?.toInt()} ${getString(R.string.ma)}")
+                                    }
                                 }
                             } else {
                                 BatteryHistoryHolder.currentData.notifyDataChanged()
@@ -103,6 +117,13 @@ class CurrentHistoryFragment : Fragment() {
                                             getString(R.string.ma),
                                             requireContext()
                                         )
+
+                                    currentHistoryChart.tvMinValue.text = buildString {
+                                        append("${batteryCurrent.minByOrNull { it.y }?.y?.toInt()} ${getString(R.string.ma)}")
+                                    }
+                                    currentHistoryChart.tvMaxValue.text = buildString {
+                                        append("${batteryCurrent.maxByOrNull { it.y }?.y?.toInt()} ${getString(R.string.ma)}")
+                                    }
                                 }
                             }
                         }
@@ -155,6 +176,8 @@ class CurrentHistoryFragment : Fragment() {
                     chargingColor
                 )
                 currentHistoryChart.tvChartValue.setTextColor(chargingColor)
+                currentHistoryChart.tvMinValue.setTextColor(chargingColor)
+                currentHistoryChart.tvMaxValue.setTextColor(chargingColor)
             } else {
                 changeChartColor(
                     currentHistoryChart.historyChart,
@@ -162,6 +185,8 @@ class CurrentHistoryFragment : Fragment() {
                     typedValue.data
                 )
                 currentHistoryChart.tvChartValue.setTextColor(typedValue1.data)
+                currentHistoryChart.tvMinValue.setTextColor(typedValue1.data)
+                currentHistoryChart.tvMaxValue.setTextColor(typedValue1.data)
             }
         }
     }

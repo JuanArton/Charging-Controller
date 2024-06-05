@@ -7,6 +7,7 @@ import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.utils.Utils
 import com.juanarton.core.utils.Utils.formatTime
+import java.util.Locale
 import kotlin.math.abs
 
 object ServiceUtil {
@@ -37,18 +38,39 @@ object ServiceUtil {
             val screenOnDrainPerHrTmp = if (screenOnDrainPerHr.isNaN()) 0.0 else screenOnDrainPerHr
 
             buildString {
-                append("Power: ${String.format("%.2f", abs(batteryInfo.power))}W\n")
+                append("Power: ${String.format(
+                    Locale.getDefault(), "%.2f", abs(batteryInfo.power)
+                )}W\n")
                 append("Screen on: ${formatTime(screenOnTime)}  ·  $screenOnDrain%\n")
                 append("Screen off: ${formatTime(screenOffTime)}  ·  $screenOffDrain%\n")
-                append("Deep sleep: ${formatTime(deepSleep)}  ·  ${String.format("%.1f", deepSleepPercentage)}%\n")
-                append("CPU awake: ${formatTime(cpuAwake)}  ·  ${String.format("%.1f", cpuAwakePercentage)}%\n")
-                append("Active drain: ${String.format("%.1f", screenOnDrainPerHrTmp)}% /h · Idle drain: ${String.format("%.1f", screenOffDrainPerHrTmp)}% /h")
+
+                append("Deep sleep: ${formatTime(deepSleep)}  ·  ${String.format(
+                    Locale.getDefault(), "%.1f", deepSleepPercentage
+                )}%\n")
+
+                append("CPU awake: ${formatTime(cpuAwake)}  ·  ${
+                    String.format(Locale.getDefault(), "%.1f", cpuAwakePercentage)
+                }%\n")
+
+                append(
+                    "Active drain: ${
+                        String.format(Locale.getDefault(), "%.1f", screenOnDrainPerHrTmp)
+                    }% /h · Idle drain: ${
+                        String.format(Locale.getDefault(), "%.1f", screenOffDrainPerHrTmp)
+                    }% /h")
             }
         } else {
             buildString {
-                append("Power: ${String.format("%.2f", abs(batteryInfo.power))}W\n")
+                append("Power: ${
+                    String.format(Locale.getDefault(), "%.2f", abs(batteryInfo.power))
+                }W\n")
+
                 append("Charged for: $chargedLevel%\n")
-                append("Charging speed: ${String.format("%.1f", chargingPerHr)}% /h\n")
+
+                append("Charging speed: ${
+                    String.format(Locale.getDefault(), "%.1f", chargingPerHr)
+                }% /h\n")
+
                 append("Charging duration: ${formatTime(chargingDuration)}")
             }
         }

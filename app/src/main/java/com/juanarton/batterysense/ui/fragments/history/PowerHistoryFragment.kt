@@ -1,5 +1,6 @@
 package com.juanarton.batterysense.ui.fragments.history
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -10,11 +11,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentPowerHistoryBinding
+import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import kotlinx.coroutines.launch
+import java.util.Locale
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -60,6 +63,10 @@ class PowerHistoryFragment : Fragment() {
                 setChartColor()
             }
         }
+
+        binding?.powerHistoryChart?.historyClickableLayer?.setOnClickListener {
+            startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
+        }
     }
 
     private fun startPowerMonitoring() {
@@ -79,10 +86,19 @@ class PowerHistoryFragment : Fragment() {
                                 if (batteryPower.isNotEmpty()) {
                                     powerHistoryChart.tvChartValue.text =
                                         HistoryUtil.createStringValue(
-                                            String.format("%.1f", batteryPower[batteryPower.lastIndex].y),
+                                            String.format(
+                                                Locale.getDefault(), "%.1f", batteryPower[batteryPower.lastIndex].y
+                                            ),
                                             getString(R.string.wattage),
                                             requireContext()
                                         )
+
+                                    powerHistoryChart.tvMinValue.text = buildString {
+                                        append("${batteryPower.minByOrNull { it.y }?.y?.toInt()} ${getString(R.string.wattage)}")
+                                    }
+                                    powerHistoryChart.tvMaxValue.text = buildString {
+                                        append("${batteryPower.maxByOrNull { it.y }?.y?.toInt()} ${getString(R.string.wattage)}")
+                                    }
                                 }
                             } else {
                                 BatteryHistoryHolder.powerData.notifyDataChanged()
@@ -94,10 +110,19 @@ class PowerHistoryFragment : Fragment() {
                                 if (batteryPower.isNotEmpty()) {
                                     powerHistoryChart.tvChartValue.text =
                                         HistoryUtil.createStringValue(
-                                            String.format("%.1f", batteryPower[batteryPower.lastIndex].y),
+                                            String.format(
+                                                Locale.getDefault(), "%.1f", batteryPower[batteryPower.lastIndex].y
+                                            ),
                                             getString(R.string.wattage),
                                             requireContext()
                                         )
+
+                                    powerHistoryChart.tvMinValue.text = buildString {
+                                        append("${batteryPower.minByOrNull { it.y }?.y?.toInt()} ${getString(R.string.wattage)}")
+                                    }
+                                    powerHistoryChart.tvMaxValue.text = buildString {
+                                        append("${batteryPower.maxByOrNull { it.y }?.y?.toInt()} ${getString(R.string.wattage)}")
+                                    }
                                 }
                             }
                         }
@@ -150,6 +175,8 @@ class PowerHistoryFragment : Fragment() {
                     chargingColor
                 )
                 powerHistoryChart.tvChartValue.setTextColor(chargingColor)
+                powerHistoryChart.tvMinValue.setTextColor(chargingColor)
+                powerHistoryChart.tvMaxValue.setTextColor(chargingColor)
             } else {
                 HistoryUtil.changeChartColor(
                     powerHistoryChart.historyChart,
@@ -157,6 +184,8 @@ class PowerHistoryFragment : Fragment() {
                     typedValue.data
                 )
                 powerHistoryChart.tvChartValue.setTextColor(typedValue1.data)
+                powerHistoryChart.tvMinValue.setTextColor(typedValue1.data)
+                powerHistoryChart.tvMaxValue.setTextColor(typedValue1.data)
             }
         }
     }

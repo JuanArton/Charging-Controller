@@ -7,7 +7,6 @@
     tools:context=".ui.fragments.batterycondition.BatteryConditionFragment">
 
     <com.juanarton.arcprogressbar.ArcProgressBar
-        android:id="@+id/apbBqatteryHealth"
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:layout_constraintEnd_toEndOf="parent"

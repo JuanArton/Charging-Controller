@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">BatterySense</string>
     <string name="status">Status</string>
-    <string name="root_access_denied">Root access required</string>
     <string name="quick_setting">Quick Setting</string>
     <string name="charging_current">Charging Current</string>
     <string name="current_value">5000</string>
@@ -11,8 +10,6 @@
     <string name="triggered_by_charging_limit">Triggered by charging limit</string>
     <string name="charging_limit">Charging Limit</string>
     <string name="maxCapacityValue">80</string>
-    <string name="type">Type</string>
-    <string name="voltage">Voltage</string>
     <string name="ac">AC</string>
     <string name="usb">USB</string>
     <string name="volt_unit">V</string>
@@ -25,15 +22,8 @@
     <string name="battery">Battery</string>
     <string name="degree_symbol">°C</string>
     <string name="temperature">Temperature</string>
-    <string name="charging_status_icon">Charging status icon</string>
-    <string name="charging_voltage_icon">Charging voltage icon</string>
-    <string name="charging_type_icon">Charging type icon</string>
-    <string name="charging_temperature_icon">Charging temperature icon</string>
-    <string name="battery_power_icon">Battery power icon</string>
     <string name="temp">Temp</string>
     <string name="current">Current</string>
-    <string name="min">Min</string>
-    <string name="max">Max</string>
     <string name="text">Text</string>
     <string name="battery_alarm">Battery Alarm</string>
     <string name="battery_level">Battery Level</string>
@@ -53,15 +43,8 @@
     <string name="charging_limit_desc">Enable app to automatically enable idle mode to stop charging when the specified battery level reached.</string>
     <string name="screen_on">Screen On</string>
     <string name="screen_off">Screen Off</string>
-    <string name="usage_summary">Usage Summary</string>
-    <string name="total">Total</string>
-    <string name="active_drain_hour">Active Drain</string>
     <string name="awake">Awake</string>
     <string name="deep_sleep">Deep sleep</string>
-    <string name="idle_drain_hour">Idle Drain</string>
-    <string name="uptime">Uptime</string>
-    <string name="cycle_count">Cycle Count</string>
-    <string name="see_full_battery_history">See full battery history</string>
     <string name="history">History</string>
 
     <string name="app_logo">App Logo</string>
@@ -81,22 +64,17 @@
     <string name="remove_charging_message">Please disconnect charger before calibrating!</string>
     <string name="one_time_notification">One-Time Notification</string>
     <string name="one_time_notif_desc">Set app to show notification only once when the specified threshold reached.</string>
-    <string name="module_not_installed">Magisk module not installed! Please download and install the module from the link on About page.</string>
     <string name="about">About</string>
     <string name="made_by_juan_arton">Made with ❤️ by Juan Arton</string>
     <string name="app_desc">Initially, I developed this application with the purpose of modifying on the fly the Magisk fast charging module by FCGreen, allowing easier adjustment of charging current. However, given my orientation of android modding is for the best possible battery life, i need an application to monitor battery usage. So, I made the decision to develop BatterySense further.</string>
     <string name="see_me">See Me!</string>
     <string name="download_magisk_module">Download Magisk Module</string>
+    <string name="repository_button">Open repository</string>
     <string name="repository">Repository</string>
     <string name="qs_dialog_message">This feature is only tested on Qualcomm device (Redmi Note 9 Pro). This might/not work on your Qualcomm device.\n\nDO WITH YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANYTHING THAT HAPPENS TO YOUR DEVICE, SUCH AS DAMAGE, ETC.</string>
     <string name="library_used">Library Used</string>
     <string name="see_more_button">See more button</string>
-    <string name="battery_info">Battery Info</string>
     <string name="charged_for">Charged For</string>
-    <string name="charging_speed">Charging Speed</string>
-    <string name="charging_duration">Charging Duration</string>
-    <string name="charging_summary">Charging Summary</string>
-    <string name="discharging_speed">Discharging Speed</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="system">System</string>
@@ -107,7 +85,6 @@
     <string name="root_granted_module_installed">Root granted, module installed</string>
     <string name="root_denied_module_installed">Root denied, module installed</string>
     <string name="root_granted_module_not_installed">Root granted, module not installed</string>
-    <string name="root_denied">Root denied</string>
     <string name="not_rooted">Your device not rooted? this feature need root</string>
     <string name="ok">OK</string>
     <string name="root_module_check_message">Setting changes will have no effect</string>
@@ -123,14 +100,12 @@
     <string name="developer_message">Developer Message :</string>
     <string name="developer_message_value">App may not be updated for some time. Im looking for algorithm to predict battery health :)</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="summary">Summary</string>
     <string name="screen_on_icon_desc">Screen On Icon</string>
     <string name="value">Value</string>
     <string name="battery_used">Battery Used</string>
     <string name="screen_off_icon_desc">Screen off icon</string>
     <string name="battery_used_icon_desc">Battery used icon</string>
-    <string name="average_usage">Average Usage</string>
     <string name="speed">Speed</string>
     <string name="active">Active</string>
     <string name="idle">Idle</string>
@@ -141,5 +116,7 @@
     <string name="extra">Extra</string>
     <string name="calculated_from_screen_off_time">Calculated from screen off time</string>
     <string name="charging">Charging</string>
+    <string name="dashboard">Dashboard</string>
     <string name="duration">Duration</string>
+    <string name="show_full_history">Show full history</string>
 </resources>

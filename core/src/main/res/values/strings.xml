@@ -32,4 +32,6 @@
     <string name="only_android_14_plus">Only android 14+</string>
     <string name="not_available">Not available</string>
     <string name="mah">mah</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
 </resources>

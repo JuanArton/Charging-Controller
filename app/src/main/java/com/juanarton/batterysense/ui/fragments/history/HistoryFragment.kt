@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.Visibility
 import com.juanarton.batterysense.databinding.FragmentHistoryBinding
 import com.juanarton.core.adapter.ChargingHistoryAdapter
 import dagger.hilt.android.AndroidEntryPoint

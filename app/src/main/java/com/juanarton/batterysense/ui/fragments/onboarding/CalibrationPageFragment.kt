@@ -1,15 +1,12 @@
 package com.juanarton.batterysense.ui.fragments.onboarding
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
 import android.text.SpannableString
-import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -17,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat

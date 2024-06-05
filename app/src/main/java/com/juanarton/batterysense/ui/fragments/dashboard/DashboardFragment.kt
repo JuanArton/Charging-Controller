@@ -5,41 +5,33 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
-import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.juanarton.batterysense.R
-import com.juanarton.batterysense.broadcastreceiver.PowerStateReceiver
-import com.juanarton.batterysense.databinding.FragmentNewDashboardBinding
-import com.juanarton.batterysense.ui.fragments.history.HistoryUtil
+import com.juanarton.batterysense.databinding.FragmentDashboardBinding
+import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.ui.fragments.history.adapter.HistoryAdapter
-import com.juanarton.batterysense.utils.BatteryDataHolder
 import com.juanarton.batterysense.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getDeepSleepTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.getLastChargeLevel
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.setDeepSleepTime
-import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingPerHr
-import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import com.juanarton.batterysense.utils.FragmentUtil
 import com.juanarton.batterysense.utils.FragmentUtil.changeViewHeight
 import com.juanarton.batterysense.utils.FragmentUtil.rescaleNumber
-import com.juanarton.batterysense.utils.Utils
 import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
@@ -60,7 +52,7 @@ import kotlin.random.Random
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
 
-    private var _binding: FragmentNewDashboardBinding? = null
+    private var _binding: FragmentDashboardBinding? = null
     private val binding get() =  _binding
 
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
@@ -73,7 +65,7 @@ class DashboardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentNewDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -94,13 +86,18 @@ class DashboardFragment : Fragment() {
         val pagerAdapter = HistoryAdapter(requireActivity())
         vpHistoryChart?.adapter = pagerAdapter
 
-        if (vpHistoryChart != null) {
-            binding?.batteryHistoryPanel?.dotsIndicator?.attachTo(vpHistoryChart)
+        val handler = Handler(Looper.getMainLooper())
+
+        val runnable = Runnable {
+            if (vpHistoryChart != null) {
+                binding?.batteryHistoryPanel?.dotsIndicator?.attachTo(vpHistoryChart)
+            }
         }
+        val delayMillis: Long = 1000
+        handler.postDelayed(runnable, delayMillis)
 
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
             binding?.apply {
-
                 val decimalFormat = DecimalFormat("#.##")
                 val power = decimalFormat.format(it.power)
 

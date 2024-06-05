@@ -9,13 +9,8 @@ import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import com.juanarton.core.R
-import com.juanarton.core.data.source.local.appConfig.LAppConfigDataSource
 import com.juanarton.core.utils.Constants.CHARGING_CYCLES_PATH
 import com.topjohnwu.superuser.Shell
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileReader
 import java.io.IOException
 
 object BatteryUtils {

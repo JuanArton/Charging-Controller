@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?android:windowBackground">
+    android:background="?android:windowBackground"
+    tools:ignore="Overdraw">
 
     <TextView
-        android:id="@+id/capacity_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/capacity_dialog"
@@ -24,6 +25,7 @@
         android:textSize="16sp" />
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -32,17 +34,19 @@
 
         <Button
             android:id="@+id/dialog_cancel_button"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:textColor="?attr/colorPrimary"
             android:background="@android:color/transparent"
-            android:layout_gravity="end"/>
+            android:layout_gravity="end" />
 
         <Button
             android:id="@+id/dialog_ok_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="?android:attr/buttonBarButtonStyle"
             android:text="OK"
             android:textColor="?attr/colorPrimary"
             android:background="@android:color/transparent"

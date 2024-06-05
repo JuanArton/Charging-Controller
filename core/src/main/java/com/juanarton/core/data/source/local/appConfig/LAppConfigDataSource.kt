@@ -1,7 +1,6 @@
 package com.juanarton.core.data.source.local.appConfig
 
 import android.content.Context
-import android.util.Log
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import com.juanarton.core.utils.Utils
