@@ -19,7 +19,7 @@ function restartBatteryMonitor() {
 }
 
 function chargingSwitch() {
-    filepath="/sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-00/c440000.qcom,spmi:qcom,pm6150@0:qcom,qpnp-smb5/power_supply/battery/charging_enabled"
+    filepath="/sys/class/power_supply/battery/charging_enabled"
     charging=$(grep 'enableCharging' /data/adb/modules/3C/3C.conf | awk -F '=' '{print $2}' | tr -d ' ')
     chmod 644 $filepath
     echo $charging > $filepath
@@ -31,6 +31,10 @@ function setValue() {
     value=$2
 
     sed -i "s/$config = .*/$config = $value/" $filepath/3C.conf
+}
+
+function changeVersion() {
+    restartBatteryMonitor
 }
 
 # Check the argument and call the appropriate function

@@ -35,6 +35,7 @@
             android:layout_height="match_parent"
             android:nestedScrollingEnabled="true"
             android:overScrollMode="never"
+            android:background="?attr/colorSurface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

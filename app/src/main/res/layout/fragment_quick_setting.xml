@@ -118,7 +118,7 @@
                         android:layout_marginTop="10dp"
                         android:stepSize="500"
                         android:valueFrom="500"
-                        android:valueTo="6000"
+                        android:valueTo="20000"
                         app:thumbHeight="25dp"
                         app:thumbWidth="5dp"
                         app:trackHeight="5dp" />
