@@ -1,8 +1,6 @@
-package com.juanarton.batterysense.ui.fragments.history
+package com.juanarton.batterysense.ui.fragments.dashboard.liveupdate
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +10,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentCurrentHistoryBinding
-import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
-import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.changeChartColor
-import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.createStringValue
-import com.juanarton.batterysense.ui.fragments.history.HistoryUtil.showHistoryChart
+import com.juanarton.batterysense.ui.fragments.history.util.HistoryUtil.changeChartColor
+import com.juanarton.batterysense.ui.fragments.history.util.HistoryUtil.createStringValue
+import com.juanarton.batterysense.ui.fragments.history.util.HistoryUtil.showHistoryChart
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
@@ -67,10 +64,6 @@ class CurrentHistoryFragment : Fragment() {
                 }
                 setChartColor()
             }
-        }
-
-        binding?.currentHistoryChart?.historyClickableLayer?.setOnClickListener {
-            startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
         }
     }
 

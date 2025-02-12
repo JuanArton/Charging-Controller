@@ -72,4 +72,10 @@ interface BatteryMonitoringUseCase {
     fun insertCapacity(capacity: Int)
 
     fun deleteChargingHistory()
+
+    fun getAvailableDays(): Flow<List<String>>
+
+    fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>>
+
+    fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>>
 }

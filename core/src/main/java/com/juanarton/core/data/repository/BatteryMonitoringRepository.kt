@@ -12,6 +12,7 @@ import com.juanarton.core.data.source.local.monitoring.LMonitoringDataSource
 import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryDomainToEntity
 import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryEntityToDomain
 import com.juanarton.core.utils.DomainUtils.mapChargingHistoryDomainToEntity
+import com.juanarton.core.utils.DomainUtils.mapChargingHistoryEntityToDomain
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -95,7 +96,7 @@ class BatteryMonitoringRepository @Inject constructor(
     }
 
     override fun insertHistory(batteryHistory: BatteryHistory) {
-        if (lMonitoringDataSource.getRowCount() >= 21600) {
+        if (lMonitoringDataSource.getRowCount() >= 120960) {
             lMonitoringDataSource.deleteFirst(
                 lMonitoringDataSource.getFirst()
             )
@@ -174,4 +175,26 @@ class BatteryMonitoringRepository @Inject constructor(
     override fun getUsageData(): List<BatteryHistory> {
         return mapBatteryHistoryEntityToDomain(lMonitoringDataSource.getUsageData())
     }
+
+    override fun getAvailableDays(): Flow<List<String>> = flow {
+        emit(
+            lMonitoringDataSource.getAvailableDays()
+        )
+    }.flowOn(Dispatchers.IO)
+
+    override fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>> = flow {
+        emit(
+            mapBatteryHistoryEntityToDomain(
+                lMonitoringDataSource.getDataByDay(selectedDay)
+            )
+        )
+    }.flowOn(Dispatchers.IO)
+
+    override fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>> = flow {
+        emit(
+            mapChargingHistoryEntityToDomain(
+                lMonitoringDataSource.getChargingHistoryByDay(selectedDay)
+            )
+        )
+    }.flowOn(Dispatchers.IO)
 }

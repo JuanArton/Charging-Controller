@@ -55,17 +55,19 @@
                 app:layout_constraintStart_toStartOf="parent"/>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_marginTop="20dp"
                 app:cardBackgroundColor="?attr/cardBackgroundColor"
                 app:cardCornerRadius="20dp"
                 app:contentPadding="20dp"
                 app:layout_constraintTop_toBottomOf="@id/tvGeneral"
-                app:strokeWidth="0dp">
+                app:strokeWidth="0dp"
+                tools:layout_editor_absoluteX="20dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -90,8 +92,8 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/change_app_theme"
                         android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/tvTheme"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvTheme" />
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/cgThemeSelector"
@@ -141,6 +143,73 @@
                     </com.google.android.material.chip.ChipGroup>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="20dp"
+                app:layout_constraintTop_toBottomOf="@id/materialCardView1"
+                app:strokeWidth="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvCurrentUnit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:text="@string/current_unit"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cgUnitSelector"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvCurrentUnit"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipuA"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text="@string/microamp"
+                            app:chipBackgroundColor="@drawable/bg_chip_state_list"
+                            app:chipCornerRadius="20dp"
+                            app:chipStrokeColor="?attr/colorPrimary" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipmA"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text="@string/ma"
+                            app:chipBackgroundColor="@drawable/bg_chip_state_list"
+                            app:chipCornerRadius="20dp"
+                            app:chipStrokeColor="?attr/colorPrimary" />
+
+                    </com.google.android.material.chip.ChipGroup>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

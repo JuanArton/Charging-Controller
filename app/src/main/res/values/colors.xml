@@ -7,10 +7,10 @@
     <color name="brightSurface">#fbf9f6</color>
     <color name="accent" >#0044dd</color>
 
-    <color name="yellow">#ffc857</color>
+    <color name="yellow">#FFAA00</color>
     <color name="blue">#79beee</color>
-    <color name="green">#24d465</color>
-    <color name="red">#ee6055</color>
+    <color name="green">#00FF99</color>
+    <color name="red">#FF3333</color>
 
     //dark theme
     <color name="darkThemeText">#cdcccc</color>

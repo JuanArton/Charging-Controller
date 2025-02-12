@@ -75,4 +75,10 @@ interface IBatteryMonitoringRepository {
     fun deleteChargingHistory()
 
     fun getUsageData(): List<BatteryHistory>
+
+    fun getAvailableDays(): Flow<List<String>>
+
+    fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>>
+
+    fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>>
 }

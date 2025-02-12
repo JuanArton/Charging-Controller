@@ -16,8 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentDashboardBinding
-import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
-import com.juanarton.batterysense.ui.fragments.history.adapter.HistoryAdapter
+import com.juanarton.batterysense.ui.fragments.dashboard.adapter.HistoryAdapter
 import com.juanarton.batterysense.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getDeepSleepTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrain
@@ -90,7 +89,7 @@ class DashboardFragment : Fragment() {
 
         val runnable = Runnable {
             if (vpHistoryChart != null) {
-                binding?.batteryHistoryPanel?.dotsIndicator?.attachTo(vpHistoryChart)
+                binding?.batteryHistoryPanel?.historyDotsIndicator?.attachTo(vpHistoryChart)
             }
         }
         val delayMillis: Long = 1000

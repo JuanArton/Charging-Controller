@@ -10,7 +10,7 @@ import com.juanarton.core.data.source.local.monitoring.room.chargingHistory.enti
 @Database(entities = [
     BatteryHistoryEntity::class,
     ChargingHistoryEntity::class
-], version = 2, exportSchema = false)
+], version = 4, exportSchema = false)
 abstract class HistoryDatabase: RoomDatabase() {
 
     abstract fun batteryHistoryDao(): BatteryHistoryDAO

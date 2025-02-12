@@ -1,5 +1,6 @@
 package com.juanarton.batterysense.utils
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 
@@ -25,5 +26,10 @@ object FragmentUtil {
         val layoutParams: ViewGroup.LayoutParams = view.layoutParams
         layoutParams.height = heightInPixels
         view.layoutParams = layoutParams
+    }
+
+    fun dpToPx(dp: Int, context: Context): Int {
+        val density = context.resources.displayMetrics.density
+        return (dp * density).toInt()
     }
 }

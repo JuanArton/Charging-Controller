@@ -88,8 +88,6 @@
     <string name="not_rooted">Your device not rooted? this feature need root</string>
     <string name="ok">OK</string>
     <string name="root_module_check_message">Setting changes will have no effect</string>
-    <string name="empty_charging_history_data">Empty charging history data</string>
-    <string name="title_activity_history_compose">HistoryActivityCompose</string>
     <string name="autostart">Autostart</string>
     <string name="autostart_dialog_message">Autostart is disabled. Please enable the autostart for BatterySense so the app can runs well. Press OK to open settings </string>
     <string name="warning">Warning</string>
@@ -119,4 +117,17 @@
     <string name="dashboard">Dashboard</string>
     <string name="duration">Duration</string>
     <string name="show_full_history">Show full history</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="waiting_for_next_charge_discharge">Waiting for next charge/discharge</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="show_chart_history">Show chart history</string>
+    <string name="detail_charging_history">Detail Charging History</string>
+    <string name="battery_current_icon">Battery current icon</string>
+    <string name="battery_temperature_icon">Battery temperature icon</string>
+    <string name="battery_power_icon">Battery power icon</string>
+    <string name="battery_voltage_icon">Battery voltage icon</string>
+    <string name="no_data">No Data</string>
+    <string name="charging_history">Charging History</string>
+    <string name="full_history">Full History</string>
+    <string name="current_unit">Current Unit</string>
 </resources>

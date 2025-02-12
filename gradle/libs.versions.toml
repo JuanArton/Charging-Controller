@@ -8,7 +8,7 @@ core = "5.2.1"
 coreSplashscreen = "1.0.1"
 dotsindicator = "5.1.0"
 expandabletextview = "1.0.5"
-firebaseBom = "33.8.0"
+firebaseBom = "33.9.0"
 firebaseCrashlytics = "19.4.0"
 fragmentKtx = "1.8.5"
 hiltAndroid = "2.52"
@@ -37,9 +37,10 @@ runtimeLivedata = "1.7.7"
 sqliteKtx = "2.4.0"
 googleGmsGoogleServices = "4.4.2"
 crashLytics = "22.2.0"
-crashlyticsPlugins = "3.0.2"
+crashlyticsPlugins = "3.0.3"
 viewpager2 = "1.1.0"
 hiltCompiler = "2.52"
+activity = "1.10.0"
 
 [libraries]
 android-arcprogressbar = { module = "com.github.JuanArton:Android-ArcProgressBar", version.ref = "androidArcprogressbar" }
@@ -87,6 +88,7 @@ miui-autostart = { module = "com.github.XomaDev:MIUI-autostart", version.ref = "
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 multiwaveheader = { module = "io.github.sgpublic:MultiWaveHeader", version.ref = "multiwaveheader" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltCompiler" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

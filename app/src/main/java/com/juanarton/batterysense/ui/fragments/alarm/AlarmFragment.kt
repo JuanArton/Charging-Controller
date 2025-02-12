@@ -56,7 +56,7 @@ class AlarmFragment : Fragment() {
 
                 batteryTemperatureThreshold.observe(viewLifecycleOwner) {
                     sliderMaxTemperature.value = it.toFloat()
-                    tvMaxTemperature.text = it.toString()
+                    tvMaxTemperature.text = "$it"
                 }
 
                 oneTimeAlarmStatus.observe(viewLifecycleOwner) {

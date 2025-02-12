@@ -1,11 +1,11 @@
-package com.juanarton.batterysense.ui.fragments.history.adapter
+package com.juanarton.batterysense.ui.fragments.dashboard.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.juanarton.batterysense.ui.fragments.history.CurrentHistoryFragment
-import com.juanarton.batterysense.ui.fragments.history.PowerHistoryFragment
-import com.juanarton.batterysense.ui.fragments.history.TempHistoryFragment
+import com.juanarton.batterysense.ui.fragments.dashboard.liveupdate.CurrentHistoryFragment
+import com.juanarton.batterysense.ui.fragments.dashboard.liveupdate.PowerHistoryFragment
+import com.juanarton.batterysense.ui.fragments.dashboard.liveupdate.TempHistoryFragment
 
 class HistoryAdapter (fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
     override fun getItemCount(): Int = 3

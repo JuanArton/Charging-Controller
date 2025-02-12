@@ -16,17 +16,16 @@
     <application
         android:name="com.juanarton.MyApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"
-        android:hardwareAccelerated="true"
         tools:targetApi="34">
         <activity
-            android:name=".ui.activity.batteryhistory.BatteryHistoryActivity"
+            android:name=".ui.activity.detailHistory.DetailHistoryActivity"
             android:exported="false"
-            android:label="@string/title_activity_history_compose"
             android:theme="@style/Theme.BatterySense" />
         <activity
             android:name=".ui.activity.setting.SettingsActivity"
@@ -42,8 +41,7 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse"
-            android:stopWithTask="false">
-        </service>
+            android:stopWithTask="false" />
 
         <activity
             android:name=".ui.activity.main.MainActivity"
@@ -58,16 +56,6 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".batterymonitorservice.BatteryMonitorService$ScreenStateReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.SCREEN_ON" />
-                <action android:name="android.intent.action.SCREEN_OFF" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".broadcastreceiver.BootCompleteReceiver"
             android:enabled="true"

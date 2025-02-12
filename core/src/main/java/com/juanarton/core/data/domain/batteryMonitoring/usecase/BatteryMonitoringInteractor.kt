@@ -116,4 +116,12 @@ class BatteryMonitoringInteractor @Inject constructor(
         iBatteryMonitoringRepository.deleteChargingHistory()
     }
 
+    override fun getAvailableDays(): Flow<List<String>> =
+        iBatteryMonitoringRepository.getAvailableDays()
+
+    override fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>> =
+        iBatteryMonitoringRepository.getDataByDay(selectedDay)
+
+    override fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>> =
+        iBatteryMonitoringRepository.getChargingHistoryByDay(selectedDay)
 }

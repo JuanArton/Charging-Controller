@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.history.TempHistoryFragment">
+    tools:context=".ui.fragments.dashboard.liveupdate.TempHistoryFragment">
 
     <include
         layout="@layout/graphic_history_item_view"

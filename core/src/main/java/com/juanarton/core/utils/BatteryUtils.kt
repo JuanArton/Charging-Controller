@@ -30,7 +30,7 @@ object BatteryUtils {
     }
 
     fun getRawCurrent(): Int {
-        return -(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW))
+        return - (batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW))
     }
 
     fun getVoltage(): Float {

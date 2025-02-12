@@ -1,6 +1,5 @@
-package com.juanarton.batterysense.ui.fragments.history
+package com.juanarton.batterysense.ui.fragments.dashboard.liveupdate
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -11,8 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentPowerHistoryBinding
-import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardViewModel
+import com.juanarton.batterysense.ui.fragments.history.util.HistoryUtil
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import com.juanarton.batterysense.utils.ChargingDataHolder.getIsCharging
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
@@ -63,10 +62,6 @@ class PowerHistoryFragment : Fragment() {
                 setChartColor()
             }
         }
-
-        binding?.powerHistoryChart?.historyClickableLayer?.setOnClickListener {
-            startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
-        }
     }
 
     private fun startPowerMonitoring() {
@@ -87,7 +82,9 @@ class PowerHistoryFragment : Fragment() {
                                     powerHistoryChart.tvChartValue.text =
                                         HistoryUtil.createStringValue(
                                             String.format(
-                                                Locale.getDefault(), "%.1f", batteryPower[batteryPower.lastIndex].y
+                                                Locale.getDefault(),
+                                                "%.1f",
+                                                batteryPower[batteryPower.lastIndex].y
                                             ),
                                             getString(R.string.wattage),
                                             requireContext()
@@ -111,7 +108,9 @@ class PowerHistoryFragment : Fragment() {
                                     powerHistoryChart.tvChartValue.text =
                                         HistoryUtil.createStringValue(
                                             String.format(
-                                                Locale.getDefault(), "%.1f", batteryPower[batteryPower.lastIndex].y
+                                                Locale.getDefault(),
+                                                "%.1f",
+                                                batteryPower[batteryPower.lastIndex].y
                                             ),
                                             getString(R.string.wattage),
                                             requireContext()

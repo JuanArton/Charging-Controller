@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -37,9 +38,10 @@ import com.juanarton.batterysense.ui.activity.about.AboutActivity
 import com.juanarton.batterysense.ui.activity.setting.SettingsActivity
 import com.juanarton.batterysense.ui.fragments.alarm.AlarmFragment
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardFragment
-import com.juanarton.batterysense.ui.fragments.history.HistoryFragment
+import com.juanarton.batterysense.ui.fragments.history.BatteryHistoryFragment
 import com.juanarton.batterysense.ui.fragments.onboarding.MainOnboardingFragment
 import com.juanarton.batterysense.ui.fragments.quicksetting.QuickSettingFragment
+import com.juanarton.batterysense.utils.FragmentUtil.dpToPx
 import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
@@ -124,6 +126,10 @@ class MainActivity : AppCompatActivity() {
                 val holder = R.id.fragmentHolder
 
                 bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+                    tvTitle.visibility = View.VISIBLE
+                    val params = tvTitle.layoutParams as Toolbar.LayoutParams
+                    params.topMargin = dpToPx(60, this@MainActivity)
+
                     when (menuItem.itemId) {
                         R.id.dashboard -> {
                             val title = getString(R.string.dashboard)
@@ -142,7 +148,9 @@ class MainActivity : AppCompatActivity() {
                         }
                         R.id.history -> {
                             val title = getString(R.string.history)
-                            fragmentBuilder(HistoryFragment(), holder, "History", title)
+                            //tvTitle.visibility = View.GONE
+                            params.topMargin = dpToPx(0, this@MainActivity)
+                            fragmentBuilder(BatteryHistoryFragment(), holder, "History", title)
                             true
                         }
                         else -> false

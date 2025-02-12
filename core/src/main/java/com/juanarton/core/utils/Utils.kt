@@ -39,7 +39,21 @@ object Utils {
     }
 
     fun convertMillisToDateTime(millis: Long): String {
+        val sdf = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+        return sdf.format(calendar.time)
+    }
+
+    fun convertMillisToDateTimeSecond(millis: Long): String {
         val sdf = SimpleDateFormat("dd MMM HH:mm:ss", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+        return sdf.format(calendar.time)
+    }
+
+    fun convertMillisToHourTime(millis: Long): String {
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = millis
         return sdf.format(calendar.time)

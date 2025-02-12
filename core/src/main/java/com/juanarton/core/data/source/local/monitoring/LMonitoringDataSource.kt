@@ -231,5 +231,17 @@ class LMonitoringDataSource @Inject constructor(
         editor.apply()
     }
 
-    fun getUsageData() : List<BatteryHistoryEntity> = batteryHistoryDao.getUsageData()
+    fun getUsageData(): List<BatteryHistoryEntity> = batteryHistoryDao.getUsageData()
+
+    fun getAvailableDays(): List<String> {
+        return batteryHistoryDao.getAvailableDays()
+    }
+
+    fun getDataByDay(selectedDay: String): List<BatteryHistoryEntity> {
+        return batteryHistoryDao.getHistoryByDay(selectedDay)
+    }
+
+    fun getChargingHistoryByDay(selectedDay: String): List<ChargingHistoryEntity> {
+        return chargingHistoryDAO.getChargingHistoryByDay(selectedDay)
+    }
 }

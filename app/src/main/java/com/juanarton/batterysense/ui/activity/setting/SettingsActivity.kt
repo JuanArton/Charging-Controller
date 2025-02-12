@@ -36,6 +36,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+        val sPrefMonitoring = getSharedPreferences("batteryMonitoringData", Context.MODE_PRIVATE)
 
         binding?.apply {
             settingsViewModel.getTheme(sharedPreferences).let {
@@ -45,6 +46,16 @@ class SettingsActivity : AppCompatActivity() {
                         LIGHT -> R.id.chipLight
                         DARK -> R.id.chipDark
                         else -> { R.id.chipSystem }
+                    }
+                )
+            }
+
+            settingsViewModel.getCurrentUnit(sPrefMonitoring).let {
+                cgUnitSelector.check(
+                    when(it) {
+                        getString(R.string.ma) -> R.id.chipmA
+                        getString(com.juanarton.core.R.string.microamp) -> R.id.chipuA
+                        else -> R.id.chipuA
                     }
                 )
             }
@@ -62,6 +73,17 @@ class SettingsActivity : AppCompatActivity() {
                     chipDark.id -> {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                         settingsViewModel.setTheme(sharedPreferences.edit(), DARK)
+                    }
+                }
+            }
+
+            cgUnitSelector.setOnCheckedStateChangeListener { group, _ ->
+                when (group.checkedChipId) {
+                    chipmA.id -> {
+                        settingsViewModel.setCurrentUnit(sPrefMonitoring.edit(), getString(R.string.ma))
+                    }
+                    chipuA.id -> {
+                        settingsViewModel.setCurrentUnit(sPrefMonitoring.edit(), getString(com.juanarton.core.R.string.microamp))
                     }
                 }
             }

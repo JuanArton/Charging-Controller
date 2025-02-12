@@ -83,8 +83,8 @@ class IntroductionPageFragment : Fragment() {
             setDrawFilled(true)
             isHighlightEnabled = false
             fillDrawable = fillGradient
-            lineWidth = 2.0F
-            mode = LineDataSet.Mode.CUBIC_BEZIER
+            lineWidth = 1.0F
+            mode = LineDataSet.Mode.LINEAR
             color = typedValue.data
         }
 

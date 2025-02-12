@@ -26,4 +26,14 @@ interface BatteryHistoryDAO {
 
     @Query("SELECT * FROM batteryHistory WHERE timestamp > (SELECT max(timestamp) FROM batteryHistory WHERE isCharging = 1) ORDER BY timestamp DESC")
     fun getUsageData(): List<BatteryHistoryEntity>
+
+    @Query("SELECT DISTINCT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch', 'localtime')) FROM batteryHistory ORDER BY timestamp DESC")
+    fun getAvailableDays(): List<String>
+
+    @Query("""
+    SELECT * FROM batteryHistory
+    WHERE strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch', 'localtime')) = :selectedDay
+    ORDER BY timestamp ASC
+    """)
+    fun getHistoryByDay(selectedDay: String): List<BatteryHistoryEntity>
 }

@@ -1,4 +1,4 @@
-package com.juanarton.batterysense.ui.activity.batteryhistory
+package com.juanarton.batterysense.ui.fragments.fullhistory.chart
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,15 +10,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BatteryHistoryViewModel @Inject constructor(
+class ChartFullHistoryViewModel @Inject constructor(
     private val batteryMonitoringUseCase: BatteryMonitoringUseCase
 ) : ViewModel() {
-    private val _batteryHistory = MutableLiveData<List<BatteryHistory>>()
-    val batteryHistory = _batteryHistory
-    fun getBatteryHistory() {
+
+    private val _batteryHistoryByDay = MutableLiveData<List<BatteryHistory>>()
+    val batteryHistoryByDay = _batteryHistoryByDay
+
+    fun getBatteryHistoryByDay(day: String) {
         viewModelScope.launch {
-            batteryMonitoringUseCase.getHistoryDataChunk(216001 , 0).collect {
-                _batteryHistory.value = it
+            batteryMonitoringUseCase.getDataByDay(day).collect {
+                _batteryHistoryByDay.value = it
             }
         }
     }

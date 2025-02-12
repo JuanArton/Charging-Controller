@@ -10,6 +10,8 @@ object BatteryDataHolder {
     private var lastChargeLevel = 0
     private var cpuAwake = 0L
     private var deepSleep = 0L
+    private var cpuAwakeTmp = 0L
+    private var deepSleepTmp = 0L
 
     fun setScreenOnTime(screenOnTime: Long) {
         this.screenOnTime = screenOnTime
@@ -69,17 +71,27 @@ object BatteryDataHolder {
 
     fun setAwakeTime(awake: Long) {
         this.cpuAwake = awake
+        if (awake > 0) cpuAwakeTmp = cpuAwake
     }
 
     fun getAwakeTime(): Long {
         return cpuAwake
     }
 
+    fun getAwakeTimeTmp(): Long {
+        return cpuAwakeTmp
+    }
+
     fun setDeepSleepTime(deepSleep: Long) {
         this.deepSleep = deepSleep
+        if (deepSleep > 0) deepSleepTmp = deepSleep
     }
 
     fun getDeepSleepTime(): Long {
         return deepSleep
+    }
+
+    fun getDeepSleepTimeTmp(): Long {
+        return deepSleepTmp
     }
 }

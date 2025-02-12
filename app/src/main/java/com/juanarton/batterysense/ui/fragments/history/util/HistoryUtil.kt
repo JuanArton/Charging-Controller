@@ -1,4 +1,4 @@
-package com.juanarton.batterysense.ui.fragments.history
+package com.juanarton.batterysense.ui.fragments.history.util
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -45,8 +45,8 @@ object HistoryUtil {
             setDrawFilled(true)
             isHighlightEnabled = false
             fillDrawable = fillGradient
-            lineWidth = 1.0F
-            mode = LineDataSet.Mode.CUBIC_BEZIER
+            lineWidth = 2.0F
+            mode = LineDataSet.Mode.LINEAR
             color = typedValue.data
         }
 
@@ -91,7 +91,7 @@ object HistoryUtil {
         }
     }
 
-    private fun createGradient(color: Int): Drawable {
+    fun createGradient(color: Int): Drawable {
         return GradientDrawable().apply {
             colors = intArrayOf(
                 ColorUtils.setAlphaComponent(color, 50),

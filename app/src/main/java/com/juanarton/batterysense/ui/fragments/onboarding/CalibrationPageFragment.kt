@@ -103,7 +103,7 @@ class CalibrationPageFragment : Fragment() {
                                 tvWrongCapacity.visibility = View.VISIBLE
                                 tvWrongCapacity.text = wrongCapacityText
                                 tvWrongCapacity.setOnClickListener {
-                                    showCapacitytDialog()
+                                    showCapacityDialog()
                                 }
 
                                 btCalibrate.enable()
@@ -172,7 +172,7 @@ class CalibrationPageFragment : Fragment() {
         return isPlugged
     }
 
-    private fun showCapacitytDialog() {
+    private fun showCapacityDialog() {
         val dialogView: View = LayoutInflater.from(requireContext()).inflate(R.layout.calibration_dialog_box, null)
 
         val capacityEditText = dialogView.findViewById<EditText>(R.id.et_capacity)

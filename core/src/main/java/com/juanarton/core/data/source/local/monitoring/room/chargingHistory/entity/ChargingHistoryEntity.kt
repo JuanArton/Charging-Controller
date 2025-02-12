@@ -13,7 +13,7 @@ data class ChargingHistoryEntity (
     @ColumnInfo(name = "startTime")
     val startTime: Long,
 
-    @ColumnInfo(name = "current")
+    @ColumnInfo(name = "endTime")
     val endTime: Long,
 
     @ColumnInfo(name = "startLevel")
@@ -24,6 +24,45 @@ data class ChargingHistoryEntity (
 
     @ColumnInfo(name = "levelDifference")
     val levelDifference: Int,
+
+    @ColumnInfo(name = "screenOn")
+    val screenOn: Long?,
+
+    @ColumnInfo(name = "screenOff")
+    val screenOff: Long?,
+
+    @ColumnInfo(name = "screenOnDrain")
+    val screenOnDrain: Int?,
+
+    @ColumnInfo(name = "screenOffDrain")
+    val screenOffDrain: Int?,
+
+    @ColumnInfo(name = "screenOffDrainPerHr")
+    val screenOffDrainPerHr: Double?,
+
+    @ColumnInfo(name = "screenOnDrainPerHr")
+    val screenOnDrainPerHr: Double?,
+
+    @ColumnInfo(name = "deepSleepPercentage")
+    val deepSleepPercentage: Double?,
+
+    @ColumnInfo(name = "awakePercentage")
+    val awakePercentage: Double?,
+
+    @ColumnInfo(name = "awakeDuration")
+    val awakeDuration: Long?,
+
+    @ColumnInfo(name = "sleepDuration")
+    val sleepDuration: Long?,
+
+    @ColumnInfo(name = "awakeSpeed")
+    val awakeSpeed: Double?,
+
+    @ColumnInfo(name = "sleepSpeed")
+    val sleepSpeed: Double?,
+
+    @ColumnInfo(name = "chargingSpeed")
+    val chargingSpeed: Double?,
 
     @ColumnInfo(name = "isCharging")
     val isCharging: Boolean
