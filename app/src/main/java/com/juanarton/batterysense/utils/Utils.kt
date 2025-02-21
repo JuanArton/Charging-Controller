@@ -1,18 +1,17 @@
 package com.juanarton.batterysense.utils
 
-object Utils {
-    fun formatUsagePercentage(value1: Int, value2: Int): String {
-        return buildString {
-            append(value1)
-            append("% of ")
-            append(value2)
-            append("%")
-        }
-    }
+import android.animation.ValueAnimator
+import android.view.View
+import android.view.animation.LinearInterpolator
+import androidx.core.animation.doOnEnd
+import java.util.Locale
 
+object Utils {
     fun formatUsagePerHour(value1: Double): String {
         return buildString {
-            append(String.format("%.1f", value1))
+            append(
+                String.format(Locale.getDefault(), "%.1f", value1)
+            )
             append("%/h")
         }
     }
@@ -29,8 +28,9 @@ object Utils {
 
     fun formatDeepSleepAwake(value: Double): String {
         return buildString {
-            append("${String.format("%.1f", value)}% ")
-            append("of screen off time")
+            append(
+                "${String.format(Locale.getDefault(), "%.1f", value)}% "
+            )
         }
     }
 
@@ -38,11 +38,25 @@ object Utils {
         return screenOffTime * (value / 100)
     }
 
-    fun formatSpeed(value1: Double): String {
-        return buildString {
-            append("speed ")
-            append(String.format("%.1f", value1))
-            append("%/h")
+    fun animateHeight(view: View, fromHeight: Int, toHeight: Int) {
+
+        val animator = ValueAnimator.ofInt(fromHeight, toHeight)
+        animator.duration = 200
+        animator.interpolator = LinearInterpolator()
+
+        animator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val layoutParams = view.layoutParams
+            layoutParams.height = value
+            view.layoutParams = layoutParams
         }
+
+        animator.doOnEnd {
+            if (toHeight == 0) view.visibility = View.GONE
+            else view.visibility = View.VISIBLE
+        }
+
+        view.visibility = View.VISIBLE
+        animator.start()
     }
 }

@@ -7,7 +7,6 @@ import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 import javax.inject.Inject
 
 class BatteryMonitoringInteractor @Inject constructor(
@@ -22,10 +21,10 @@ class BatteryMonitoringInteractor @Inject constructor(
     override fun insertDeepSleepInitialValue(deepSleepInitialVale: Long) =
         iBatteryMonitoringRepository.insertDeepSleepInitialValue(deepSleepInitialVale)
 
-    override fun getStartTime(): Date =
+    override fun getStartTime(): Long =
         iBatteryMonitoringRepository.getStartTime()
 
-    override fun insertStartTime(startTime: Date) =
+    override fun insertStartTime(startTime: Long) =
         iBatteryMonitoringRepository.insertStartTime(startTime)
 
     override fun getScreenOnTime(): Long =
@@ -117,4 +116,12 @@ class BatteryMonitoringInteractor @Inject constructor(
         iBatteryMonitoringRepository.deleteChargingHistory()
     }
 
+    override fun getAvailableDays(): Flow<List<String>> =
+        iBatteryMonitoringRepository.getAvailableDays()
+
+    override fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>> =
+        iBatteryMonitoringRepository.getDataByDay(selectedDay)
+
+    override fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>> =
+        iBatteryMonitoringRepository.getChargingHistoryByDay(selectedDay)
 }

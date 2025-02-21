@@ -8,6 +8,10 @@ import android.os.BatteryManager
 import android.os.Build
 import android.os.SystemClock
 import android.util.Log
+import com.juanarton.core.R
+import com.juanarton.core.utils.Constants.CHARGING_CYCLES_PATH
+import com.topjohnwu.superuser.Shell
+import java.io.IOException
 
 object BatteryUtils {
 
@@ -26,7 +30,7 @@ object BatteryUtils {
     }
 
     fun getRawCurrent(): Int {
-        return -(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW))
+        return - (batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW))
     }
 
     fun getVoltage(): Float {
@@ -90,11 +94,21 @@ object BatteryUtils {
         return SystemClock.uptimeMillis()/1000
     }
 
-    fun getCycleCount(): String {
+    fun getCycleCount(context: Context): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             (batteryStatus?.getIntExtra(BatteryManager.EXTRA_CYCLE_COUNT, -1) ?: -1).toString()
         } else {
-            "Only android 14+"
+            try {
+                if (Shell.getShell().isRoot) {
+                    val command = "cat $CHARGING_CYCLES_PATH"
+                    val result = Shell.cmd(command).exec()
+                    result.out[0]
+                } else {
+                    context.getString(R.string.only_android_14_plus)
+                }
+            } catch (e: IOException) {
+                context.getString(R.string.not_available)
+            }
         }
     }
 

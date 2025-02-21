@@ -1,10 +1,7 @@
 package com.juanarton.batterysense.ui.fragments.onboarding
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -19,10 +16,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.juanarton.batterysense.R
-import com.juanarton.batterysense.batterymonitorservice.Action
-import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
-import com.juanarton.batterysense.batterymonitorservice.ServiceState
-import com.juanarton.batterysense.batterymonitorservice.getServiceState
 import com.juanarton.batterysense.databinding.FragmentIntroductionPageBinding
 import com.juanarton.batterysense.utils.BatteryHistoryHolder
 import kotlinx.coroutines.delay
@@ -46,8 +39,6 @@ class IntroductionPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        actionOnService(Action.START)
-
         binding?.apply {
             showChart(
                 BatteryHistoryHolder.currentLineDataSet,
@@ -57,22 +48,23 @@ class IntroductionPageFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 while (isActive) {
-                    val currentValue = buildString {
-                        append(
-                            abs(
-                                BatteryHistoryHolder
-                                    .batteryCurrent[BatteryHistoryHolder.batteryCurrent.lastIndex].y.toInt()
+                    if (BatteryHistoryHolder.batteryCurrent.isNotEmpty()){
+                        val currentValue = buildString {
+                            append(
+                                abs(
+                                    BatteryHistoryHolder
+                                        .batteryCurrent[BatteryHistoryHolder.batteryCurrent.lastIndex].y.toInt()
+                                )
                             )
-                        )
-                        append(getString(R.string.ma))
+                            append(getString(R.string.ma))
+                        }
+
+                        binding?.tvChartValue?.text = currentValue
+
+                        BatteryHistoryHolder.currentData.notifyDataChanged()
+                        binding?.chargingCurrentChart?.notifyDataSetChanged()
+                        binding?.chargingCurrentChart?.invalidate()
                     }
-
-                    binding?.tvChartValue?.text = currentValue
-
-                    BatteryHistoryHolder.currentData.notifyDataChanged()
-                    binding?.chargingCurrentChart?.notifyDataSetChanged()
-                    binding?.chargingCurrentChart?.invalidate()
-
                     delay(1 * 1000)
                 }
             }
@@ -91,8 +83,8 @@ class IntroductionPageFragment : Fragment() {
             setDrawFilled(true)
             isHighlightEnabled = false
             fillDrawable = fillGradient
-            lineWidth = 2.0F
-            mode = LineDataSet.Mode.CUBIC_BEZIER
+            lineWidth = 1.0F
+            mode = LineDataSet.Mode.LINEAR
             color = typedValue.data
         }
 
@@ -135,20 +127,6 @@ class IntroductionPageFragment : Fragment() {
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
 
         setUpLineChart(lineDataSet, lineData, ContextCompat.getDrawable(requireContext(), gradientDrawable))
-    }
-
-    private fun actionOnService(action: Action) {
-        if (getServiceState(requireContext()) == ServiceState.STOPPED && action == Action.STOP) return
-        Intent(requireContext(), BatteryMonitorService::class.java).also {
-            it.action = action.name
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.d("BatteryMonitorService", "Starting the service in >=26 Mode")
-                requireContext().startForegroundService(it)
-                return
-            }
-            Log.d("BatteryMonitorService", "Starting the service in < 26 Mode")
-            requireContext().startService(it)
-        }
     }
 
     override fun onDestroy() {

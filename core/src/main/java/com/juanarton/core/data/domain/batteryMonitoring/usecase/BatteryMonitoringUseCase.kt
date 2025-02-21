@@ -6,7 +6,6 @@ import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import com.juanarton.core.data.domain.batteryMonitoring.domain.ChargingHistory
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 interface BatteryMonitoringUseCase {
     fun getBatteryInfo(): Flow<BatteryInfo>
@@ -14,9 +13,9 @@ interface BatteryMonitoringUseCase {
 
     fun insertDeepSleepInitialValue(deepSleepInitialVale: Long)
 
-    fun getStartTime(): Date
+    fun getStartTime(): Long
 
-    fun insertStartTime(startTime: Date)
+    fun insertStartTime(startTime: Long)
 
     fun getScreenOnTime(): Long
 
@@ -73,4 +72,10 @@ interface BatteryMonitoringUseCase {
     fun insertCapacity(capacity: Int)
 
     fun deleteChargingHistory()
+
+    fun getAvailableDays(): Flow<List<String>>
+
+    fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>>
+
+    fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>>
 }

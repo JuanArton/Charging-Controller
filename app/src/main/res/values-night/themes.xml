@@ -8,16 +8,19 @@
         <item name="android:windowBackground">@color/darkSurface</item>
         <item name="cardBackgroundColor">@color/darkCardBackground</item>
         <item name="liftOnScrollColor">@color/darkSurface</item>
+        <item name="android:fontFamily">sans-serif-light</item>
 
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="Theme.BatterySense" parent="Base.Theme.BatterySense" />
+
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation
         duration. -->
-        <item name="windowSplashScreenBackground">@color/white</item>
-
+        <item name="windowSplashScreenBackground">@color/darkSurface</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
         <item name="windowSplashScreenAnimationDuration">200</item>
 
         <!-- Set the theme of the Activity that directly follows your splash

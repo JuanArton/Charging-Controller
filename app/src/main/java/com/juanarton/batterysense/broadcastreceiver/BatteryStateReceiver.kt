@@ -9,8 +9,14 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
+import com.juanarton.batterysense.utils.ChargingDataHolder.setChargedLevel
+import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingDuration
+import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingPerHr
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
+import com.juanarton.core.utils.BatteryUtils.getCurrentTimeMillis
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -58,6 +64,11 @@ class BatteryStateReceiver : BroadcastReceiver(){
                 }
                 iBatteryMonitoringRepository.insertBatteryLevel(newLevel)
                 batteryUsed = 0
+            }
+            else if (newLevel > batteryLevel) {
+                setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000 )
+                setChargedLevel(newLevel - iBatteryMonitoringRepository.getLastPlugged().second)
+                setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
             }
 
             if (newLevel > iAppConfigRepository.getBatteryLevelThreshold().first &&

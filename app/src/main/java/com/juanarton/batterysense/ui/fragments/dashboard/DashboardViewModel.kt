@@ -16,7 +16,6 @@ import javax.inject.Inject
 class DashboardViewModel @Inject constructor(
     private var batteryMonitoringUseCase: BatteryMonitoringUseCase
 ) : ViewModel() {
-
     init {
         startBatteryMonitoring()
     }
@@ -27,17 +26,13 @@ class DashboardViewModel @Inject constructor(
     private var scheduledExecutorService: ScheduledExecutorService? = null
     private var isMonitoring = false
 
-    var currentMin = 0
-    var currentMax = 0
-    var tempMin = 0
-    var tempMax = 0
-    var powerMin = 0
-    var powerMax = 0
+    val _powerStateEvent =  MutableLiveData<Boolean>()
+    val powerStateEvent = _powerStateEvent
 
     fun startBatteryMonitoring() {
         if (!isMonitoring) {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-            scheduledExecutorService?.scheduleAtFixedRate(
+            scheduledExecutorService?.scheduleWithFixedDelay(
                 {
                     viewModelScope.launch {
                         batteryMonitoringUseCase.getBatteryInfo().collect {
@@ -58,4 +53,6 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun getCapacity() = batteryMonitoringUseCase.getCapacity()
+
+    fun lastUnplugged() = batteryMonitoringUseCase.getLastUnplugged()
 }

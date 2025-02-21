@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -12,18 +16,23 @@
     <application
         android:name="com.juanarton.MyApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"
-        tools:targetApi="31">
+        tools:targetApi="34">
+        <activity
+            android:name=".ui.activity.detailHistory.DetailHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BatterySense" />
+        <activity
+            android:name=".ui.activity.setting.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BatterySense" />
         <activity
             android:name=".ui.activity.about.AboutActivity"
-            android:exported="false"
-            android:theme="@style/Theme.BatterySense"/>
-        <activity
-            android:name=".ui.activity.batteryhistory.BatteryHistoryActivity"
             android:exported="false"
             android:theme="@style/Theme.BatterySense" />
 
@@ -31,15 +40,13 @@
             android:name=".batterymonitorservice.BatteryMonitorService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType=""
-            android:stopWithTask="false">
-
-        </service>
+            android:foregroundServiceType="specialUse"
+            android:stopWithTask="false" />
 
         <activity
             android:name=".ui.activity.main.MainActivity"
-            android:exported="true"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
             android:theme="@style/Theme.BatterySense"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -49,16 +56,6 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".batterymonitorservice.BatteryMonitorService$ScreenStateReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.SCREEN_ON" />
-                <action android:name="android.intent.action.SCREEN_OFF" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".broadcastreceiver.BootCompleteReceiver"
             android:enabled="true"

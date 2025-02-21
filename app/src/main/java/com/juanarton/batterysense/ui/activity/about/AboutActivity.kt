@@ -26,7 +26,8 @@ class AboutActivity : AppCompatActivity() {
     private val repositoryUrl = "https://github.com/JuanArton/Charging-Controller"
     private val libList = listOf(
         "Lottie", "MPAndroidChart by philjay", "MultiWaveHeader by scwang90", "DotsIndicator by tommybuonomo",
-        "ExpandableTextView by blogcat", "Room", "SQLCipher", "SQLite", "Hilt", "Libsu by topjohnwu"
+        "ExpandableTextView by blogcat", "Room", "SQLCipher", "SQLite", "Hilt", "Libsu by topjohnwu",
+        "BubbleEmitter by firezenk", "MIUI-autostart by xomadev"
     )
 
 

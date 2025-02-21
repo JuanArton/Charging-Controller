@@ -16,4 +16,11 @@ interface ChargingHistoryDAO {
 
     @Query("DELETE FROM chargingHistory")
     fun deleteAll()
+
+    @Query("""
+    SELECT * FROM chargingHistory
+    WHERE strftime('%Y-%m-%d', datetime(endTime / 1000, 'unixepoch', 'localtime')) = :selectedDay
+    ORDER BY endTime ASC
+    """)
+    fun getChargingHistoryByDay(selectedDay: String): List<ChargingHistoryEntity>
 }

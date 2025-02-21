@@ -1,8 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?android:windowBackground">
+    android:background="?android:windowBackground"
+    tools:ignore="Overdraw">
+
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/autostart"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/dialog_message"

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="primary">#00DDB3</color>
     <color name="primaryVariant">#009b8c</color>
     <color name="brightCardBackground">#eeeeed</color>
     <color name="brightSurface">#fbf9f6</color>
     <color name="accent" >#0044dd</color>
 
-    <color name="yellow">#ffc857</color>
+    <color name="yellow">#FFAA00</color>
     <color name="blue">#79beee</color>
-    <color name="green">#44a985</color>
-    <color name="red">#ee6055</color>
+    <color name="green">#00FF99</color>
+    <color name="red">#FF3333</color>
 
     //dark theme
     <color name="darkThemeText">#cdcccc</color>

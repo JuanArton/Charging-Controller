@@ -7,5 +7,13 @@
         <attr name="contentText" format="string"/>
         <attr name="contentHint" format="float"/>
         <attr name="contentUnit" format="string"/>
+        <attr name="contentMarginTop" format="dimension"/>
+        <attr name="contentTextColor" format="color"/>
+        <attr name="extraText" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="SwitchWithDescription">
+        <attr name="cwTitle" format="string"/>
+        <attr name="cwContent" format="string"/>
     </declare-styleable>
 </resources>

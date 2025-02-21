@@ -1,18 +1,23 @@
 package com.juanarton.batterysense.ui.activity.main
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -26,26 +31,31 @@ import com.juanarton.batterysense.BuildConfig
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.Action
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
-import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService.Companion.isRegistered
 import com.juanarton.batterysense.batterymonitorservice.ServiceState
 import com.juanarton.batterysense.batterymonitorservice.getServiceState
 import com.juanarton.batterysense.databinding.ActivityMainBinding
 import com.juanarton.batterysense.ui.activity.about.AboutActivity
+import com.juanarton.batterysense.ui.activity.setting.SettingsActivity
 import com.juanarton.batterysense.ui.fragments.alarm.AlarmFragment
 import com.juanarton.batterysense.ui.fragments.dashboard.DashboardFragment
-import com.juanarton.batterysense.ui.fragments.history.HistoryFragment
+import com.juanarton.batterysense.ui.fragments.history.BatteryHistoryFragment
 import com.juanarton.batterysense.ui.fragments.onboarding.MainOnboardingFragment
 import com.juanarton.batterysense.ui.fragments.quicksetting.QuickSettingFragment
+import com.juanarton.batterysense.utils.FragmentUtil.dpToPx
+import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import xyz.kumaraswamy.autostart.Autostart
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var currentFragment: String
+    private var isForeground = true
     companion object {
         init {
             Shell.enableVerboseLogging = BuildConfig.DEBUG
@@ -55,7 +65,6 @@ class MainActivity : AppCompatActivity() {
                     .setTimeout(10)
             )
         }
-
         const val PREFS_NAME = "FirstLaunchState"
     }
 
@@ -82,7 +91,8 @@ class MainActivity : AppCompatActivity() {
 
         if (settings.getBoolean("first_launch", true)) {
             binding?.bottomNavigationBar?.visibility = View.GONE
-            fragmentBuilder(MainOnboardingFragment(), R.id.root, "Onboarding")
+            supportActionBar?.hide()
+            fragmentBuilder(MainOnboardingFragment(), R.id.root, "Onboarding", "")
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -90,22 +100,22 @@ class MainActivity : AppCompatActivity() {
                         .build()
                         .sendSuspend()
                     if (result.allDenied()) {
-                        Toast.makeText(
-                            this@MainActivity, getString(R.string.notificationPermissionDenied),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@MainActivity, getString(R.string.notificationPermissionDenied),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }
 
-            fragmentBuilder(DashboardFragment(), R.id.fragmentHolder, "Dashboard")
+            registerStickyReceiver(this)
 
-            if(!isRegistered) {
-                val intentFilter = IntentFilter()
-                intentFilter.addAction(Intent.ACTION_SCREEN_ON)
-                intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
+            fragmentBuilder(DashboardFragment(), R.id.fragmentHolder, "Charging", getString(R.string.dashboard))
 
-                isRegistered = true
+            if (!Autostart.getSafeState(this)) {
+                showAutostartDialog()
             }
 
             binding?.apply {
@@ -116,21 +126,31 @@ class MainActivity : AppCompatActivity() {
                 val holder = R.id.fragmentHolder
 
                 bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+                    tvTitle.visibility = View.VISIBLE
+                    val params = tvTitle.layoutParams as Toolbar.LayoutParams
+                    params.topMargin = dpToPx(60, this@MainActivity)
+
                     when (menuItem.itemId) {
                         R.id.dashboard -> {
-                            fragmentBuilder(DashboardFragment(), holder, "Dashboard")
+                            val title = getString(R.string.dashboard)
+                            fragmentBuilder(DashboardFragment(), holder, "Dashboard", title)
                             true
                         }
                         R.id.quickSetting -> {
-                            fragmentBuilder(QuickSettingFragment(), holder, "QuickSetting")
+                            val title = getString(R.string.quick_setting)
+                            fragmentBuilder(QuickSettingFragment(), holder, "QuickSetting", title)
                             true
                         }
                         R.id.alarm -> {
-                            fragmentBuilder(AlarmFragment(), holder, "Alarm")
+                            val title = getString(R.string.alarm)
+                            fragmentBuilder(AlarmFragment(), holder, "Alarm", title)
                             true
                         }
                         R.id.history -> {
-                            fragmentBuilder(HistoryFragment(), holder, "History")
+                            val title = getString(R.string.history)
+                            //tvTitle.visibility = View.GONE
+                            params.topMargin = dpToPx(0, this@MainActivity)
+                            fragmentBuilder(BatteryHistoryFragment(), holder, "History", title)
                             true
                         }
                         else -> false
@@ -140,12 +160,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fragmentBuilder(fragment: Fragment, holder: Int, tag: String){
+    private fun fragmentBuilder(fragment: Fragment, holder: Int, tag: String, title: String){
+        currentFragment = tag
         supportFragmentManager
             .beginTransaction()
             .replace(holder, fragment, tag)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
+
+
+        binding?.tvTitle?.text = title
     }
 
     private fun actionOnService(action: Action) {
@@ -194,6 +218,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showAutostartDialog() {
+        val dialogView: View = LayoutInflater.from(this).inflate(R.layout.custom_dialog_box, null)
+
+        val dialogMessage = dialogView.findViewById<TextView>(R.id.dialog_message)
+        dialogMessage.text = getString(R.string.autostart_dialog_message)
+
+        val okButton = dialogView.findViewById<Button>(R.id.dialog_ok_button)
+
+        val autostartDialogBuilder = AlertDialog.Builder(this)
+        autostartDialogBuilder.setView(dialogView)
+        autostartDialogBuilder.setCancelable(true)
+
+        val autostartDialog = autostartDialogBuilder.create()
+
+        okButton.setOnClickListener {
+            autostartDialog.dismiss()
+            startActivity(
+                Intent().setComponent(
+                ComponentName(
+                    "com.miui.securitycenter",
+                    "com.miui.permcenter.autostart.AutoStartManagementActivity"
+                )
+            ))
+        }
+
+        autostartDialog.show()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
@@ -201,6 +253,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.settings_page -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
             R.id.about_page -> {
                 startActivity(Intent(this, AboutActivity::class.java))
                 true
@@ -212,5 +268,15 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isForeground = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isForeground = false
     }
 }

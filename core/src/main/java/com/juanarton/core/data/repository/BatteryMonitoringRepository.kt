@@ -12,14 +12,13 @@ import com.juanarton.core.data.source.local.monitoring.LMonitoringDataSource
 import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryDomainToEntity
 import com.juanarton.core.utils.DomainUtils.mapBatteryHistoryEntityToDomain
 import com.juanarton.core.utils.DomainUtils.mapChargingHistoryDomainToEntity
+import com.juanarton.core.utils.DomainUtils.mapChargingHistoryEntityToDomain
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject.Inject
 
 class BatteryMonitoringRepository @Inject constructor(
@@ -38,13 +37,12 @@ class BatteryMonitoringRepository @Inject constructor(
         lMonitoringDataSource.insertDeepSleepInitialValue(deepSleepInitialVale)
     }
 
-    override fun getStartTime(): Date {
-        val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
-        return dateFormat.parse(lMonitoringDataSource.getStartTime())
+    override fun getStartTime(): Long {
+        return lMonitoringDataSource.getStartTime()
     }
 
-    override fun insertStartTime(startTime: Date) {
-        lMonitoringDataSource.insertStartTime(startTime.toString())
+    override fun insertStartTime(startTime: Long) {
+        lMonitoringDataSource.insertStartTime(startTime)
     }
 
     override fun getScreenOnTime(): Long =
@@ -98,7 +96,7 @@ class BatteryMonitoringRepository @Inject constructor(
     }
 
     override fun insertHistory(batteryHistory: BatteryHistory) {
-        if (lMonitoringDataSource.getRowCount() >= 21600) {
+        if (lMonitoringDataSource.getRowCount() >= 120960) {
             lMonitoringDataSource.deleteFirst(
                 lMonitoringDataSource.getFirst()
             )
@@ -173,4 +171,30 @@ class BatteryMonitoringRepository @Inject constructor(
             lMonitoringDataSource.deleteChargingHistory()
         }
     }
+
+    override fun getUsageData(): List<BatteryHistory> {
+        return mapBatteryHistoryEntityToDomain(lMonitoringDataSource.getUsageData())
+    }
+
+    override fun getAvailableDays(): Flow<List<String>> = flow {
+        emit(
+            lMonitoringDataSource.getAvailableDays()
+        )
+    }.flowOn(Dispatchers.IO)
+
+    override fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>> = flow {
+        emit(
+            mapBatteryHistoryEntityToDomain(
+                lMonitoringDataSource.getDataByDay(selectedDay)
+            )
+        )
+    }.flowOn(Dispatchers.IO)
+
+    override fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>> = flow {
+        emit(
+            mapChargingHistoryEntityToDomain(
+                lMonitoringDataSource.getChargingHistoryByDay(selectedDay)
+            )
+        )
+    }.flowOn(Dispatchers.IO)
 }

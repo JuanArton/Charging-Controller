@@ -1,7 +1,6 @@
 package com.juanarton.core.data.source.local.appConfig
 
 import android.content.Context
-import android.util.Log
 import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import com.juanarton.core.utils.Utils
@@ -114,8 +113,6 @@ class LAppConfigDataSource {
     fun setMaximumCapacity(maxCapacity: String): Result {
         val command = "${PATH}/3c.sh setValue maxCapacity ${maxCapacity.toInt()}"
         val result = Shell.cmd(command).exec()
-
-        Log.d("test", maxCapacity.toInt().toString())
 
         val capacityValue = Utils.getValue("maxCapacity").out[0]
 

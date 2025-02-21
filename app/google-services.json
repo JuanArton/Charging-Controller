@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "913569616699",
+    "project_id": "batterysense-b7c54",
+    "storage_bucket": "batterysense-b7c54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913569616699:android:d70cfdd7892ff5dfaedd1e",
+        "android_client_info": {
+          "package_name": "com.juanarton.batterysense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeGhuZitt-qvgFMU8WF-UHAzjp08N-fmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

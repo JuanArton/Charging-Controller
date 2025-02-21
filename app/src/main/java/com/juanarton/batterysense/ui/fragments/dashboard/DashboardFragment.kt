@@ -1,398 +1,248 @@
 package com.juanarton.batterysense.ui.fragments.dashboard
 
-import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.DefaultValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
+import androidx.fragment.app.activityViewModels
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.databinding.FragmentDashboardBinding
-import com.juanarton.batterysense.ui.activity.batteryhistory.BatteryHistoryActivity
+import com.juanarton.batterysense.ui.fragments.dashboard.adapter.HistoryAdapter
 import com.juanarton.batterysense.utils.BatteryDataHolder.getAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getDeepSleepTime
-import com.juanarton.batterysense.utils.BatteryDataHolder.getLastChargeLevel
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOffTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrain
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.currentData
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.currentLineDataSet
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.powerData
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.powerLineDataSet
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureData
-import com.juanarton.batterysense.utils.BatteryHistoryHolder.temperatureLineDataSet
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingPerHr
+import com.juanarton.batterysense.utils.FragmentUtil
+import com.juanarton.batterysense.utils.FragmentUtil.changeViewHeight
+import com.juanarton.batterysense.utils.FragmentUtil.rescaleNumber
 import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepAwakeSpeed
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.batterysense.utils.Utils.formatDeepSleepAwake
-import com.juanarton.batterysense.utils.Utils.formatSpeed
 import com.juanarton.batterysense.utils.Utils.formatUsagePerHour
-import com.juanarton.batterysense.utils.Utils.formatUsagePercentage
-import com.juanarton.core.utils.Utils
 import com.juanarton.core.utils.Utils.formatTime
+import com.juanarton.core.utils.Utils.mapBatteryStatus
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import kotlin.math.abs
-
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
-    private val binding get() = _binding
+    private val binding get() =  _binding
 
-    private var firstRun = true
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
 
-    private val dashboardViewModel: DashboardViewModel by viewModels()
+    private val dashboardReceiver = DashboardReceiver()
 
-    private var currentGraph = true
-    private var temperatureGraph = false
-    private var powerGraph = false
+    private var bubbleJob: Job? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
-    @SuppressLint("PrivateApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val powerConnectedIntentFilter = IntentFilter()
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+        powerConnectedIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
+        requireContext().registerReceiver(dashboardReceiver, powerConnectedIntentFilter)
+
         val batteryCapacity = dashboardViewModel.getCapacity()
 
-        showCurrent()
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
 
-        val currentTitle = getString(R.string.current)
-        val temperatureTitle = getString(R.string.temperature)
-        val powerTitle = getString(R.string.power)
+        val vpHistoryChart = binding?.batteryHistoryPanel?.vpHistoryChart
+        val pagerAdapter = HistoryAdapter(requireActivity())
+        vpHistoryChart?.adapter = pagerAdapter
 
-        val temperatureUnit = getString(R.string.degree_symbol)
-        val currentUnit = getString(R.string.ma)
-        val wattageUnit = getString(R.string.wattage)
+        val handler = Handler(Looper.getMainLooper())
 
-        binding?.apply {
-            batteryHistoryPanel.cgGraphSelector.check(R.id.chipChargingCurrent)
-            batteryHistoryPanel.cgGraphSelector.setOnCheckedStateChangeListener { group, _ ->
-                when (group.checkedChipId) {
-                    batteryHistoryPanel.chipChargingCurrent.id -> {
-                        showCurrent()
-                        batteryInfoPanel.cvChartInfo1.titleText = temperatureTitle
-                        batteryInfoPanel.cvChartInfo2.titleText = powerTitle
-
-                        batteryInfoPanel.cvChartInfo1.iconResource = R.drawable.temperature
-                        batteryInfoPanel.cvChartInfo2.iconResource = R.drawable.power
-                    }
-                    batteryHistoryPanel.chipTemperature.id -> {
-                        showTemperature()
-                        batteryInfoPanel.cvChartInfo1.titleText = currentTitle
-                        batteryInfoPanel.cvChartInfo2.titleText = powerTitle
-
-                        batteryInfoPanel.cvChartInfo1.iconResource = R.drawable.charging_current
-                        batteryInfoPanel.cvChartInfo2.iconResource = R.drawable.power
-                    }
-                    batteryHistoryPanel.chipPower.id -> {
-                        showPower()
-                        batteryInfoPanel.cvChartInfo1.titleText = currentTitle
-                        batteryInfoPanel.cvChartInfo2.titleText = temperatureTitle
-
-                        batteryInfoPanel.cvChartInfo1.iconResource = R.drawable.charging_current
-                        batteryInfoPanel.cvChartInfo2.iconResource = R.drawable.temperature
-                    }
-                }
-            }
-            batteryHistoryPanel.btFullHistory.setOnClickListener {
-                startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
-            }
-            batteryHistoryPanel.tvFullHistory.setOnClickListener {
-                startActivity(Intent(requireContext(), BatteryHistoryActivity::class.java))
+        val runnable = Runnable {
+            if (vpHistoryChart != null) {
+                binding?.batteryHistoryPanel?.historyDotsIndicator?.attachTo(vpHistoryChart)
             }
         }
+        val delayMillis: Long = 1000
+        handler.postDelayed(runnable, delayMillis)
 
         dashboardViewModel.batteryInfo.observe(viewLifecycleOwner) {
-            updateUsageData()
-            if (firstRun) {
-                dashboardViewModel.currentMin = abs(it.currentNow)
-                dashboardViewModel.tempMin = abs(it.temperature)
-                dashboardViewModel.powerMin = abs((it.power * 100).toInt())
-                firstRun = false
-            }
-
             binding?.apply {
-                changeWaveHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
+                val decimalFormat = DecimalFormat("#.##")
+                val power = decimalFormat.format(it.power)
 
-                batteryInfoPanel.tvBatteryPercentage.text = buildString {
-                    append(it.level)
-                    append("%")
+                when (batteryHistoryPanel.vpHistoryChart.currentItem) {
+                    0 -> batteryInfoPanel.tvBatteryInfo.text = buildString {
+                        append("${it.temperature}${getString(R.string.degree_symbol)} · $power${getString(R.string.wattage)}")
+                    }
+                    1 -> batteryInfoPanel.tvBatteryInfo.text = buildString {
+                        append("${abs(it.currentNow)}${getString(R.string.ma)} · $power${getString(R.string.wattage)}")
+                    }
+                    2 -> batteryInfoPanel.tvBatteryInfo.text = buildString {
+                        append("${it.currentNow}${getString(R.string.ma)} · ${it.temperature}${getString(R.string.degree_symbol)}")
+                    }
                 }
 
-                batteryInfoPanel.tvBatteryCapacity.text = buildString{
-                    append("${(batteryCapacity * it.level / 100)} ${getString(R.string.mah)}")
-                    append(" of ")
+                changeViewHeight(batteryInfoPanel.waveAnimation, rescaleNumber(it.level))
+                changeViewHeight(batteryInfoPanel.bubbleEmitter, rescaleNumber(it.level))
+
+                batteryInfoPanel.tvCapacity.text = buildString{
+                    append("${(batteryCapacity * it.level / 100)}")
+                    append(" / ")
                     append("$batteryCapacity ${getString(R.string.mah)}")
                 }
 
-                batteryInfoPanel.cvStatus.contentText = Utils.mapBatteryStatus(it.status, requireContext())
+                batteryInfoPanel.tvBatteryPercentage.text = buildString {append("${it.level}%")}
+                batteryInfoPanel.tvChargingStatus.text = mapBatteryStatus(it.status, requireContext())
 
-                batteryInfoPanel.cvVoltage.contentText = it.voltage.toString()
+                batteryInfoPanel.tvScreenOnValue.text = formatTime(getScreenOnTime())
+                batteryInfoPanel.tvScreenOffValue.text = formatTime(getScreenOffTime())
 
-                batteryInfoPanel.cvChargingType.contentText = when {
-                    it.acCharge -> getString(R.string.ac)
-                    it.usbCharge -> getString(R.string.usb)
-                    else -> getString(R.string.battery)
+                batteryStatisticPanel.tvScreenOnValueUsage.text = buildString {
+                    append("${getScreenOnDrain()}%")
+                }
+                batteryStatisticPanel.tvScreenOffValueUsage.text = buildString {
+                    append("${getScreenOffDrain()}%")
                 }
 
-                val powerValue = buildString {
-                    append(String.format("%.1f", it.power))
-                    append(wattageUnit)
-                }
+                val screenOffDrainPerHrTmp = if (getScreenOffDrainPerHr().isNaN()) 0.0 else getScreenOffDrainPerHr()
+                val screenOnDrainPerHrTmp = if (getScreenOnDrainPerHr().isNaN()) 0.0 else getScreenOnDrainPerHr()
+                val deepSleepPercentage =
+                    calculateDeepSleepPercentage(
+                        getDeepSleepTime().toDouble(),
+                        getScreenOffTime().toDouble()
+                    )
+                val cpuAwakePercentage =
+                    calculateCpuAwakePercentage(
+                        deepSleepPercentage
+                    )
 
-                val currentValue = buildString {
-                    append(abs(it.currentNow))
-                    append(currentUnit)
-                }
+                batteryExtraPanel.tvAwakeValue.text = formatDeepSleepAwake(cpuAwakePercentage)
+                batteryExtraPanel.tvSleepValue.text = formatDeepSleepAwake(deepSleepPercentage)
 
-                val temperatureValue = buildString {
-                    append(it.temperature)
-                    append(temperatureUnit)
-                }
+                batteryExtraPanel.tvAwakeDuration.text = formatTime(getAwakeTime())
+                batteryExtraPanel.tvSleepDuration.text = formatTime(getDeepSleepTime())
 
-                with(dashboardViewModel) {
-                    currentData.notifyDataChanged()
-                    batteryHistoryPanel.chargingCurrentChart.notifyDataSetChanged()
-                    batteryHistoryPanel.chargingCurrentChart.invalidate()
+                batteryExtraPanel.tvAwakeValueSpeed.text = formatUsagePerHour(
+                    calculateDeepSleepAwakeSpeed(cpuAwakePercentage, screenOffDrainPerHrTmp)
+                )
+                batteryExtraPanel.tvSleepValueSpeed.text = formatUsagePerHour(
+                    calculateDeepSleepAwakeSpeed(deepSleepPercentage, screenOffDrainPerHrTmp)
+                )
 
-                    when {
-                        currentGraph -> {
-                            batteryHistoryPanel.tvChartValue.text = currentValue
-                            batteryInfoPanel.cvChartInfo1.contentText = temperatureValue
-                            batteryInfoPanel.cvChartInfo2.contentText = powerValue
-                        }
-                        temperatureGraph -> {
-                            batteryHistoryPanel.tvChartValue.text = temperatureValue
-                            batteryInfoPanel.cvChartInfo1.contentText = currentValue
-                            batteryInfoPanel.cvChartInfo2.contentText = powerValue
-                        }
-                        powerGraph -> {
-                            batteryHistoryPanel.tvChartValue.text = powerValue
-                            batteryInfoPanel.cvChartInfo1.contentText = currentValue
-                            batteryInfoPanel.cvChartInfo2.contentText = temperatureValue
-                        }
+                if (it.status == 1 || it.status == 3 || it.status == 4) {
+                    batteryInfoPanel.tvChargingType.visibility = View.GONE
+                    stopEmittingBubbles()
+
+                    setBatteryAnimationColor(typedValue.data)
+
+                    batteryInfoPanel.tvBatteryUsedValue.text = buildString {
+                        append("${dashboardViewModel.lastUnplugged().second - it.level}%")
                     }
 
-                    currentMin = minChecker(currentMin, abs(it.currentNow))
-                    tempMin = minChecker(tempMin, abs(it.temperature))
-                    powerMin = minChecker(powerMin, abs((it.power * 100).toInt()))
+                    setActiveIdleVisibility(View.VISIBLE)
+                    setChargingSpeedVisibility(View.GONE)
 
-                    currentMax = maxChecker(currentMax, abs(it.currentNow))
-                    tempMax = maxChecker(tempMax, abs(it.temperature))
-                    powerMax = maxChecker(powerMax, abs((it.power * 100).toInt()))
-
-                    when {
-                        currentGraph -> {
-                            setMinMaxText(batteryHistoryPanel.tvChartMin, currentMin)
-                            setMinMaxText(batteryHistoryPanel.tvChartMax, currentMax)
-                        }
-                        temperatureGraph -> {
-                            setMinMaxText(batteryHistoryPanel.tvChartMin, tempMin)
-                            setMinMaxText(batteryHistoryPanel.tvChartMax, tempMax)
-                        }
-                        powerGraph -> {
-                            setMinMaxText(batteryHistoryPanel.tvChartMin, powerMin)
-                            setMinMaxText(batteryHistoryPanel.tvChartMax, powerMax)
-                        }
+                    batteryStatisticPanel.tvActiveValue.text = formatUsagePerHour(screenOnDrainPerHrTmp)
+                    batteryStatisticPanel.tvIdleValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
+                } else {
+                    batteryInfoPanel.tvChargingType.visibility = View.VISIBLE
+                    batteryInfoPanel.tvChargingType.text = when {
+                        it.acCharge -> getString(R.string.ac)
+                        it.usbCharge -> getString(R.string.usb)
+                        else -> getString(R.string.battery)
                     }
 
-                    usageSummaryPanel.tvUptimeValue.text = formatTime(it.uptime)
-                    usageSummaryPanel.tvCycleValue.text = it.cycleCount
-                    updateUsageData()
+                    setBatteryAnimationColor(getColor(requireContext(), R.color.green))
+
+                    batteryInfoPanel.tvBatteryUsedValue.text = buildString {
+                        append("${getChargedLevel()}%")
+                    }
+
+                    setActiveIdleVisibility(View.GONE)
+                    setChargingSpeedVisibility(View.VISIBLE)
+
+                    batteryStatisticPanel.tvChargingValue.text = formatUsagePerHour(getChargingPerHr())
+                    batteryStatisticPanel.tvChargingDurationValue.text = formatTime(getChargingDuration())
+                    startEmittingBubbles(typedValue)
                 }
             }
         }
     }
 
-    private fun setUpLineChart(lineDataSet: LineDataSet, lineData: LineData, fillGradient: Drawable?) {
-        val typedValue = TypedValue()
-        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
-
-        lineDataSet.apply {
-            setDrawValues(false)
-            setDrawCircles(false)
-            axisDependency = YAxis.AxisDependency.RIGHT
-            valueFormatter = DefaultValueFormatter(0)
-            setDrawFilled(true)
-            isHighlightEnabled = false
-            fillDrawable = fillGradient
-            lineWidth = 2.0F
-            mode = LineDataSet.Mode.CUBIC_BEZIER
-            color = typedValue.data
-        }
-
-        binding?.batteryHistoryPanel?.chargingCurrentChart?.apply {
-            xAxis.apply {
-                position = XAxis.XAxisPosition.BOTTOM
-                setLabelCount(13, true)
-                axisMinimum = 0F
-                axisMaximum = 60F
-                valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String = "${60 - value.toInt()}s"
+    private fun startEmittingBubbles(typedValue: TypedValue) {
+        bubbleJob = CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                if (FragmentUtil.isEmitting) {
+                    val size = Random.nextInt(50, 100)
+                    binding?.batteryInfoPanel?.bubbleEmitter?.emitBubble(size)
+                    binding?.batteryInfoPanel?.bubbleEmitter?.setColors(
+                        typedValue.data,
+                        typedValue.data,
+                        typedValue.data
+                    )
                 }
-                labelRotationAngle = -45f
-                textColor = typedValue.data
-            }
-
-            axisRight.apply {
-                isEnabled = true
-                setLabelCount(8, true)
-                granularity = 100F
-                valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String = value.toInt().toString()
-                }
-                textColor = typedValue.data
-            }
-
-            axisLeft.isEnabled = false
-            isAutoScaleMinMaxEnabled = true
-            axisRight.enableGridDashedLine(10f, 10f, 0f)
-            xAxis.enableGridDashedLine(10f, 10f, 0f)
-            description.isEnabled = false
-            legend.isEnabled = false
-            data = lineData
-            animateXY(1000, 1000)
-        }
-    }
-
-    private fun showChart(lineDataSet: LineDataSet, lineData: LineData, gradientDrawable: Int) {
-        val typedValue = TypedValue()
-        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
-
-        setUpLineChart(lineDataSet, lineData, ContextCompat.getDrawable(requireContext(), gradientDrawable))
-    }
-
-    private fun showCurrent() {
-        showChart(
-            currentLineDataSet,
-            currentData,
-            R.drawable.chart_gradient
-        )
-        currentGraph = true
-        temperatureGraph = false
-        powerGraph = false
-    }
-
-    private fun showTemperature() {
-        showChart(
-            temperatureLineDataSet,
-            temperatureData,
-            R.drawable.chart_gradient
-        )
-        currentGraph = false
-        temperatureGraph = true
-        powerGraph = false
-    }
-
-    private fun showPower() {
-        showChart(
-            powerLineDataSet,
-            powerData,
-            R.drawable.chart_gradient
-        )
-        currentGraph = false
-        temperatureGraph = false
-        powerGraph = true
-    }
-
-    private fun updateUsageData() {
-        val screenOffDrainPerHrTmp = if (getScreenOffDrainPerHr().isNaN()) 0.0 else getScreenOffDrainPerHr()
-        val screenOnDrainPerHrTmp = if (getScreenOnDrainPerHr().isNaN()) 0.0 else getScreenOnDrainPerHr()
-        val deepSleepPercentage =
-            calculateDeepSleepPercentage(
-                getDeepSleepTime().toDouble(), getScreenOffTime().toDouble()
-            )
-        val cpuAwakePercentage =
-            calculateCpuAwakePercentage(
-                deepSleepPercentage
-            )
-        binding?.apply {
-            usageSummaryPanel.tvScreenOnValue.text = formatTime(getScreenOnTime())
-            usageSummaryPanel.tvScreenOffValue.text = formatTime(getScreenOffTime())
-            usageSummaryPanel.tvTotalTimeValue.text = formatTime(getScreenOffTime() + getScreenOnTime())
-            usageSummaryPanel.tvScreenOnUsage.text = formatUsagePercentage(getScreenOnDrain(), getLastChargeLevel())
-            usageSummaryPanel.tvScreenOffUsage.text = formatUsagePercentage(getScreenOffDrain(), getLastChargeLevel())
-            usageSummaryPanel.tvTotalUsage.text = formatUsagePercentage(
-                getScreenOffDrain() + getScreenOnDrain(),
-                getLastChargeLevel()
-            )
-            usageSummaryPanel.tvActiveDrainPerHrValue.text = formatUsagePerHour(screenOnDrainPerHrTmp)
-            usageSummaryPanel.tvIdleDrainPerHrValue.text = formatUsagePerHour(screenOffDrainPerHrTmp)
-            usageSummaryPanel.tvAwakeValue.text = formatTime(getAwakeTime())
-            usageSummaryPanel.tvDeepSleepValue.text = formatTime(getDeepSleepTime())
-            usageSummaryPanel.tvAwakePercentage.text = formatDeepSleepAwake(cpuAwakePercentage)
-            usageSummaryPanel.tvDeepSleepPercentage.text = formatDeepSleepAwake(deepSleepPercentage)
-            usageSummaryPanel.tvAwakePerHrValue.text = formatSpeed(
-                calculateDeepSleepAwakeSpeed(cpuAwakePercentage, screenOffDrainPerHrTmp)
-            )
-            usageSummaryPanel.tvDeepSleepPerHrValue.text = formatSpeed(
-                calculateDeepSleepAwakeSpeed(deepSleepPercentage, screenOffDrainPerHrTmp)
-            )
-        }
-    }
-
-    private fun setMinMaxText(tv: TextView, value: Int) {
-        tv.text = buildString {
-            when {
-                currentGraph -> {
-                    append(value)
-                    append(getString(R.string.ma))
-                }
-                temperatureGraph -> {
-                    append(value)
-                    append(getString(R.string.degree_symbol))
-                }
-                powerGraph -> {
-                    append(String.format("%.1f", value / 100.0))
-                    append(getString(R.string.wattage))
-                }
+                delay(Random.nextLong(100, 500))
             }
         }
     }
 
-    private fun minChecker(oldValue: Int, newValue: Int): Int {
-        return if (newValue < oldValue ) newValue else oldValue
+    private fun stopEmittingBubbles() {
+        bubbleJob?.cancel()
+        bubbleJob = null
     }
 
-    private fun maxChecker(oldValue: Int, newValue: Int): Int {
-        return if (newValue > oldValue ) newValue else oldValue
+    private fun setActiveIdleVisibility(state: Int) {
+        binding?.batteryStatisticPanel?.apply {
+            ivActive.visibility = state
+            ivIdle.visibility = state
+            linearLayout4.visibility = state
+            linearLayout5.visibility = state
+        }
     }
 
-    private fun rescaleNumber(input: Int): Int {
-        return (input.toDouble() / 100.0 * 246.0).toInt()
+    private fun setChargingSpeedVisibility(state: Int) {
+        binding?.batteryStatisticPanel?.apply {
+            ivCharging.visibility = state
+            linearLayout6.visibility = state
+            linearLayout7.visibility = state
+        }
     }
 
-    private fun changeWaveHeight(view: View, heightInDp: Int) {
-        val density = view.resources.displayMetrics.density
-        val heightInPixels = (heightInDp * density).toInt()
+    private fun setBatteryAnimationColor(color: Int) {
+        binding?.batteryInfoPanel?.waveAnimation?.closeColor = color
+        binding?.batteryInfoPanel?.waveAnimation?.startColor = color
 
-        val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-        layoutParams.height = heightInPixels
-        view.layoutParams = layoutParams
+        binding?.batteryInfoPanel?.bubbleEmitter?.setColors(color)
     }
 
     override fun onPause() {
@@ -407,13 +257,26 @@ class DashboardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!firstRun) {
-            dashboardViewModel.startBatteryMonitoring()
-        }
+
+        dashboardViewModel.startBatteryMonitoring()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        requireContext().unregisterReceiver(dashboardReceiver)
+    }
+
+    inner class DashboardReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when(intent.action) {
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    dashboardViewModel._powerStateEvent.value = false
+                }
+                Intent.ACTION_POWER_CONNECTED -> {
+                    dashboardViewModel._powerStateEvent.value = true
+                }
+            }
+        }
     }
 }

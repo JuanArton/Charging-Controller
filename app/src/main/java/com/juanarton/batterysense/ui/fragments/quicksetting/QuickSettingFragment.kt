@@ -3,7 +3,6 @@ package com.juanarton.batterysense.ui.fragments.quicksetting
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,23 +39,8 @@ class QuickSettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         isRooted = Shell.getShell()
-        Log.d("test", result.out.toString())
-        return if (isRooted.status == 1) {
-            if (result.out.isNotEmpty()) {
-                if (result.out[0] == "3C") {
-                    _binding = FragmentQuickSettingBinding.inflate(inflater, container, false)
-                    binding?.root
-                } else {
-                    inflater.inflate(R.layout.module_not_installed, container, false)
-                }
-            }
-            else {
-                inflater.inflate(R.layout.module_not_installed, container, false)
-            }
-        }
-        else {
-            inflater.inflate(R.layout.root_denied_view, container, false)
-        }
+        _binding = FragmentQuickSettingBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,6 +52,7 @@ class QuickSettingFragment : Fragment() {
             if (isRooted.status == 1 && result.out[0] == "3C") {
                 if (settings.getBoolean("qs_first_launch", true)) {
                     showDialog(requireContext(), settings)
+                    firstRun = false
                 }
 
                 qsViewModel.config.observe(viewLifecycleOwner) { config ->
@@ -75,19 +60,18 @@ class QuickSettingFragment : Fragment() {
                         chargingSwitch.isChecked = config.chargingSwitch
 
                         sliderChargingCurrent.value = config.current
+
                         tvCurrentValue.text = config.current.toInt().toString()
 
                         chargingLimitSwitch.isChecked = config.limitSwitch
                         sliderChargingLimit.value = config.maxCapacity
+
                         tvMaxCapacity.text = config.maxCapacity.toInt().toString()
 
                         tvCSDescription.visibility =
                             if (config.chargingLimitTriggered) View.VISIBLE else View.INVISIBLE
 
-                        if (firstRun) {
-                            registerListener()
-                            firstRun = false
-                        }
+                        registerListener()
                     }
                 }
 
@@ -103,6 +87,10 @@ class QuickSettingFragment : Fragment() {
                 qsViewModel.setChargingLimitStatus().observe(viewLifecycleOwner, reapplyConfigListener)
                 qsViewModel.setMaximumCapacity().observe(viewLifecycleOwner, reapplyConfigListener)
             }
+
+            if (isRooted.status == 0 ) {
+                registerListener()
+            }
         }
     }
 
@@ -112,30 +100,85 @@ class QuickSettingFragment : Fragment() {
                 override fun onStartTrackingTouch(slider: Slider) {}
 
                 override fun onStopTrackingTouch(slider: Slider) {
-                    val value = slider.value.toInt().toString()
-                    tvCurrentValue.text = value
-                    qsViewModel.setCurrent(value)
+                    val checkModule = checkModule()
+                    if (checkModule.first) {
+                        val value = slider.value.toInt().toString()
+                        tvCurrentValue.text = value
+                        qsViewModel.setCurrent(value)
+                    }
+                    else {
+                        rootModuleCheckDialog(checkModule.second)
+                    }
                 }
             })
 
             chargingSwitch.setOnCheckedChangeListener { _, isChecked ->
-                qsViewModel.setChargingSwitch(isChecked)
+                val checkModule = checkModule()
+                if (checkModule.first) {
+                    qsViewModel.setChargingSwitch(isChecked)
+                }
+                else {
+                    rootModuleCheckDialog(checkModule.second)
+                }
             }
 
             chargingLimitSwitch.setOnCheckedChangeListener { _, isChecked ->
-                qsViewModel.setChargingLimitSwitch(isChecked)
+
+                val checkModule = checkModule()
+
+                if (checkModule.first) {
+                    qsViewModel.setChargingLimitSwitch(isChecked)
+                }
+                else {
+                    rootModuleCheckDialog(checkModule.second)
+                }
             }
 
             sliderChargingLimit.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: Slider) {}
 
                 override fun onStopTrackingTouch(slider: Slider) {
-                    val value = slider.value.toInt().toString()
-                    tvMaxCapacity.text = value
-                    qsViewModel.setMaximumCapacityValue(value)
+                    val checkModule = checkModule()
+                    if (checkModule.first) {
+                        val value = slider.value.toInt().toString()
+                        tvMaxCapacity.text = value
+                        qsViewModel.setMaximumCapacityValue(value)
+                    }
+                    else {
+                        rootModuleCheckDialog(checkModule.second)
+                    }
                 }
             })
         }
+    }
+
+    private fun checkModule(): Pair<Boolean, String> {
+        return if (isRooted.status == 1) {
+            if (result.out.isNotEmpty()) {
+                if (result.out[0] == "3C") {
+                    Pair(true, getString(R.string.root_granted_module_installed))
+                } else {
+                    Pair(false, getString(R.string.root_denied_module_installed))
+                }
+            } else {
+                Pair(false, getString(R.string.root_granted_module_not_installed))
+            }
+        } else {
+            Pair(false, getString(R.string.not_rooted))
+        }
+    }
+
+    private fun rootModuleCheckDialog(title: String) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.apply {
+            setTitle(title)
+            setMessage(getString(R.string.root_module_check_message))
+            setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun showDialog(context: Context, settings:SharedPreferences) {
@@ -143,6 +186,9 @@ class QuickSettingFragment : Fragment() {
 
         val dialogMessage = dialogView.findViewById<TextView>(R.id.dialog_message)
         dialogMessage.text = getString(R.string.qs_dialog_message)
+
+        val dialogTitle = dialogView.findViewById<TextView>(R.id.dialog_title)
+        dialogTitle.text = getString(R.string.warning)
 
         val okButton = dialogView.findViewById<Button>(R.id.dialog_ok_button)
 

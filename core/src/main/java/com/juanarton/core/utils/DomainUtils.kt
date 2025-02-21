@@ -14,6 +14,7 @@ object DomainUtils {
             batteryHistory.temperature,
             batteryHistory.power,
             batteryHistory.voltage,
+            batteryHistory.isCharging
         )
     }
 
@@ -26,6 +27,7 @@ object DomainUtils {
                 it.temperature,
                 it.power,
                 it.voltage,
+                it.isCharging
             )
         }
     }
@@ -38,6 +40,19 @@ object DomainUtils {
             chargingHistory.startLevel,
             chargingHistory.endLevel,
             chargingHistory.levelDifference,
+            chargingHistory.screenOn,
+            chargingHistory.screenOn,
+            chargingHistory.screenOnDrain,
+            chargingHistory.screenOffDrain,
+            chargingHistory.screenOffDrainPerHr,
+            chargingHistory.screenOnDrainPerHr,
+            chargingHistory.deepSleepPercentage,
+            chargingHistory.awakePercentage,
+            chargingHistory.awakeDuration,
+            chargingHistory.sleepDuration,
+            chargingHistory.awakeSpeed,
+            chargingHistory.sleepSpeed,
+            chargingHistory.chargingSpeed,
             chargingHistory.isCharging
         )
     }
@@ -51,6 +66,19 @@ object DomainUtils {
                 it.startLevel,
                 it.endLevel,
                 it.levelDifference,
+                it.screenOn,
+                it.screenOn,
+                it.screenOnDrain,
+                it.screenOffDrain,
+                it.screenOffDrainPerHr,
+                it.screenOnDrainPerHr,
+                it.deepSleepPercentage,
+                it.awakePercentage,
+                it.awakeDuration,
+                it.sleepDuration,
+                it.awakeSpeed,
+                it.sleepSpeed,
+                it.chargingSpeed,
                 it.isCharging
             )
         }

@@ -4,7 +4,6 @@ import com.juanarton.core.data.domain.batteryInfo.model.Config
 import com.juanarton.core.data.domain.batteryInfo.model.Result
 import kotlinx.coroutines.flow.Flow
 
-@Suppress("unused")
 interface IAppConfigRepository {
     fun getConfig(): Flow<Config>
 

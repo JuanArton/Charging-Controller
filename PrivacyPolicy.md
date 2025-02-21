@@ -8,6 +8,14 @@ This page is used to inform app users regarding my policies with the collection,
 ### Information Collection and Use
 
 I DO NOT collect and retain any personally identifiable information about you or your device, like user name, address, location, pictures etc.
+The app utilizes third-party services which might gather data for identification purposes. You can find the privacy policies of these third-party service providers by following the link provided.
+[Google Play Service](https://policies.google.com/privacy)
+[AdMob](https://support.google.com/admob/answer/6128543?hl=en)
+[Google Analytics](https://marketingplatform.google.com/about/analytics/terms/us/)
+[Firebase Crashlytics](https://firebase.google.com/support/privacy)
+
+### Log Data
+I'd like to notify you that when you utilize my service and encounter an error within the app, I gather data and information, utilizing third-party products, from your device's Log Data. This Log Data may encompass details like your device's Internet Protocol ("IP") address, device name, operating system version, how the app is configured during your use of my service, the timestamp of your service usage, and additional statistics.
 
 ### Cookies
 

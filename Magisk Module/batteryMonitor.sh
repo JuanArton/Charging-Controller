@@ -5,9 +5,10 @@ echo "$pid" > "/data/adb/modules/3C/bmPID"
 firstRun=1
 firstRRun=1
 
-file_path="/sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-00/c440000.qcom,spmi:qcom,pm6150@0:qcom,qpnp-smb5/power_supply/battery/uevent"
+file_path="/sys/class/power_supply/battery/uevent"
 maxCapacity=$(grep 'maxCapacity' /data/adb/modules/3C/3C.conf | awk -F '=' '{print $2}' | tr -d ' ')
 chargingLimit=$(grep 'enableLimitCharging' /data/adb/modules/3C/3C.conf | awk -F '=' '{print $2}' | tr -d ' ')
+version=$(grep 'version' /data/adb/modules/3C/3C.conf | awk -F '=' '{print $2}' | tr -d ' ')
 
 while true; do
 
@@ -23,14 +24,22 @@ while true; do
         if [ $firstRun -eq 1 ]; then
             /data/adb/modules/3C/3c.sh setValue enableCharging 0
             /data/adb/modules/3C/3c.sh setValue chargingLimitTriggered 1
-            /data/adb/modules/3C/3c.sh applyChargingSwitch
+
+            if ["$version" -eq 1]; then
+                /data/adb/modules/3C/3c.sh applyChargingSwitch
+            fi
+
             firstRun=0
         fi
     elif [ "$STATUS" = "Discharging" ]; then
         if [ $firstRRun -eq 1 ]; then
             /data/adb/modules/3C/3c.sh setValue enableCharging 1
             /data/adb/modules/3C/3c.sh setValue chargingLimitTriggered 0
-            /data/adb/modules/3C/3c.sh applyChargingSwitch
+
+            if ["$version" -eq 1]; then
+                /data/adb/modules/3C/3c.sh applyChargingSwitch
+            fi
+
             firstRRun=0
         fi
     elif [ "$STATUS" = "Charging" ] || [ "$STATUS" = "Not charging" ]; then

@@ -2,13 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/dashboard"
-        android:icon="@drawable/sharp_battery_change_24"
-        android:title="@string/dashboard"/>
-
-    <item
-        android:id="@+id/quickSetting"
-        android:icon="@drawable/sharp_admin_panel_settings_24"
-        android:title="@string/quick_setting"/>
+        android:icon="@drawable/baseline_dashboard_24"
+        android:title="@string/charging"/>
 
     <item
         android:id="@+id/alarm"
@@ -19,4 +14,9 @@
         android:id="@+id/history"
         android:icon="@drawable/baseline_history_24"
         android:title="@string/history"/>
+
+    <item
+        android:id="@+id/quickSetting"
+        android:icon="@drawable/sharp_admin_panel_settings_24"
+        android:title="@string/quick_setting"/>
 </menu>

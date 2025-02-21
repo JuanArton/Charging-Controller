@@ -1,7 +1,6 @@
 package com.juanarton.core.data.source.local.monitoring
 
 import android.content.Context
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
@@ -22,7 +21,6 @@ import com.juanarton.core.utils.BatteryUtils.getUptime
 import com.juanarton.core.utils.BatteryUtils.getVoltage
 import com.juanarton.core.utils.BatteryUtils.registerStickyReceiver
 import com.juanarton.core.utils.DomainUtils
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.abs
@@ -45,7 +43,7 @@ class LMonitoringDataSource @Inject constructor(
 
         return BatteryInfo(
             getChargingStatus(), getACCharge(), getUSBCharge(), getLevel(), voltage,
-            current.toInt(), abs(power), getTemperature(), getUptime(), getCycleCount()
+            current.toInt(), abs(power), getTemperature(), getUptime(), getCycleCount(context)
         )
     }
 
@@ -67,11 +65,11 @@ class LMonitoringDataSource @Inject constructor(
         editor.apply()
     }
 
-    fun getStartTime(): String =
-        sharedPreferences.getString("startTime", null) ?: Date().toString()
+    fun getStartTime(): Long =
+        sharedPreferences.getLong("startTime", 0)
 
-    fun insertStartTime(startTime: String) {
-        editor.putString("startTime", startTime)
+    fun insertStartTime(startTime: Long) {
+        editor.putLong("startTime", startTime)
         editor.apply()
     }
 
@@ -187,7 +185,6 @@ class LMonitoringDataSource @Inject constructor(
                     val chargingHistory = DomainUtils.mapChargingHistoryEntityToDomain(
                         chargingHistoryDAO.getChargingHistory(params.loadSize, page * params.loadSize)
                     )
-                    Log.d("test", chargingHistoryDAO.getChargingHistory(params.loadSize, page * params.loadSize).toString())
 
                     LoadResult.Page(
                         data = chargingHistory,
@@ -232,5 +229,19 @@ class LMonitoringDataSource @Inject constructor(
     fun insertCapacity(capacity: Int) {
         editor.putInt("capacity", capacity)
         editor.apply()
+    }
+
+    fun getUsageData(): List<BatteryHistoryEntity> = batteryHistoryDao.getUsageData()
+
+    fun getAvailableDays(): List<String> {
+        return batteryHistoryDao.getAvailableDays()
+    }
+
+    fun getDataByDay(selectedDay: String): List<BatteryHistoryEntity> {
+        return batteryHistoryDao.getHistoryByDay(selectedDay)
+    }
+
+    fun getChargingHistoryByDay(selectedDay: String): List<ChargingHistoryEntity> {
+        return chargingHistoryDAO.getChargingHistoryByDay(selectedDay)
     }
 }
