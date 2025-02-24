@@ -244,4 +244,8 @@ class LMonitoringDataSource @Inject constructor(
     fun getChargingHistoryByDay(selectedDay: String): List<ChargingHistoryEntity> {
         return chargingHistoryDAO.getChargingHistoryByDay(selectedDay)
     }
+
+    fun getDataByRange(startTime: Long, endTime: Long): List<BatteryHistoryEntity> {
+        return batteryHistoryDao.getHistoryByRange(startTime, endTime)
+    }
 }

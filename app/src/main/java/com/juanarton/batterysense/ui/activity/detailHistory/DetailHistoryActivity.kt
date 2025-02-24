@@ -34,7 +34,9 @@ import com.juanarton.core.utils.Utils.convertMillisToDateTimeSecond
 import com.juanarton.core.utils.Utils.formatTime
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.TimeZone
 import kotlin.math.abs
 
@@ -45,6 +47,7 @@ class DetailHistoryActivity : AppCompatActivity() {
     private val binding get() = _binding
     private var isHide = true
     var originalHeight = 0
+    private lateinit var chargingHistory: ChargingHistory
 
     private val detailHistoryViewModel: DetailHistoryViewModel by viewModels()
 
@@ -59,7 +62,7 @@ class DetailHistoryActivity : AppCompatActivity() {
             insets
         }
 
-        val chargingHistory = if (Build.VERSION.SDK_INT >= 33) {
+        val chargingHistoryTmp = if (Build.VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra("HISTORY", ChargingHistory::class.java)
         } else {
             @Suppress("DEPRECATION")
@@ -73,8 +76,9 @@ class DetailHistoryActivity : AppCompatActivity() {
 
         val day = intent.getStringExtra("DAY")
 
-        if (chargingHistory != null && day != null) {
-            detailHistoryViewModel.getBatteryHistoryByDay(day)
+        if (chargingHistoryTmp != null && day != null) {
+            chargingHistory = chargingHistoryTmp
+            detailHistoryViewModel.getBatteryHistoryByDay(chargingHistory.startTime, chargingHistory.endTime)
             detailHistoryViewModel.batteryHistoryByDay.observe(this) { list ->
                 val minHour = getHourFromEpochCompat(chargingHistory.startTime)
                 val maxTmp = getHourFromEpochCompat(chargingHistory.endTime)
@@ -87,7 +91,10 @@ class DetailHistoryActivity : AppCompatActivity() {
                 val filtered = filterHistory(list, chargingHistory.startTime, chargingHistory.endTime)
                 val entries = mutableListOf<Entry>()
                 filtered.forEach {
-                    val hourFloat = convertMillisToSecondOfDay(it.timestamp)
+                    val hourFloat = if (isSameDay(chargingHistory.startTime, chargingHistory.endTime)) {
+                        convertMillisToSecondOfDay(it.timestamp)
+                    } else { it.timestamp.toFloat() }
+
                     entries.add(Entry(hourFloat, it.level.toFloat()))
                 }
 
@@ -97,8 +104,14 @@ class DetailHistoryActivity : AppCompatActivity() {
                         OnChartValueSelectedListener {
                         override fun onValueSelected(e: Entry?, h: Highlight?) {
                             e?.let {
-                                val index = list.indexOfFirst { history ->
-                                    convertMillisToSecondOfDay(history.timestamp) == e.x
+                                val index = if (isSameDay(chargingHistory.startTime, chargingHistory.endTime)) {
+                                    list.indexOfFirst { history ->
+                                        convertMillisToSecondOfDay(history.timestamp) == e.x
+                                    }
+                                } else {
+                                    list.indexOfFirst { history ->
+                                        history.timestamp.toFloat() == e.x
+                                    }
                                 }
                                 val selected = list[index]
 
@@ -244,12 +257,19 @@ class DetailHistoryActivity : AppCompatActivity() {
             position = XAxis.XAxisPosition.BOTTOM
             valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    return convertSecondToTime(value)
+                    return if(isSameDay(chargingHistory.startTime, chargingHistory.endTime)) {
+                        convertSecondToTime(value)
+                    } else { convertEpochToTime(value) }
                 }
             }
 
-            axisMinimum = (minHour * 3600).toFloat()
-            axisMaximum = (maxHour * 3600).toFloat()
+            if (isSameDay(chargingHistory.startTime, chargingHistory.endTime)) {
+                axisMinimum = (minHour * 3600).toFloat()
+                axisMaximum = (maxHour * 3600).toFloat()
+            } else {
+                axisMinimum = (chargingHistory.startTime - 1800000).toFloat()
+                axisMaximum = (chargingHistory.endTime + 1800000).toFloat()
+            }
             gridColor = typedValue.data
             setLabelCount(7, true)
             textColor = typedValue.data
@@ -275,6 +295,21 @@ class DetailHistoryActivity : AppCompatActivity() {
         return String.format("%02d:%02d", hour, minute)
     }
 
+    @SuppressLint("SimpleDateFormat")
+    private fun convertEpochToTime(epochMillis: Float): String {
+        val date = Date(epochMillis.toLong())
+        val format = SimpleDateFormat("HH:mm")
+        return format.format(date)
+    }
+
+    private fun isSameDay(startTime: Long, endTime: Long): Boolean {
+        val cal1 = Calendar.getInstance().apply { timeInMillis = startTime }
+        val cal2 = Calendar.getInstance().apply { timeInMillis = endTime }
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+    }
+
     private fun createLineDataSet(entries: List<Entry>, isCharging: Boolean): LineDataSet {
         binding?.batteryHistoryChart?.visibility = View.VISIBLE
         val typedValue = TypedValue()
@@ -289,7 +324,7 @@ class DetailHistoryActivity : AppCompatActivity() {
 
         val lineDataSet =  LineDataSet(entries, if (isCharging) "Charging" else "Discharging").apply {
             color = newColor
-            mode = LineDataSet.Mode.LINEAR
+            mode = LineDataSet.Mode.CUBIC_BEZIER
             lineWidth = 1.0F
             fillDrawable = fillGradient
             setDrawValues(false)

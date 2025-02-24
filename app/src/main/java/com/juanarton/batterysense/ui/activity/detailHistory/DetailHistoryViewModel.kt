@@ -17,9 +17,9 @@ class DetailHistoryViewModel @Inject constructor(
     private val _batteryHistoryByDay = MutableLiveData<List<BatteryHistory>>()
     val batteryHistoryByDay = _batteryHistoryByDay
 
-    fun getBatteryHistoryByDay(day: String) {
+    fun getBatteryHistoryByDay(startTime: Long, endTime: Long) {
         viewModelScope.launch {
-            batteryMonitoringUseCase.getDataByDay(day).collect {
+            batteryMonitoringUseCase.getDataByRange(startTime, endTime).collect {
                 _batteryHistoryByDay.value = it
             }
         }
