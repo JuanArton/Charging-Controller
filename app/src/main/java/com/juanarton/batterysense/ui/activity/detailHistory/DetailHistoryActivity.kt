@@ -290,7 +290,7 @@ class DetailHistoryActivity : AppCompatActivity() {
         val lineDataSet =  LineDataSet(entries, if (isCharging) "Charging" else "Discharging").apply {
             color = newColor
             mode = LineDataSet.Mode.LINEAR
-            lineWidth = 2.0F
+            lineWidth = 1.0F
             fillDrawable = fillGradient
             setDrawValues(false)
             setDrawFilled(true)

@@ -22,6 +22,9 @@ import com.juanarton.batterysense.ui.fragments.history.util.HistoryUtil.createGr
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
@@ -204,7 +207,9 @@ class ChartFullHistoryFragment : Fragment() {
         binding?.batteryHistoryChart?.visibility = View.VISIBLE
         val typedValue = TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.textColor, typedValue, true)
-        val onGoing = entries.last().x == convertMillisToSecondOfDay(listBatteryHistory.last().timestamp)
+
+        val lastTimestamp = listBatteryHistory.last().timestamp
+        val onGoing = isSameDay(lastTimestamp) && (entries.last().x == convertMillisToSecondOfDay(lastTimestamp))
 
         val newColor = when {
             onGoing -> ContextCompat.getColor(requireContext(), R.color.yellow)
@@ -217,7 +222,7 @@ class ChartFullHistoryFragment : Fragment() {
         val lineDataSet =  LineDataSet(entries, if (isCharging) "Charging" else "Discharging").apply {
             color = newColor
             isHighlightEnabled = false
-            lineWidth = 2.0F
+            lineWidth = 1.0F
             fillDrawable = fillGradient
             setDrawValues(false)
             setDrawFilled(true)
@@ -233,5 +238,13 @@ class ChartFullHistoryFragment : Fragment() {
 
         val date = inputFormat.parse(inputDate) ?: return inputDate
         return outputFormat.format(date)
+    }
+
+    private fun isSameDay(timestamp: Long): Boolean {
+        val calendar = Calendar.getInstance().apply { timeInMillis = timestamp }
+        val now = Calendar.getInstance()
+
+        return calendar.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+                calendar.get(Calendar.DAY_OF_YEAR) == now.get(Calendar.DAY_OF_YEAR)
     }
 }
