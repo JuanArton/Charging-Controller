@@ -16,6 +16,7 @@ import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnDrainPerHr
 import com.juanarton.batterysense.utils.BatteryDataHolder.getScreenOnTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.setAwakeTime
 import com.juanarton.batterysense.utils.BatteryDataHolder.setDeepSleepTime
+import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingPerHr
 import com.juanarton.batterysense.utils.ChargingDataHolder.setIsCharging
 import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
@@ -74,9 +75,11 @@ class PowerStateReceiver: BroadcastReceiver() {
                             null,
                             null,
                             chargingSpeed,
+                            getChargingDuration(),
                             true
                         )
                     )
+                    resetBatteryData(context)
                 }
                 setIsCharging(false)
             }
@@ -135,14 +138,16 @@ class PowerStateReceiver: BroadcastReceiver() {
                             awakeSpeed,
                             sleepSpeed,
                             null,
+                            null,
                             false
                         )
                     )
+
+                    resetBatteryData(context)
                 }
                 setIsCharging(true)
             }
         }
-        resetBatteryData(context)
     }
 
     private fun resetBatteryData(context: Context) {

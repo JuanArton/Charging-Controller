@@ -211,7 +211,7 @@ class DetailHistoryActivity : AppCompatActivity() {
                         batteryStatisticPanel.tvChargingValue.text = chargingHistory.chargingSpeed
                             ?.let { formatUsagePerHour(it) } ?: " - "
                         batteryStatisticPanel.tvChargingDurationValue.text = formatTime(
-                            (abs(chargingHistory.startTime - chargingHistory.endTime)) / 1000
+                            chargingHistory.chargingDuration ?: 0
                         )
                     }
                 }

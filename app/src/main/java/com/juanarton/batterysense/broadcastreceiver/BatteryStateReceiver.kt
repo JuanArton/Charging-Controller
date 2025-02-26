@@ -9,11 +9,13 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.juanarton.batterysense.R
 import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService
+import com.juanarton.batterysense.batterymonitorservice.BatteryMonitorService.Companion.isFullyCharged
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargedLevel
 import com.juanarton.batterysense.utils.ChargingDataHolder.getChargingDuration
 import com.juanarton.batterysense.utils.ChargingDataHolder.setChargedLevel
 import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingDuration
 import com.juanarton.batterysense.utils.ChargingDataHolder.setChargingPerHr
+import com.juanarton.batterysense.utils.ServiceUtil.createNotificationHigh
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
 import com.juanarton.core.data.domain.batteryMonitoring.repository.IBatteryMonitoringRepository
 import com.juanarton.core.utils.BatteryUtils.getCurrentTimeMillis
@@ -66,9 +68,11 @@ class BatteryStateReceiver : BroadcastReceiver(){
                 batteryUsed = 0
             }
             else if (newLevel > batteryLevel) {
-                setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000 )
-                setChargedLevel(newLevel - iBatteryMonitoringRepository.getLastPlugged().second)
-                setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
+                if (!isFullyCharged) {
+                    setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000 )
+                    setChargedLevel(newLevel - iBatteryMonitoringRepository.getLastPlugged().second)
+                    setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
+                }
             }
 
             if (newLevel > iAppConfigRepository.getBatteryLevelThreshold().first &&
@@ -96,20 +100,26 @@ class BatteryStateReceiver : BroadcastReceiver(){
                 val message = buildString {
                     append("$level% - ${context.getString(R.string.batteryLevelMinReached)}")
                 }
-                createNotification(
+                createNotificationHigh(
+                    R.string.batteryLevelAlarmNotifTitle,
                     context,
                     message,
-                    2
+                    2,
+                    R.string.bs_battery_alarm,
+                    R.string.battery_state_alarm
                 )
                 if (iAppConfigRepository.getOneTimeAlarmStatus()) { isNotified = true }
             } else if (level >= iAppConfigRepository.getBatteryLevelThreshold().second) {
                 val message = buildString {
                     append("$level% - ${context.getString(R.string.batteryLevelMaxReached)}")
                 }
-                createNotification(
+                createNotificationHigh(
+                    R.string.batteryLevelAlarmNotifTitle,
                     context,
                     message,
-                    2
+                    2,
+                    R.string.bs_battery_alarm,
+                    R.string.battery_state_alarm
                 )
                 if (iAppConfigRepository.getOneTimeAlarmStatus()) { isNotified = true }
             }
@@ -124,31 +134,15 @@ class BatteryStateReceiver : BroadcastReceiver(){
                         "$temp${context.getString(R.string.degree_symbol)} - ${context.getString(R.string.batteryTemperatureReached)}"
                     )
                 }
-                createNotification(
+                createNotificationHigh(
+                    R.string.batteryLevelAlarmNotifTitle,
                     context,
                     message,
-                    3
+                    3,
+                    R.string.bs_battery_alarm,
+                    R.string.battery_state_alarm
                 )
             }
         }
     }
-
-    private fun createNotification(context: Context, message: String, id: Int) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(RECEIVER_NOTIF_CHANNEL_ID, "3C Battery Alarm", NotificationManager.IMPORTANCE_HIGH)
-            channel.description = "Battery State Alarm"
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        val builder = NotificationCompat.Builder(context, RECEIVER_NOTIF_CHANNEL_ID)
-            .setSmallIcon(R.drawable.power)
-            .setContentTitle(context.getString(R.string.batteryLevelAlarmNotifTitle))
-            .setContentText(message)
-            .setShowWhen(false)
-
-        notificationManager.notify(id, builder.build())
-    }
-
 }

@@ -64,6 +64,9 @@ data class ChargingHistoryEntity (
     @ColumnInfo(name = "chargingSpeed")
     val chargingSpeed: Double?,
 
+    @ColumnInfo(name = "chargingDuration")
+    val chargingDuration: Long?,
+
     @ColumnInfo(name = "isCharging")
     val isCharging: Boolean
 )
