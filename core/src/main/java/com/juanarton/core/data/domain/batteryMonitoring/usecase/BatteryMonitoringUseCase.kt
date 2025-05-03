@@ -78,4 +78,6 @@ interface BatteryMonitoringUseCase {
     fun getDataByDay(selectedDay: String): Flow<List<BatteryHistory>>
 
     fun getChargingHistoryByDay(selectedDay: String): Flow<List<ChargingHistory>>
+
+    fun getDataByRange(startTime: Long, endTime: Long): Flow<List<BatteryHistory>>
 }

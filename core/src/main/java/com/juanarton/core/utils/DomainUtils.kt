@@ -53,6 +53,7 @@ object DomainUtils {
             chargingHistory.awakeSpeed,
             chargingHistory.sleepSpeed,
             chargingHistory.chargingSpeed,
+            chargingHistory.chargingDuration,
             chargingHistory.isCharging
         )
     }
@@ -79,6 +80,7 @@ object DomainUtils {
                 it.awakeSpeed,
                 it.sleepSpeed,
                 it.chargingSpeed,
+                it.chargingDuration,
                 it.isCharging
             )
         }

@@ -80,16 +80,15 @@ class ChargingHistoryAdapter(
         fun bind(chargingHistory: ChargingHistory) {
             binding.apply {
                 if (chargingHistory.isCharging) {
-                    val duration = formatTime(
-                        (abs(chargingHistory.startTime - chargingHistory.endTime)) / 1000
-                    )
 
                     piFirstLevel.progress = chargingHistory.endLevel
                     piSecondLevel.progress = chargingHistory.startLevel
                     piFirstLevel.setIndicatorColor(ContextCompat.getColor(context, R.color.green))
 
                     setChargingHistoryView(
-                        "${context.getString(R.string.`in`)} $duration", chargingHistory,
+                        "${context.getString(R.string.`in`)} ${
+                            formatTime(chargingHistory.chargingDuration ?: 0)
+                        }", chargingHistory,
                         binding, R.color.green
                     )
 
@@ -101,7 +100,6 @@ class ChargingHistoryAdapter(
                             append(" ")
                             append(formatUsagePerHour(chargingHistory.chargingSpeed))
                         }
-
                     }
                 } else {
                     val duration = formatTime(

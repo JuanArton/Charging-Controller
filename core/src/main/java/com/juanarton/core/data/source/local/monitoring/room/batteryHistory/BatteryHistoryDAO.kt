@@ -36,4 +36,7 @@ interface BatteryHistoryDAO {
     ORDER BY timestamp ASC
     """)
     fun getHistoryByDay(selectedDay: String): List<BatteryHistoryEntity>
+
+    @Query("SELECT * FROM batteryHistory WHERE timestamp >= :startTime AND timestamp <= :endTime")
+    fun getHistoryByRange(startTime: Long, endTime: Long): List<BatteryHistoryEntity>
 }

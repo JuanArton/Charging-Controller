@@ -1,7 +1,12 @@
 package com.juanarton.batterysense.utils
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
+import androidx.core.app.NotificationCompat
 import com.juanarton.batterysense.R
+import com.juanarton.batterysense.broadcastreceiver.BatteryStateReceiver.Companion.RECEIVER_NOTIF_CHANNEL_ID
 import com.juanarton.batterysense.utils.Utils.calculateCpuAwakePercentage
 import com.juanarton.batterysense.utils.Utils.calculateDeepSleepPercentage
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
@@ -80,5 +85,25 @@ object ServiceUtil {
 
     fun calculateTimeInterval(firstDate: Long, secondDate: Long): Long {
         return (firstDate - secondDate)/1000
+    }
+
+    fun createNotificationHigh(
+        title: Int, context: Context, message: String, id: Int, name: Int, description: Int
+    ) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(RECEIVER_NOTIF_CHANNEL_ID, context.getString(name), NotificationManager.IMPORTANCE_HIGH)
+            channel.description = context.getString(description)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val builder = NotificationCompat.Builder(context, RECEIVER_NOTIF_CHANNEL_ID)
+            .setSmallIcon(R.drawable.power)
+            .setContentTitle(context.getString(title))
+            .setContentText(message)
+            .setShowWhen(false)
+
+        notificationManager.notify(id, builder.build())
     }
 }

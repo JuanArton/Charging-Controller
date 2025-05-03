@@ -5,7 +5,7 @@ filepath="/data/adb/modules/3C"
 function restartCurrentController() {
     pid=$(head -n 1 "/data/adb/modules/3C/PID")
     kill "$pid"
-    nohup /data/adb/modules/3C/fastcharge.sh &
+    nohup /data/adb/modules/3C/fastcharge &
 }
 
 function killBateryMonitor() {

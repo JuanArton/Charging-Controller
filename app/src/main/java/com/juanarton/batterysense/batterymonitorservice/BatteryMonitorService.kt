@@ -50,6 +50,7 @@ import com.juanarton.batterysense.utils.ChargingDataHolder.setIsCharging
 import com.juanarton.batterysense.utils.ChargingHistoryHolder
 import com.juanarton.batterysense.utils.FragmentUtil.isEmitting
 import com.juanarton.batterysense.utils.ServiceUtil
+import com.juanarton.batterysense.utils.ServiceUtil.createNotificationHigh
 import com.juanarton.core.data.domain.batteryInfo.model.BatteryInfo
 import com.juanarton.core.data.domain.batteryInfo.repository.IAppConfigRepository
 import com.juanarton.core.data.domain.batteryMonitoring.domain.BatteryHistory
@@ -89,6 +90,7 @@ class BatteryMonitorService : Service() {
         var screenOffBuffer: Long = 0
         var deepSleepBuffer: Long = 0
         var screenOn = true
+        var isFullyCharged = false
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -168,17 +170,36 @@ class BatteryMonitorService : Service() {
                             setScreenOnDrainPerHr(getScreenOnDrain() / (getScreenOnTime().toDouble()/3600))
                             setScreenOffDrainPerHr(getScreenOffDrain() / (getScreenOffTime().toDouble()/3600))
 
-                            if (getIsCharging()) {
-                                resetBatteryStat()
-                                setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000)
-                                setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
-                            } else { resetChargingStat() }
-
                             updateNotification(it)
                         }
                         false -> {
                             insertScreenOffTime()
                         }
+                    }
+
+                    if (getIsCharging()) {
+                        resetBatteryStat()
+                        if (it.status != 5) {
+                            if (!isFullyCharged) {
+                                setChargingDuration((getCurrentTimeMillis() - iBatteryMonitoringRepository.getLastPlugged().first) / 1000)
+                                setChargingPerHr(((getChargedLevel().toDouble() / getChargingDuration()) * 3600))
+                            }
+                        } else {
+                            if (!isFullyCharged) {
+                                createNotificationHigh(
+                                    R.string.batteryLevelAlarmNotifTitle,
+                                    this@BatteryMonitorService,
+                                    getString(R.string.battery_is_fully_charged),
+                                    3,
+                                    R.string.bs_battery_alarm,
+                                    R.string.battery_state_alarm
+                                )
+                                isFullyCharged = true
+                            }
+                        }
+                    } else {
+                        resetChargingStat()
+                        isFullyCharged = false
                     }
 
                     iBatteryMonitoringRepository.insertHistory(

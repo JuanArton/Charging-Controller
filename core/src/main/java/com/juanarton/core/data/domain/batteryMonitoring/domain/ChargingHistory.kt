@@ -24,5 +24,6 @@ data class ChargingHistory(
     val awakeSpeed: Double?,
     val sleepSpeed: Double?,
     val chargingSpeed: Double?,
+    val chargingDuration: Long?,
     val isCharging: Boolean
 ): Parcelable

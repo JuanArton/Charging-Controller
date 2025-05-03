@@ -197,4 +197,12 @@ class BatteryMonitoringRepository @Inject constructor(
             )
         )
     }.flowOn(Dispatchers.IO)
+
+    override fun getDataByRange(startTime: Long, endTime: Long): Flow<List<BatteryHistory>> = flow {
+        emit(
+            mapBatteryHistoryEntityToDomain(
+                lMonitoringDataSource.getDataByRange(startTime, endTime)
+            )
+        )
+    }.flowOn(Dispatchers.IO)
 }

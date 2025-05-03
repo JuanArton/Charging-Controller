@@ -28,8 +28,8 @@
     <string name="battery_alarm">Battery Alarm</string>
     <string name="battery_level">Battery Level</string>
     <string name="setBatteryLevelThresholdError">Failed to set battery level threshold alarm, please try again!</string>
-    <string name="serviceNotificationTitle">3C - Battery Monitor</string>
-    <string name="batteryLevelAlarmNotifTitle">3C - Battery Monitor</string>
+    <string name="serviceNotificationTitle">BatterySense - Battery Monitor</string>
+    <string name="batteryLevelAlarmNotifTitle">BatterySense - Battery Level Monitor</string>
     <string name="batteryLevelMaxReached">Maximum battery level reached, please disconnect charger!</string>
     <string name="batteryLevelMinReached">Minimum battery level reached, please connect charger!</string>
     <string name="batteryTemperatureReached">Battery temperature reached, please disconnect charger or stop using device to cool down!</string>
@@ -130,4 +130,7 @@
     <string name="charging_history">Charging History</string>
     <string name="full_history">Full History</string>
     <string name="current_unit">Current Unit</string>
+    <string name="bs_battery_alarm">BatterySense - Battery Alarm</string>
+    <string name="battery_state_alarm">"Battery State Alarm"</string>
+    <string name="battery_is_fully_charged">"Battery is fuly charged!"</string>
 </resources>

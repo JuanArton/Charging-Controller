@@ -45,8 +45,8 @@ object HistoryUtil {
             setDrawFilled(true)
             isHighlightEnabled = false
             fillDrawable = fillGradient
-            lineWidth = 2.0F
-            mode = LineDataSet.Mode.LINEAR
+            lineWidth = 1.0F
+            mode = LineDataSet.Mode.CUBIC_BEZIER
             color = typedValue.data
         }
 
