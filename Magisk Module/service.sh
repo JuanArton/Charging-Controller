@@ -1,7 +1,7 @@
 #!/system/bin/sh
 #sleep 25
 
-nohup /data/adb/modules/3C/batteryMonitor.sh &
+nohup /data/adb/modules/3C/batteryMonitor &
 nohup /data/adb/modules/3C/fastcharge &
 
 while [ "$(getprop sys.boot_completed)" != "1" ]; do

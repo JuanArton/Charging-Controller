@@ -46,7 +46,7 @@ class LAppConfigDataSource {
     }
 
     fun setTargetCurrent(targetCurrent: String): Result {
-        val command = "${PATH}/3c.sh setValue chargingCurrent $targetCurrent"
+        val command = "${PATH}/3c setValue chargingCurrent $targetCurrent"
         val result = Shell.cmd(command).exec()
 
         val readResult = Utils.getValue("chargingCurrent")
@@ -54,7 +54,7 @@ class LAppConfigDataSource {
 
         return if (result.isSuccess) {
             if (value == targetCurrent) {
-                Shell.cmd("${PATH}/3c.sh restartCurrentController").exec()
+                Shell.cmd("${PATH}/3c restartCurrentController").exec()
                 Result("Success", true)
             } else {
                 Result("Failed to set new target Current", false)
@@ -67,7 +67,7 @@ class LAppConfigDataSource {
     fun setChargingSwitchStatus(switchStat: Boolean): Result {
         val stat = if (switchStat) "0" else "1"
 
-        val command = "${PATH}/3c.sh setValue enableCharging $stat"
+        val command = "${PATH}/3c setValue enableCharging $stat"
         val result = Shell.cmd(command).exec()
 
         val readResult = Utils.getValue("enableCharging")
@@ -75,7 +75,7 @@ class LAppConfigDataSource {
 
         return if (result.isSuccess) {
             if(value != switchStat) {
-                Shell.cmd("${PATH}/3c.sh applyChargingSwitch").exec()
+                Shell.cmd("${PATH}/3c applyChargingSwitch").exec()
                 Result("Success", true)
             } else {
                 Result("Failed to switch charging", false)
@@ -88,7 +88,7 @@ class LAppConfigDataSource {
     fun setChargingLimitStatus(switchStat: Boolean): Result {
         val stat = if (switchStat) "1" else "0"
 
-        val command = "${PATH}/3c.sh setValue enableLimitCharging $stat"
+        val command = "${PATH}/3c setValue enableLimitCharging $stat"
         val result = Shell.cmd(command).exec()
 
         val readStatus = Utils.getValue("enableLimitCharging")
@@ -97,9 +97,9 @@ class LAppConfigDataSource {
         return if (result.isSuccess) {
             if(statusValue == switchStat) {
                 if(statusValue) {
-                    Shell.cmd("${PATH}/3c.sh restartBatteryMonitor").exec()
+                    Shell.cmd("${PATH}/3c restartBatteryMonitor").exec()
                 } else {
-                    Shell.cmd("${PATH}/3c.sh killBateryMonitor").exec()
+                    Shell.cmd("${PATH}/3c killBateryMonitor").exec()
                 }
                 Result("Success", true)
             } else {
@@ -111,14 +111,14 @@ class LAppConfigDataSource {
     }
 
     fun setMaximumCapacity(maxCapacity: String): Result {
-        val command = "${PATH}/3c.sh setValue maxCapacity ${maxCapacity.toInt()}"
+        val command = "${PATH}/3c setValue maxCapacity ${maxCapacity.toInt()}"
         val result = Shell.cmd(command).exec()
 
         val capacityValue = Utils.getValue("maxCapacity").out[0]
 
         return if (result.isSuccess) {
             if(capacityValue == maxCapacity.toInt().toString()) {
-                Shell.cmd("${PATH}/3c.sh restartBatteryMonitor").exec()
+                Shell.cmd("${PATH}/3c restartBatteryMonitor").exec()
                 Result("Success", true)
             } else {
                 Result("Failed to switch charging limit", false)
